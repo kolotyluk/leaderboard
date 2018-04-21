@@ -1,4 +1,4 @@
-package net.kolotyluk.leaderboard.data
+package net.kolotyluk.leaderboard.scorekeeping
 
 import java.util.concurrent.ConcurrentSkipListMap
 
@@ -6,6 +6,9 @@ import net.kolotyluk.scala.extras.Logging
 
 import scala.collection.concurrent.TrieMap
 
+sealed trait Mode
+case object Increment extends Mode
+case object Replace extends Mode
 
 /** =Track Leaderboard Scores=
   * <p>
@@ -38,45 +41,9 @@ import scala.collection.concurrent.TrieMap
   */
 class ScoreKeeper extends Logging {
 
-  def randomLong: Long = {
-    val random = scala.util.Random
-    random.setSeed(System.nanoTime)
-    random.nextLong
-  }
-
-  /** Leaderboard Score
-    * <p>
-    * Leaderboard Score with Minimal Chances of Ties
-    * <p>
-    *
-    *
-    * @param value
-    * @param random
-    */
-  case class Score(value: BigInt, random: Long = randomLong) extends Comparable[Score] {
-
-    // TODO might be more fair to use GUIDs instead of timestamps.
-
-    override def compareTo(that: Score): Int = {
-      if (this.value < that.value) -1
-      else if (this.value > that.value) 1
-      else if (this.random < that.random) -1
-      else if (this.random > that.random) 1
-      else 0
-    }
-
-    override def equals(obj: scala.Any): Boolean = {
-      val that = obj.asInstanceOf[Score]
-      this.value == that.value && this.random == that.random
-    }
-  }
-
   val memberToScore = new TrieMap[String,Score]
   val scoreToMember = new ConcurrentSkipListMap[Score,String]
 
-  sealed trait Mode
-  case object Increment extends Mode
-  case object Replace extends Mode
 
   //set.put(10, "Fred")
 
@@ -89,17 +56,21 @@ class ScoreKeeper extends Logging {
     update(mode, member, Score(value))
   }
 
-  /** Update Leaderboard with Existing Score
+  /** =Update Leaderboard with Existing Score=
     * <p>
     * This should only be called from another ScoreKeeper, running in a different Akka Cluster Node.
+    * <p>
+    * Performance is a little better for Replace than Increment, but for both cases, performance is O(log n).
+    *
     * @param member
     * @param newScore existing score created by another ScoreKeeper
     */
   def update(mode: Mode, member: String, newScore: Score): Unit = {
+    // Caution: there is some subtle logic below, so don't modify it until you grok it
 
     memberToScore.put(member, newScore) match {
 
-      case None => // First time on the board
+      case None => // Member's first time on the board
         assert(scoreToMember.put(newScore, member) == null, {
             // Possible concurrency defect?
             val message = "ScoreKeeper inconsistent, added new member in memberToScore, but found old member in scoreToMember"
@@ -108,18 +79,27 @@ class ScoreKeeper extends Logging {
           }
         )
 
-      case Some(oldScore) => // Already on the board
+      case Some(oldScore) => // Member already on the board
         // TODO convince myself this will be consistent from multiple threads..., esp. wrt delete
-        val old = scoreToMember.remove(newScore)
+        val old = scoreToMember.remove(oldScore)
         if (old == null) {
           // TODO this should not happen
+          logger.error("oldScore not found in scoreToMember")
         } else {
+          val score =
           mode match {
-            case Increment =>
-              scoreToMember.put(Score(newScore.value + oldScore.value, newScore.random), member)
             case Replace =>
-              scoreToMember.put(newScore, member)
+              logger.debug(s"newScore = $newScore")
+              newScore
+            case Increment =>
+              logger.debug(s"newScore = $newScore, oldScore = $oldScore")
+              val score = Score(newScore.value + oldScore.value)
+              memberToScore.put(member, score)
+              score
+
           }
+          logger.debug(s"updated score = $score")
+          scoreToMember.put(score, member)
         }
     }
   }
@@ -130,8 +110,6 @@ class ScoreKeeper extends Logging {
       case Some(score) => Some(score.value)
     }
   }
-
-  case class Standing(count: Int, place: Int)
 
   /** =Compute Standing=
     * <p>
@@ -154,7 +132,7 @@ class ScoreKeeper extends Logging {
           if (key == score) place = count
         }
         assert(count > 0, "scoreToMember is empty")
-        Some(Standing(count, place))
+        Some(Standing(place, count))
     }
   }
 
