@@ -1,11 +1,33 @@
 package net.kolotyluk.leaderboard
 
-import _root_.scala.util.Random
+import net.kolotyluk.scala.extras.{Configuration, Logging}
 
-package object scorekeeping {
+import _root_.scala.util.Random
+import scala.collection.mutable.ArrayBuffer
+
+package object scorekeeping extends Configuration with Logging {
+
+  val msximumSpinCount = config.getLong("net.kolotyluk.leaderboard.maximumSpinCount")
+  val maximumSpinCountExceeded = "{0}: maximumSpinCount = {1} exceeded. This is probably caused because a lock was set on {2}, but never removed, possibly because of thread failure."
+
 
   // TODO think about this to make sure collisions are unlikely, and how to detect them
   def randomLong: Long = Random.nextLong
+
+  case class Placing(member: String, score: BigInt, place: Long)
+
+  /** =getRange Result=
+    *
+    * [[Leaderboard.getRange()]] is a paged API, where the caller can iterate through the leaderboard
+    * standings, one page at a time.
+    *
+    *
+    * @param placings of members between start and stop of [[Leaderboard.getRange()]] call, where the size of
+    *                 placings may be less than stop - start.
+    * @param totalCount of members on the leaderboard
+    */
+  case class Range(placings: ArrayBuffer[Placing], totalCount: Long)
+
 
   /** =Leaderboard Score=
     * <p>
@@ -37,7 +59,6 @@ package object scorekeeping {
       val that = obj.asInstanceOf[Score]
       this.value == that.value && this.random == that.random
     }
-
   }
 
   /** =Standing Place of Count=
@@ -46,6 +67,10 @@ package object scorekeeping {
     * @param count
     */
   case class Standing(place: Int, count: Int)
+
+  sealed trait UpdateMode
+  case object Increment extends UpdateMode
+  case object Replace extends UpdateMode
 
 }
 

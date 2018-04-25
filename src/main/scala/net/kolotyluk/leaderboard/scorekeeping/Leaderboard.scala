@@ -1,16 +1,15 @@
 package net.kolotyluk.leaderboard.scorekeeping
 
+import java.util.ConcurrentModificationException
 import java.util.concurrent.ConcurrentSkipListMap
 
-import net.kolotyluk.scala.extras.Logging
+import net.kolotyluk.scala.extras.{Configuration, Logging}
 
+import scala.annotation.tailrec
 import scala.collection.concurrent.TrieMap
+import scala.collection.mutable.ArrayBuffer
 
-sealed trait Mode
-case object Increment extends Mode
-case object Replace extends Mode
-
-/** =Track Leaderboard Scores=
+/** =Leaderboard Score Keeping=
   * <p>
   * Keep track of leaderboard scores.
   * <p>
@@ -38,77 +37,102 @@ case object Replace extends Mode
   * =Threadsafe=
   * This code is intended to be threadsafe, using concurrent non-blocking data structures, in order
   * to offer better performance over serialization in a single actor.
+  *
+  * @author eric@kolotyluk.net
   */
-class ScoreKeeper extends Logging {
+class Leaderboard extends Configuration with Logging {
 
-  val memberToScore = new TrieMap[String,Score]
+  val memberToScore = new TrieMap[String,Option[Score]]
   val scoreToMember = new ConcurrentSkipListMap[Score,String]
 
-
-  //set.put(10, "Fred")
-
-  /** Update Leaderboard with New Score
-    *
-    * @param member
-    * @param value
-    */
-  def update(mode: Mode, member: String, value: BigInt): Unit = {
-    update(mode, member, Score(value))
+  def delete(member: String): Boolean = {
+    delete(member, 0)
   }
 
-  /** =Update Leaderboard with Existing Score=
-    * <p>
-    * This should only be called from another ScoreKeeper, running in a different Akka Cluster Node.
-    * <p>
-    * Performance is a little better for Replace than Increment, but for both cases, performance is O(log n).
-    *
-    * @param member
-    * @param newScore existing score created by another ScoreKeeper
-    */
-  def update(mode: Mode, member: String, newScore: Score): Unit = {
-    // Caution: there is some subtle logic below, so don't modify it until you grok it
-
-    memberToScore.put(member, newScore) match {
-
-      case None => // Member's first time on the board
-        assert(scoreToMember.put(newScore, member) == null, {
-            // Possible concurrency defect?
-            val message = "ScoreKeeper inconsistent, added new member in memberToScore, but found old member in scoreToMember"
-            logger.error(message)
-            message
-          }
-        )
-
-      case Some(oldScore) => // Member already on the board
-        // TODO convince myself this will be consistent from multiple threads..., esp. wrt delete
-        val old = scoreToMember.remove(oldScore)
-        if (old == null) {
-          // TODO this should not happen
-          logger.error("oldScore not found in scoreToMember")
-        } else {
-          val score =
-          mode match {
-            case Replace =>
-              logger.debug(s"newScore = $newScore")
-              newScore
-            case Increment =>
-              logger.debug(s"newScore = $newScore, oldScore = $oldScore")
-              val score = Score(newScore.value + oldScore.value)
-              memberToScore.put(member, score)
-              score
-
-          }
-          logger.debug(s"updated score = $score")
-          scoreToMember.put(score, member)
-        }
+  @tailrec
+  private def delete(member: String, spinCount: Long): Boolean = {
+    if (spinCount > msximumSpinCount) {
+      throw new ConcurrentModificationException(maximumSpinCountExceeded.format("delete", msximumSpinCount, member))
     }
+
+    // Set the spin-lock
+    memberToScore.put(member, None) match {
+      case None =>    // already deleted
+        false
+      case Some(option) => option match {
+        case None =>  // Update in progress, so spin until complete
+          //logger.debug(s"delete: $member locked")
+          //Thread.sleep(1)
+          delete(member, spinCount + 1)
+        case Some (oldScore) => // CRITICAL SECTION
+          scoreToMember.remove (oldScore)
+          memberToScore.remove (member) // removes lock too
+          true
+      }
+    }
+  }
+
+  def getCount() = {
+    memberToScore.size
+  }
+
+  /** =Get Range of Scores=
+    * <p>
+    * Return a range of scores from start to stop
+    * <p>
+    *
+    *
+    * @param start
+    * @param stop
+    * @return
+    * @throws IndexOutOfBoundsException if more than Int.MaxValue scores in the result
+    */
+  def getRange(start: Long, stop: Long) = {
+
+    val totalCount = getCount
+
+    val scoreSet = scoreToMember.entrySet().iterator()
+
+    val placings = new ArrayBuffer[Placing]
+
+    var place: Long = 0
+
+    while (place <= stop) {
+      if (scoreSet.hasNext) {
+        val entry = scoreSet.next()
+        if (place >= start) placings.append(Placing(entry.getValue, entry.getKey.value, place))
+        place += 1
+      } else place = stop +1
+    }
+
+    Range(placings, totalCount)
   }
 
   def getScore(member: String): Option[BigInt] = {
+    getScore(member, 0)
+  }
+
+  @tailrec
+  final def getScore(member: String, spinCount: Long): Option[BigInt] = {
+    if (spinCount > msximumSpinCount) {
+      throw new ConcurrentModificationException(maximumSpinCountExceeded.format("getScore", msximumSpinCount, member))
+    }
+
     memberToScore.get(member) match {
       case None => None
-      case Some(score) => Some(score.value)
+      case Some(option) => option match {
+        case None => // Update in progress, so spin until complete
+          //logger.debug(s"getScore: $member locked")
+          //Thread.sleep(1)
+          getScore(member, spinCount + 1)
+        case Some(score) => // CRITICAL SECTION
+          Some(score.value)
+      }
     }
+  }
+
+  def getStanding(member: String): Option[Standing] = {
+    getStanding(member, 0)
   }
 
   /** =Compute Standing=
@@ -119,41 +143,108 @@ class ScoreKeeper extends Logging {
     * @param member
     * @return None if member not present, Some[Standing] otherwise
     */
-  def getStanding(member: String): Option[Standing] = {
+  def getStanding(member: String, spinCount: Long): Option[Standing] = {
+    if (spinCount > msximumSpinCount) {
+      throw new ConcurrentModificationException(maximumSpinCountExceeded.format("getStanding", msximumSpinCount, member))
+    }
+
     memberToScore.get(member) match {
-      case None => None
-      case Some(score) =>
-        val m = scoreToMember.keySet().iterator()
-        var count: Int = 0
-        var place: Int = 0
-        while (m.hasNext) {
-          count += 1
-          val key = m.next()
-          if (key == score) place = count
-        }
-        assert(count > 0, "scoreToMember is empty")
-        Some(Standing(place, count))
+      case None => None     // Member not on leaderboard
+      case Some(option) => option match {
+        case None =>        // Update in progress, so spin until complete
+          getStanding(member, spinCount + 1)
+        case Some(score) => // CRITICAL SECTION
+          val scores = scoreToMember.keySet().iterator()
+          var count: Int = 0
+          var place: Int = 0
+          while (scores.hasNext) {
+            count += 1
+            val key = scores.next()
+            if (key == score) place = count
+          }
+          assert(count > 0, "scoreToMember is empty")
+          Some(Standing(place, count))
+      }
+
     }
   }
 
-  def getCount() = {
-    memberToScore.size
+  /** Update Leaderboard with New Score
+    *
+    * @param member
+    * @param value
+    */
+  def update(mode: UpdateMode, member: String, value: BigInt): Unit = {
+    update(mode, member, Score(value))
   }
 
-  def delete(member: String) = {
+  def update(mode: UpdateMode, member: String, newScore: Score): Unit = {
+    update(mode, member, newScore, 0)
+  }
 
-    // We need to synchronize (lock) our progress through here because this could lead to inconsistent
-    // concurrent behavior during update. Note we intern the member string so that it is a unique object
-    // before setting a lock on it.
+  /** =Update Leaderboard with Existing Score=
+    * <p>
+    * This should only be called from another ScoreKeeper, running in a different Akka Cluster Node.
+    * <p>
+    * Performance is a little better for Replace than Increment, but for both cases, performance is O(log n).
+    * <p>
+    * ==Implementation Notes==
+    * ===Spin Lock===
+    * This implementation uses a [[https://en.wikipedia.org/wiki/Spinlock spin-lock]] to prevent
+    * [[https://en.wikipedia.org/wiki/Race_condition race-conditions]]. While both [[memberToScore]] and
+    * [[scoreToMember]] are concurrent data structures, they need to be updated in tandem for the same
+    * member update.
+    *
+    * @param member member ID
+    * @param newScore existing score created by another ScoreKeeper
+    */
+  @tailrec
+  private def update(mode: UpdateMode, member: String, newScore: Score, spinCount: Long): Unit = {
+    // Caution: there is some subtle logic below, so don't modify it unless you grok it
 
-    // TODO make sure this is still atomically correct wrt update
+    if (spinCount > msximumSpinCount) {
+      throw new ConcurrentModificationException(maximumSpinCountExceeded.format("update", msximumSpinCount, member))
+    }
 
-    member.intern.synchronized{
-      memberToScore.remove(member) match {
-        case None =>
-        case Some(oldScore) => scoreToMember.remove(oldScore)
+    // Set the spin-lock
+    memberToScore.put(member, None) match {
+      case None =>              // CRITICAL SECTION
+        // Member's first time on the board
+        if (scoreToMember.put(newScore, member) != null) {
+          val message = s"$member: added new member in memberToScore, but found old member in scoreToMember"
+          logger.error(message)
+          throw new ConcurrentModificationException(message)
+        }
+        memberToScore.put(member, Some(newScore)) // remove the spin-lock
+      case Some(option) => option match {
+        case None =>            // Update in progress, so spin until complete
+          // TODO prevent infinite loop
+          logger.debug(s"update: $member locked, spinCount = $spinCount")
+          //Thread.sleep(1)
+          update(mode, member, newScore, spinCount + 1)
+        case Some(oldScore) =>  // CRITICAL SECTION
+          // Member already on the leaderboard
+          if (scoreToMember.remove(oldScore) == null) {
+              val message = s"$member: oldScore not found in scoreToMember, concurrency defect"
+              logger.error(message)
+              throw new ConcurrentModificationException(message)
+            } else {
+              val score =
+                mode match {
+                  case Replace =>
+                    //logger.debug(s"$member: newScore = $newScore")
+                    newScore
+                  case Increment =>
+                    //logger.debug(s"$member: newScore = $newScore, oldScore = $oldScore")
+                    Score(newScore.value + oldScore.value)
+                }
+              //logger.debug(s"$member: updated score = $score")
+              scoreToMember.put(score, member)
+              memberToScore.put(member, Some(score))  // remove the spin-lock
+              //logger.debug(s"update: $member unlocked")
+            }
       }
     }
-
   }
+
 }

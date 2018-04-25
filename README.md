@@ -1,5 +1,5 @@
 # leaderboard
-Leaderboard Microservice which mplements standalone leaderboard service
+Leaderboard Microservice which implements standalone leaderboard service
 inspeire by
 [Redis Sorted Sets](https://redis.io/topics/data-types).
 
@@ -35,9 +35,22 @@ the member keys.
 
 # Architecture
 
+## Akka
+
+Akka is used as it's a fairly effective way to implement
+[Reactive](https://www.reactivemanifesto.org) applications.
+
+## Akka Cluster
+
 Akka Cluster is used for the implementation, where the microservice may
 comprise one or more nodes. In a multinode deployment, each node
 represents the same data, with eventual consistency.
+
+## Akka Typed
+
+
+
+## Scala
 
 Scala is used as the programming language as Lightbend tend to give better
 support for Scala than Java.
