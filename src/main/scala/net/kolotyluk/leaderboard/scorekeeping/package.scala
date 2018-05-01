@@ -1,5 +1,7 @@
 package net.kolotyluk.leaderboard
 
+import java.util.UUID
+
 import net.kolotyluk.scala.extras.{Configuration, Logging}
 
 import _root_.scala.util.Random
@@ -7,9 +9,7 @@ import scala.collection.mutable.ArrayBuffer
 
 package object scorekeeping extends Configuration with Logging {
 
-  val msximumSpinCount = config.getLong("net.kolotyluk.leaderboard.maximumSpinCount")
-  val maximumSpinCountExceeded = "{0}: maximumSpinCount = {1} exceeded. This is probably caused because a lock was set on {2}, but never removed, possibly because of thread failure."
-
+  case class Info(uuid: UUID, name: Option[String], memberCount: Int)
 
   // TODO think about this to make sure collisions are unlikely, and how to detect them
   def randomLong: Long = Random.nextLong

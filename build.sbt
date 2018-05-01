@@ -1,6 +1,4 @@
-// NOTES
-//
-// Check project/build.properties to make sure we are using the correct version of SBT
+// NOTE: Check project/build.properties to make sure we are using the correct version of SBT
 
 // import sbtunidoc.Plugin.unidocSettings
 
@@ -11,20 +9,23 @@ version := "0.0.0"
 scalaVersion := "2.12.5"
 
 lazy val akkaVersion = "2.5.11"
+lazy val akkaHttpVersion = "10.1.1"
 
 libraryDependencies ++= Seq(
-  "ch.qos.logback"    %   "logback-classic"     % "1.2.3",
-  "com.typesafe.akka" %%  "akka-actor"          % akkaVersion,
-  "com.typesafe.akka" %%  "akka-actor-typed"    % akkaVersion,
-  "com.typesafe.akka" %%  "akka-http"           % "10.1.1",
-  "com.typesafe.akka" %%  "akka-stream"         % akkaVersion,
-  "com.typesafe.akka" %%  "akka-testkit"        % akkaVersion,
-  "com.typesafe"      %   "config"              % "1.3.3",
-  "org.clapper"       %   "grizzled-slf4j_2.12" % "1.3.2",
+  "ch.qos.logback"                %   "logback-classic"     % "1.2.3",
+  "com.github.swagger-akka-http"  %%  "swagger-akka-http"   % "0.14.0",
+  "com.typesafe.akka"             %%  "akka-actor"          % akkaVersion,
+  "com.typesafe.akka"             %%  "akka-actor-typed"    % akkaVersion,
+  "com.typesafe.akka"             %%  "akka-http"           % akkaHttpVersion,
+  "com.typesafe.akka"             %%  "akka-stream"         % akkaVersion,
+  "com.typesafe.akka"             %%  "akka-testkit"        % akkaVersion,
+  "com.typesafe"                  %   "config"              % "1.3.3",
+  "io.swagger"                    %   "swagger-jaxrs"       % "1.5.18",
+  "org.clapper"                   %   "grizzled-slf4j_2.12" % "1.3.2",
   //"org.scalatest"     %% "scalatest"            % "3.2.0-SNAP10"  % "test"
-  "org.scalatest"     %%  "scalatest"           % "3.0.5"           % "test"
+  "org.scalatest"                 %%  "scalatest"           % "3.0.5"           % "test"
   //"org.pegdown"       %   "pegdown"             % "1.6.0"           % "test" // (For Html Scalatest reports)
-  //"org.slf4j"   % "slf4j-parent"        % "1.7.25"
+  //"org.slf4j"   % "slf4j-simple"        % "1.7.25"
 )
 
 //fork in test := true

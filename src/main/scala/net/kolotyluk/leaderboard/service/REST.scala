@@ -8,8 +8,15 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 import net.kolotyluk.scala.extras.Logging
-
 import akka.actor.typed.scaladsl.adapter._
+import akka.http.scaladsl.server.Route
+import net.kolotyluk.leaderboard.scorekeeping.Leaderboard
+import akka.http.scaladsl.model.StatusCodes.BadRequest
+import akka.http.scaladsl.model.StatusCodes.MethodNotAllowed
+import akka.http.scaladsl.model.StatusCodes.NotFound
+
+import scala.util.{Failure, Success}
+import io.swagger.annotations._
 
 object REST extends Logging {
   logger.info("Initializing...")
@@ -26,23 +33,21 @@ object REST extends Logging {
       implicit val actorMaterializer = ActorMaterializer()
       implicit val executionContextExecutor = actorContext.executionContext
 
-      val route =
-        path("hello") {
-          get {
-            complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say hello to akka-http</h1>"))
-          }
-        } ~
-        path("ping") {
+      val routes: Route =
+        PingService.route ~
+        path("leaderboards") {
           get {
             complete(HttpEntity(ContentTypes.`text/plain(UTF-8)`, "pong"))
           }
-        }
+        } ~
+          LeaderboardService.routes ~
+          SwaggerDocService.routes
 
-      val bindingFuture = Http().bindAndHandle(route, "localhost", 8888)
+      val bindingFuture = Http().bindAndHandle(routes, "localhost", 8888)
 
-      //val bindingFuture = Http().bindAndHandle(route, "localhost", 8888)
+      //val bindingFuture = Http().bindAndHandle(routes, "localhost", 8888)
 
-      println(s"Server online at http://localhost:8888/\nPress RETURN to stop...")
+      println(s"Server online at http://localhost:8888 docs at http://localhost:8888/api-docs/swagger.json")
 
       Behaviors.immutable[Message] { (actorCell, message) ⇒
         logger.info(s"received $message")
@@ -57,6 +62,8 @@ object REST extends Logging {
           logger.warn(s"Terminated ${actorRef.path.name}")
           Behaviors.same
       }
+
+
   }
 
 

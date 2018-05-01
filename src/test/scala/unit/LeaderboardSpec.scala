@@ -1,6 +1,7 @@
 package unit
 
 import net.kolotyluk.leaderboard.scorekeeping._
+import net.kolotyluk.leaderboard.telemetry.Metrics
 import net.kolotyluk.scala.extras.Logging
 import org.scalatest.{FlatSpec, GivenWhenThen, Matchers}
 
@@ -23,34 +24,37 @@ class LeaderboardSpec
 
     val joeBlow = "Joe Blow"
 
-    val scoreKeeper = new Leaderboard()
+    val leaderboard = Leaderboard.add match {
+      case Failure(cause) => throw cause
+      case Success(leaderboard) => leaderboard
+    }
     Given("a new ScoreKeeper")
 
-    scoreKeeper.getCount() should be (0)
-    scoreKeeper.getScore(joeBlow) should be (None)
-    scoreKeeper.getStanding(joeBlow) should be (None)
+    leaderboard.getCount should be (0)
+    leaderboard.getScore(joeBlow) should be (None)
+    leaderboard.getStanding(joeBlow) should be (None)
     Then("there should be no scores or standings")
 
-    var range = scoreKeeper.getRange(0, 1)
+    var range = leaderboard.getRange(0, 1)
     range.totalCount should be (0)
     range.placings.size should be (0)
     Then("the range should be empty")
 
     ////////////////////////////////////////////////////////
 
-    scoreKeeper.update(Replace, joeBlow, Score(BigInt(1)))
+    leaderboard.update(Increment, joeBlow, Score(BigInt(1)))
     Given("a score of 1 is set")
 
-    scoreKeeper.getCount() should be (1)
+    leaderboard.getCount should be (1)
     Then("there should be 1 score")
 
-    scoreKeeper.getScore(joeBlow) should be (Some(1))
+    leaderboard.getScore(joeBlow) should be (Some(1))
     Then("the score should be 1")
 
-    scoreKeeper.getStanding(joeBlow) should be (Some(Standing(1,1)))
+    leaderboard.getStanding(joeBlow) should be (Some(Standing(1,1)))
     Then("the standing should be 1 of 1")
 
-    range = scoreKeeper.getRange(0, 1)
+    range = leaderboard.getRange(0, 1)
     range.totalCount should be (1)
     range.placings.size should be (1)
     val placing = range.placings.head
@@ -68,28 +72,28 @@ class LeaderboardSpec
     assert(joeBlow ne joeBlow2)
     Then("the strings should have different object identifiers")
 
-    scoreKeeper.getStanding("Joe " + "Blow") should be (Some(Standing(1,1)))
+    leaderboard.getStanding("Joe " + "Blow") should be (Some(Standing(1,1)))
     Then("the standing should still be 1 of 1")
 
-    scoreKeeper.update(Increment, joeBlow, Score(BigInt(1)))
+    leaderboard.update(Increment, joeBlow, Score(BigInt(1)))
     When("the score is incremented")
 
-    scoreKeeper.getScore(joeBlow) should be (Some(2))
+    leaderboard.getScore(joeBlow) should be (Some(2))
     Then("it should be incremented correctly")
 
-    scoreKeeper.getStanding(joeBlow) should be (Some(Standing(1,1)))
+    leaderboard.getStanding(joeBlow) should be (Some(Standing(1,1)))
     Then("the standing should still be 1 of 1")
 
     ////////////////////////////////////////////////////////
 
-    scoreKeeper.delete(joeBlow)
+    leaderboard.delete(joeBlow)
     Given("a member is deleted from the leaderboard")
 
-    scoreKeeper.getScore(joeBlow) should be (None)
-    scoreKeeper.getStanding(joeBlow) should be (None)
+    leaderboard.getScore(joeBlow) should be (None)
+    leaderboard.getStanding(joeBlow) should be (None)
     Then("they should have no scores or standings")
 
-    range = scoreKeeper.getRange(0, 1)
+    range = leaderboard.getRange(0, 1)
     range.totalCount should be (0)
     range.placings.size should be (0)
     Then("the range should be empty")
@@ -97,18 +101,21 @@ class LeaderboardSpec
 
   it must "handle 2 members correctly" in {
 
-    val scoreKeeper = new Leaderboard()
+    val leaderboard = Leaderboard.add match {
+      case Failure(cause) => throw cause
+      case Success(leaderboard) => leaderboard
+    }
     Given("a new ScoreKeeper")
 
     val joeBlow = "Joe Blow"
     val janeBlow = "Jane Blow"
 
-    scoreKeeper.update(Replace, joeBlow, Score(BigInt(1)))
-    scoreKeeper.update(Replace, janeBlow, Score(BigInt(1)))
+    leaderboard.update(Replace, joeBlow, Score(BigInt(1)))
+    leaderboard.update(Replace, janeBlow, Score(BigInt(1)))
 
     When("2 members score")
 
-    var range = scoreKeeper.getRange(0, 1)
+    var range = leaderboard.getRange(0, 1)
 
     range.totalCount should be (2)
     val placings = range.placings
@@ -129,9 +136,9 @@ class LeaderboardSpec
     val scores = 100
 
     for (i <- 1 to scores) {
-      scoreKeeper.update(Increment, joeBlow, 1)
-      scoreKeeper.update(Increment, janeBlow, 1)
-      range = scoreKeeper.getRange(0, 1)
+      leaderboard.update(Increment, joeBlow, 1)
+      leaderboard.update(Increment, janeBlow, 1)
+      range = leaderboard.getRange(0, 1)
       // println(s"range = $range")
       if (range.placings.head.member === joeBlow) joeWins += 1 else janeWins += 1
     }
@@ -149,13 +156,16 @@ class LeaderboardSpec
 
   it must "handle concurrent updates correctly" in {
 
-    val scoreKeeper = new Leaderboard()
+    val leaderboard = Leaderboard.add match {
+      case Failure(cause) => throw cause
+      case Success(leaderboard) => leaderboard
+    }
     Given(s"a JVM with ${ Runtime.getRuntime().availableProcessors()} available processors")
 
     val joeBlow = "Joe Blow"
     val janeBlow = "Jane Blow"
 
-    var range = scoreKeeper.getRange(0, 1)
+    var range = leaderboard.getRange(0, 1)
 
     var joeWins = 0
     var janeWins = 0
@@ -168,11 +178,11 @@ class LeaderboardSpec
 
     for (i <- 1 to scores) {
       futures.append(Future {
-        scoreKeeper.update(Increment, joeBlow, 1)
+        leaderboard.update(Increment, joeBlow, 1)
         //logger.debug(s"$joeBlow += 1")
       })
       futures.append(Future {
-        scoreKeeper.update(Increment, janeBlow, 1)
+        leaderboard.update(Increment, janeBlow, 1)
         //logger.debug(s"$janeBlow += 1")
       })
       //range = scoreKeeper.getRange(0, 1)
@@ -187,9 +197,9 @@ class LeaderboardSpec
 //      case Success(value) =>
 //    }
 
-    val w = Await.result(done, 10 seconds)
+    val result = Await.result(done, 10 seconds)
 
-    range = scoreKeeper.getRange(0, 1)
+    range = leaderboard.getRange(0, 1)
     println(s"range = $range")
 
     val joePlacing = range.placings.head
@@ -205,4 +215,47 @@ class LeaderboardSpec
 
     println()
   }
-}
+
+  it must "handle high intensity concurrent updates correctly" in {
+
+    val leaderboard = Leaderboard.add match {
+      case Failure(cause) => throw cause
+      case Success(leaderboard) => leaderboard
+    }
+
+    val joeBlow = "Joe Blow"
+
+    val iterations = 1000
+    val availableProcessors = Runtime.getRuntime().availableProcessors()
+    Given(s"a JVM with $availableProcessors available processors")
+
+    val futures = new ArrayBuffer[Future[Unit]]
+
+    val startTime = System.nanoTime()
+
+    for (processor <- 1 to availableProcessors) {
+      futures.append(Future{
+        for (update <- 1 to iterations) {
+          leaderboard.update(Increment, joeBlow, 1)
+        }
+      })
+    }
+
+    val done = Future.sequence(futures)
+
+    val result = Await.result(done, 100 seconds)
+    val elapsedTime = System.nanoTime - startTime
+    val transactionsPerSecond: Double = ((iterations * availableProcessors).toDouble  / elapsedTime) * 1000000000
+
+    When(s"iterations = $iterations, elapsedTime = $elapsedTime nanoseconds, transactionsPerSecond = $transactionsPerSecond")
+    And(s"largestSpinCount = ${Metrics.getLargestSpinCount}, msximumSpinCount = ${Metrics.msximumSpinCount}")
+    And(s"largestSpinTime = ${Metrics.getLargestSpinTime} nanoseconds")
+
+    val expectedScore = availableProcessors * iterations
+    leaderboard.getScore(joeBlow).get should be (expectedScore)
+    Then(s"$joeBlow's score should be $expectedScore")
+
+  }
+
+
+  }

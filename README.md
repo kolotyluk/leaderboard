@@ -31,7 +31,17 @@ where fractional scores are need.
 ## Tie Breaking
 
 In Redis sorted sets, tie breaking is based on the lexical ordering of
-the member keys.
+the member keys. This is not exactly fair as members with some lexical
+orderings will alway wing over other members in a tie.
+
+Some leaderboard implementations (sometimes based in Redis) also track
+of the time the score was set/incremented. The tie favors either early
+or late scores. When scaling out a leaderboard across multiple nodes,
+the clocks will not be perfectly in sync. Other techniques, such as
+GUID/UUID suffer similar fairness issues.
+
+This implimentation is based on random numbers, which are generally
+fair across multiple nodes.
 
 # Architecture
 
@@ -69,4 +79,37 @@ hardware threads to a given node (JVM).
 
 It is assumed that updates for the same member are not likely to
 conflict in real time, while non-members are very likely to conflict.
+
+# Benchmarks
+
+The reported benchmarks are based on a Xeon 5560 @ 3.33 GHz, with 6
+cores and 12 hardware threads (or logical processors), 24 GB RAM,
+running under Windows 10, with Java 8.
+
+## Transactions Per Second
+
+### Single Member
+
+This is a synthetic benchmark in that the scenario is highly unlikely
+in a real world application. Basically, the score for a single member
+is updated as quickly as possible from as many hardware threads as
+possible.
+
+On order of 130,000 TPS was achieved, as was a high level of
+contention on the data structures. While the underlying data structures
+are [TrieMap](https://www.scala-lang.org/api/2.12.3/scala/collection/concurrent/TrieMap.html)
+and [ConcurrentSkipListMap](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ConcurrentSkipListMap.html),
+which are both thread safe, they sometimes must be updated together.
+To heep the operation threadsafe, a simple spin-lock is used. The lock
+part of the spin is based on the characteristics of the TriMap.
+
+Under the achieved load, a single transaction may spin more than 200
+times while waiting for other transactions to complete, for over 12 ms.
+The actual spin is done using Scala tail recursion, and there are many
+factors that can affect the spin. Nonetheless, as this is a synthetic
+benchmark, this amount of spin is not expected under normal conditions.
+
+The original motivation for this test was to break concurrency
+garantees, which found problems in early implemention. For now,
+the code seems fairly thread safe.
 
