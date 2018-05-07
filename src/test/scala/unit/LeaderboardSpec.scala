@@ -3,17 +3,17 @@ package unit
 import net.kolotyluk.leaderboard.scorekeeping._
 import net.kolotyluk.leaderboard.telemetry.Metrics
 import net.kolotyluk.scala.extras.Logging
-import org.scalatest.{FlatSpec, GivenWhenThen, Matchers}
+import org.scalatest._
 
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{Failure, Success}
+import scala.util.{Failure, Random, Success}
 
 class LeaderboardSpec
-  extends FlatSpec
+  extends FlatSpec with SequentialNestedSuiteExecution
     with GivenWhenThen
     with Matchers
     with Logging {
@@ -218,6 +218,10 @@ class LeaderboardSpec
 
   it must "handle high intensity concurrent updates correctly" in {
 
+    Metrics.resetLargestSpinCount;  info(s"LargestSpinCount = ${Metrics.getLargestSpinCount}")
+    Metrics.resetLargetsSpinTime;   info(s"LargestSpinTime  = ${Metrics.getLargestSpinTime}")
+    Metrics.resetTotalSpinTime;     info(s"TotalSpinTime  = ${Metrics.getTotalSpinTime}")
+
     val leaderboard = Leaderboard.add match {
       case Failure(cause) => throw cause
       case Success(leaderboard) => leaderboard
@@ -248,8 +252,8 @@ class LeaderboardSpec
     val transactionsPerSecond: Double = ((iterations * availableProcessors).toDouble  / elapsedTime) * 1000000000
 
     When(s"iterations = $iterations, elapsedTime = $elapsedTime nanoseconds, transactionsPerSecond = $transactionsPerSecond")
-    And(s"largestSpinCount = ${Metrics.getLargestSpinCount}, msximumSpinCount = ${Metrics.msximumSpinCount}")
-    And(s"largestSpinTime = ${Metrics.getLargestSpinTime} nanoseconds")
+    And(s"largestSpinCount = ${Metrics.getLargestSpinCount}, largetstSpinMember = ${Metrics.largestSpinMember}, msximumSpinCount = ${Metrics.msximumSpinCount}")
+    And(s"largestSpinTime = ${Metrics.getLargestSpinTime} nanoseconds, totalSpinTime = ${Metrics.getTotalSpinTime}")
 
     val expectedScore = availableProcessors * iterations
     leaderboard.getScore(joeBlow).get should be (expectedScore)
@@ -257,5 +261,55 @@ class LeaderboardSpec
 
   }
 
+  it must "handle high a large number of members" in {
+
+    Metrics.resetLargestSpinCount;  info(s"LargestSpinCount = ${Metrics.getLargestSpinCount}")
+    Metrics.resetLargetsSpinTime;   info(s"LargestSpinTime  = ${Metrics.getLargestSpinTime}")
+    Metrics.resetTotalSpinTime;     info(s"TotalSpinTime  = ${Metrics.getTotalSpinTime}")
+
+    val leaderboard = Leaderboard.add match {
+      case Failure(cause) => throw cause
+      case Success(leaderboard) => leaderboard
+    }
+
+    val random = new Random
+
+//    for (m <- 1 to 1000000) {
+//      //val member = s"member ${Math.abs(random.nextInt(1000000))}"
+//      val member = s"member ${m}"
+//      leaderboard.update(Increment, member, m)
+//    }
+
+    val iterations = 1000
+    val availableProcessors = Runtime.getRuntime().availableProcessors()
+
+    val futures = new ArrayBuffer[Future[Unit]]
+
+    val startTime = System.nanoTime()
+
+    for (processor <- 1 to availableProcessors) {
+      futures.append(Future{
+        for (update <- 1 to iterations) {
+          val member = s"member ${Math.abs(random.nextInt(iterations * availableProcessors))}"
+          // info(s"updating $member")
+          leaderboard.update(Increment, member, 1)
+        }
+      })
+    }
+
+    val done = Future.sequence(futures)
+
+    val result = Await.result(done, 100 seconds)
+    val elapsedTime = System.nanoTime - startTime
+    val transactionsPerSecond: Double = ((iterations * availableProcessors).toDouble  / elapsedTime) * 1000000000
+
+    When(s"iterations = $iterations, elapsedTime = $elapsedTime nanoseconds, transactionsPerSecond = $transactionsPerSecond")
+    And(s"largestSpinCount = ${Metrics.getLargestSpinCount}, largetstSpinMember = ${Metrics.largestSpinMember}, msximumSpinCount = ${Metrics.msximumSpinCount}")
+    And(s"largestSpinTime = ${Metrics.getLargestSpinTime} nanoseconds, totalSpinTime = ${Metrics.getTotalSpinTime}")
+
+    val range = leaderboard.getRange(0, leaderboard.getCount)
+
+    range.placings.foreach(placing => println(s" ${placing.member} ${placing.place} ${placing.score}"))
 
   }
+}

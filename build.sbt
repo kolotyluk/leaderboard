@@ -36,3 +36,8 @@ libraryDependencies ++= Seq(
 //scalaTestRun := {
 //  val one = (runMain in Compile).fullInput(" org.scalatest.tools.Runner -s com.pg.macro.testcase.AutoTest -h ScalaTestReport").evaluated
 //}
+
+parallelExecution in Test := false
+
+// Get scaladoc to add rootdoc.txt content to index.html
+scalacOptions in (Compile,doc) ++= Seq("-doc-root-content", "rootdoc.txt")
