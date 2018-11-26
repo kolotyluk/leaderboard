@@ -326,13 +326,12 @@ class Leaderboard(uuid: UUID, var name: Option[String]) extends Configuration wi
       case Some(option) => option match {
         case None =>            // Update in progress, so spin until complete
           //logger.debug(s"update: $member locked, spinCount = $spinCount")
-          // Waste time so the lock holder can finish, with exponential back-off,
-          // by yielding the processor to other threads
-          for (i <- -1 to spinCount * spinCount) Thread.`yield`()
+          // Waste time so the lock holder can finish, by yielding the processor to other threads
+          // Exponential back-off seems to offer the best behavior
+          for (i <- -1 to spinCount * spinCount) Thread.`yield`
           update(mode, member, newScore, spinCount + 1, spinStart)
         case Some(oldScore) =>
-          try {
-            // BEGIN CRITICAL SECTION
+          try { // BEGIN CRITICAL SECTION
             // Member already on the leaderboard
             if (scoreToMember.remove(oldScore) == null) {
               val message = s"$member: oldScore not found in scoreToMember, concurrency defect"
@@ -353,7 +352,6 @@ class Leaderboard(uuid: UUID, var name: Option[String]) extends Configuration wi
               memberToScore.put(member, Some(score))  // remove the spin-lock
               //logger.debug(s"update: $member unlocked")
             }
-            // END CRITICAL SECTION
           } catch {
             case cause: Throwable =>
               // Unlikely to get here, but just in case, delete the member, which should also delete the lock,
@@ -361,7 +359,7 @@ class Leaderboard(uuid: UUID, var name: Option[String]) extends Configuration wi
               scoreToMember.remove(oldScore)
               memberToScore.remove(member)
               logger.error(s"Exception in critical section. Removing member $member", cause)
-          }
+          } // END CRITICAL SECTION
           // Do this outside the critical section to reduce time under lock
           if (spinCount > 0) Metrics.checkSpinTime(System.nanoTime() - spinStart)
       }

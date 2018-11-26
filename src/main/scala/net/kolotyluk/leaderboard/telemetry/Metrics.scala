@@ -19,10 +19,10 @@ object Metrics extends Configuration with Logging {
   def checkSpinCount(member: String, spinCount: Long) = {
 
     var currentCount = largestSpinCount.get
+    while (spinCount > currentCount && !largestSpinCount.compareAndSet(currentCount, spinCount)) currentCount = largestSpinCount.get
 
-    while (spinCount > currentCount && !largestSpinCount.compareAndSet(currentCount, spinCount)) {
-      currentCount = largestSpinCount.get
-    }
+    var total = totalSpinCount.get
+    while (!totalSpinCount.compareAndSet(total, total + spinCount)) total = totalSpinCount.get
 
     if (spinCount > currentCount) largestSpinMember = member
 
@@ -36,7 +36,10 @@ object Metrics extends Configuration with Logging {
   }
 
   def getLargestSpinCount = largestSpinCount.get
+  def getTotalSpinCount = totalSpinCount.get
   def getLargestSpinMember = largestSpinMember
+
+  def resetTotalSpinCount = totalSpinCount.set(0)
   def resetLargestSpinCount = largestSpinCount.set(0)
 
   var largestSpinTime = new AtomicLong(0)

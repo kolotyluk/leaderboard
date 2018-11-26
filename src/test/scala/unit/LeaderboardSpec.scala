@@ -220,6 +220,7 @@ class LeaderboardSpec
 
     Metrics.resetLargestSpinCount;  info(s"LargestSpinCount = ${Metrics.getLargestSpinCount}")
     Metrics.resetLargetsSpinTime;   info(s"LargestSpinTime  = ${Metrics.getLargestSpinTime}")
+    Metrics.resetTotalSpinCount;    info(s"TotalSpinCount  = ${Metrics.getTotalSpinCount}")
     Metrics.resetTotalSpinTime;     info(s"TotalSpinTime  = ${Metrics.getTotalSpinTime}")
 
     val leaderboard = Leaderboard.add match {
@@ -251,9 +252,11 @@ class LeaderboardSpec
     val elapsedTime = System.nanoTime - startTime
     val transactionsPerSecond: Double = ((iterations * availableProcessors).toDouble  / elapsedTime) * 1000000000
 
+    val spinFraction = Metrics.getTotalSpinTime.toDouble / (elapsedTime.toDouble * availableProcessors)
+
     When(s"iterations = $iterations, elapsedTime = $elapsedTime nanoseconds, transactionsPerSecond = $transactionsPerSecond")
-    And(s"largestSpinCount = ${Metrics.getLargestSpinCount}, largetstSpinMember = ${Metrics.largestSpinMember}, msximumSpinCount = ${Metrics.msximumSpinCount}")
-    And(s"largestSpinTime = ${Metrics.getLargestSpinTime} nanoseconds, totalSpinTime = ${Metrics.getTotalSpinTime}")
+    And(s"largestSpinCount = ${Metrics.getLargestSpinCount}, totalSpinCount = ${Metrics.getTotalSpinCount},  largetstSpinMember = ${Metrics.largestSpinMember}, msximumSpinCount = ${Metrics.msximumSpinCount}")
+    And(s"largestSpinTime = ${Metrics.getLargestSpinTime} nanoseconds, totalSpinTime = ${Metrics.getTotalSpinTime}, spinFraction = ${spinFraction}")
 
     val expectedScore = availableProcessors * iterations
     leaderboard.getScore(joeBlow).get should be (expectedScore)
@@ -265,6 +268,7 @@ class LeaderboardSpec
 
     Metrics.resetLargestSpinCount;  info(s"LargestSpinCount = ${Metrics.getLargestSpinCount}")
     Metrics.resetLargetsSpinTime;   info(s"LargestSpinTime  = ${Metrics.getLargestSpinTime}")
+    Metrics.resetTotalSpinCount;    info(s"TotalSpinCount  = ${Metrics.getTotalSpinCount}")
     Metrics.resetTotalSpinTime;     info(s"TotalSpinTime  = ${Metrics.getTotalSpinTime}")
 
     val leaderboard = Leaderboard.add match {
@@ -303,9 +307,11 @@ class LeaderboardSpec
     val elapsedTime = System.nanoTime - startTime
     val transactionsPerSecond: Double = ((iterations * availableProcessors).toDouble  / elapsedTime) * 1000000000
 
+    val spinFraction = Metrics.getTotalSpinTime.toDouble / (elapsedTime.toDouble * availableProcessors)
+
     When(s"iterations = $iterations, elapsedTime = $elapsedTime nanoseconds, transactionsPerSecond = $transactionsPerSecond")
-    And(s"largestSpinCount = ${Metrics.getLargestSpinCount}, largetstSpinMember = ${Metrics.largestSpinMember}, msximumSpinCount = ${Metrics.msximumSpinCount}")
-    And(s"largestSpinTime = ${Metrics.getLargestSpinTime} nanoseconds, totalSpinTime = ${Metrics.getTotalSpinTime}")
+    And(s"largestSpinCount = ${Metrics.getLargestSpinCount}, totalSpinCount = ${Metrics.getTotalSpinCount},  largetstSpinMember = ${Metrics.largestSpinMember}, msximumSpinCount = ${Metrics.msximumSpinCount}")
+    And(s"largestSpinTime = ${Metrics.getLargestSpinTime} nanoseconds, totalSpinTime = ${Metrics.getTotalSpinTime}, spinFraction = ${spinFraction}")
 
     val range = leaderboard.getRange(0, leaderboard.getCount)
 
