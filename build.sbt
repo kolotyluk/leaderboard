@@ -8,8 +8,8 @@ version := "0.0.0"
 
 scalaVersion := "2.12.5"
 
-lazy val akkaVersion = "2.5.11"
-lazy val akkaHttpVersion = "10.1.1"
+lazy val akkaVersion = "2.5.18"
+lazy val akkaHttpVersion = "10.1.5"
 
 libraryDependencies ++= Seq(
   "ch.qos.logback"                %   "logback-classic"     % "1.2.3",
@@ -22,10 +22,11 @@ libraryDependencies ++= Seq(
   "com.typesafe"                  %   "config"              % "1.3.3",
   "io.swagger"                    %   "swagger-jaxrs"       % "1.5.18",
   "org.clapper"                   %   "grizzled-slf4j_2.12" % "1.3.2",
-  //"org.scalatest"     %% "scalatest"            % "3.2.0-SNAP10"  % "test"
-  "org.scalatest"                 %%  "scalatest"           % "3.0.5"           % "test"
-  //"org.pegdown"       %   "pegdown"             % "1.6.0"           % "test" // (For Html Scalatest reports)
-  //"org.slf4j"   % "slf4j-simple"        % "1.7.25"
+  // "org.scalatest"     %% "scalatest"            % "3.2.0-SNAP10"  % "test"
+  "org.scalactic"                 %% "scalactic"            % "3.0.5",
+  "org.scalatest"                 %% "scalatest"            % "3.0.5"           % "test"
+  // "org.pegdown"       %   "pegdown"             % "1.6.0"           % "test" // (For Html Scalatest reports)
+  // "org.slf4j"   % "slf4j-simple"        % "1.7.25"
 )
 
 //fork in test := true
@@ -37,7 +38,7 @@ libraryDependencies ++= Seq(
 //  val one = (runMain in Compile).fullInput(" org.scalatest.tools.Runner -s com.pg.macro.testcase.AutoTest -h ScalaTestReport").evaluated
 //}
 
-parallelExecution in Test := false
+// parallelExecution in Test := false
 
 // Get scaladoc to add rootdoc.txt content to index.html
 scalacOptions in (Compile,doc) ++= Seq("-doc-root-content", "rootdoc.txt")
