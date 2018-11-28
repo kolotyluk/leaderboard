@@ -1,14 +1,12 @@
 package unit
 
-import java.util.LinkedList
-import java.util.NoSuchElementException
+import collection.mutable.ArrayStack
+import org.scalatest._
 
-import org.scalatest.FlatSpec
-
-class FooSpec extends FlatSpec  {
+class FooSpec extends FlatSpec with Matchers  {
 
   "A Stack" should "pop values in last-in-first-out order" in {
-    val stack = new LinkedList[Int]
+    val stack = new ArrayStack[Int]
     stack.push(1)
     stack.push(2)
     assert(stack.pop() === 2)
@@ -16,7 +14,7 @@ class FooSpec extends FlatSpec  {
   }
 
   it should "throw NoSuchElementException if an empty stack is popped" in {
-    val emptyStack = new LinkedList[String]
+    val emptyStack = new ArrayStack[String]
     assertThrows[NoSuchElementException] {
       emptyStack.pop()
     }

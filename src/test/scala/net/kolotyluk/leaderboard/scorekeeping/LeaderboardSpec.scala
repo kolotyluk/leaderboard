@@ -1,5 +1,7 @@
 package net.kolotyluk.leaderboard.scorekeeping
 
+import net.kolotyluk.leaderboard.telemetry.Metrics
+
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
