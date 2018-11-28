@@ -1,4 +1,4 @@
-package unit
+package net.kolotyluk.leaderboard.scorekeeping
 
 import net.kolotyluk.scala.extras.Logging
 

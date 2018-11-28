@@ -1,14 +1,9 @@
-package unit
-
-import net.kolotyluk.leaderboard.scorekeeping._
-import net.kolotyluk.leaderboard.telemetry.Metrics
-import net.kolotyluk.scala.extras.Logging
-import org.scalatest.{FlatSpec, GivenWhenThen, Matchers, SequentialNestedSuiteExecution}
+package net.kolotyluk.leaderboard.scorekeeping
 
 import scala.collection.mutable.ArrayBuffer
-import scala.concurrent.{Await,Future}
-import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
 import scala.util.{Failure, Random, Success}
 
 class LeaderboardSpec extends UnitSpec {
