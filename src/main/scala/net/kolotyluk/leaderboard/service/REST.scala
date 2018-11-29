@@ -1,22 +1,15 @@
 package net.kolotyluk.leaderboard.service
 
 //import akka.actor.{ActorContext, ActorRefFactory, ActorSystem}
-import akka.actor.typed.{Behavior, Terminated}
 import akka.actor.typed.scaladsl.Behaviors
+import akka.actor.typed.scaladsl.adapter._
+import akka.actor.typed.{Behavior, Terminated}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import net.kolotyluk.scala.extras.Logging
-import akka.actor.typed.scaladsl.adapter._
-import akka.http.scaladsl.server.Route
-import net.kolotyluk.leaderboard.scorekeeping.Leaderboard
-import akka.http.scaladsl.model.StatusCodes.BadRequest
-import akka.http.scaladsl.model.StatusCodes.MethodNotAllowed
-import akka.http.scaladsl.model.StatusCodes.NotFound
-
-import scala.util.{Failure, Success}
-import io.swagger.annotations._
 
 object REST extends Logging {
   logger.info("Initializing...")
@@ -40,7 +33,9 @@ object REST extends Logging {
         }
       } ~
       LeaderboardService.routes ~
-      SwaggerDocService.routes
+      path("swagger") { getFromResource("swagger/index.html") } ~
+      getFromResourceDirectory("swagger")
+      //SwaggerDocService.routes
 
     val bindingFuture = Http().bindAndHandle(routes, "localhost", 8888)
 
