@@ -2,14 +2,12 @@ package net.kolotyluk.leaderboard.service
 
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives
-import akka.http.scaladsl.server.Directives.{complete, get, path}
-
-import javax.ws.rs.Path
 import io.swagger.annotations._
+import javax.ws.rs.Path
 
 @Api(value = "/ping", produces = "text/plain(UTF-8)")
 @Path("/ping")
-object PingService extends Directives {
+class PingService extends Directives {
 
   val route = ping
 

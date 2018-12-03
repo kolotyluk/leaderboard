@@ -1,26 +1,21 @@
 package net.kolotyluk.leaderboard.service
 
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse}
 import akka.http.scaladsl.model.StatusCodes.{BadRequest, MethodNotAllowed, NotFound}
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse}
 import akka.http.scaladsl.server.{Directives, Route}
-import akka.http.scaladsl.server.Directives.{complete, get, parameter, pathEnd, pathPrefix, post}
-import net.kolotyluk.leaderboard.scorekeeping.Leaderboard
-
-import scala.annotation.meta.field
-
-import javax.ws.rs.Path
-
 import io.swagger.annotations._
+import javax.ws.rs.Path
+import net.kolotyluk.leaderboard.scorekeeping.Leaderboard
 
 import scala.util.{Failure, Success}
 
 @Api(value = "/leaderboard", produces = "text/plain(UTF-8)")
 @Path("/leaderboard")
-object LeaderboardService extends Directives {
+class LeaderboardService extends Directives {
 
-  val routes = leaderboardRoute
+  //val routes = leaderboardRoute
 
-  def leaderboardRoute: Route =
+  def routes: Route =
     pathPrefix("leaderboard" ) {
       parameter('name) { name =>
         pathEnd {

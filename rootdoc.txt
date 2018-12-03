@@ -1,2 +1,5 @@
-=Leaderboard Microservice=
+=Leaderboard Micro Service=
 
+Akka based micro service proving general leaderboard functionality for applications such as back-end game servers.
+
+=Overview=
