@@ -1,73 +1,20 @@
 package net.kolotyluk
 
-import net.kolotyluk.scala.extras.Logging
-
-package object leaderboard{
-
-  /** =Implicit Local Configuration=
-    *
-    * @param config Typesafe config
-    */
-  implicit class LocalConfiguration(val config: com.typesafe.config.Config) extends Logging  {
-    import com.typesafe.config.Config
-
-    val pathBase = "net.kolotyluk.leaderboard"
-
-    private def base(config: Config) = {
-      try {
-        config.getConfig(pathBase)
-      }  catch {
-        case cause: com.typesafe.config.ConfigException.Missing =>
-          logger.error(s"You need to define '$pathBase' in reference.conf or application.conf", cause)
-          throw cause
-        case cause: com.typesafe.config.ConfigException.WrongType =>
-          logger.error("Internal problem with Typesafe Configuration handling", cause)
-          throw cause
-      }
-    }
-
-    def getDefaultInt(path: String, default: Int, interval: (Int,Int) ): Int = {
-      try {
-        val result = base(config).getInt(path)
-        if (result < interval._1) throw new Exception(s"$pathBase.$path must not be less than ${interval._1}! Using default = $default")
-        if (result > interval._2) throw new Exception(s"$pathBase.$path must not be greater than ${interval._2}! Using default = $default")
-        result
-      } catch {
-        case cause: com.typesafe.config.ConfigException.Missing =>
-          logger.warn("Using $pathBase.$path = $default.get. Check reference.conf or application.conf for proper configuration", cause)
-          default
-        case cause: com.typesafe.config.ConfigException.WrongType =>
-          logger.warn("Using $pathBase.$path = $default.get. Check reference.conf or application.conf for proper configuration", cause)
-          default
-        case cause: Exception =>
-          logger.warn(cause.getMessage)
-          default
-      }
-    }
-
-    def getDefaultString(path: String, default: Some[String]): String = {
-      try {
-        base(config).getString(path)
-      } catch {
-        case cause: com.typesafe.config.ConfigException.Missing =>
-          logger.warn("Using $pathBase.$path = $default.get. Check reference.conf or application.conf for proper configuration", cause)
-          default.get
-        case cause: com.typesafe.config.ConfigException.WrongType =>
-          logger.warn("Using $pathBase.$path = $default.get. Check reference.conf or application.conf for proper configuration", cause)
-          default.get
-      }
-    }
-
-    /** =Akka System Name=
-      *
-      * @param default akka system name if not found in config files
-      * @return configured akka system name
-      */
-    def getAkkaSystemName(default: Some[String] = Some("leaderboard")): String  = getDefaultString("akka.system.name", default)
-
-    def getRestAddress(default: Some[String] = Some("0.0.0.0")) : String = getDefaultString("rest.address", default)
-
-    def getRestPort(default: Some[String] = Some("0.0.0.0")) : Int = getDefaultInt("rest.port", 8080, (0, 65535))
-  }
+/** =Leaderboard Service=
+  * Leaderboard Microservice which implements standalone leaderboard service
+  * inspired by [[https://redis.io/topics/data-types Redis Sorted Sets]]
+  * <p>
+  * Many leaderboard implementation make use of the general Sorted Set operations in [[https://redis.io Redis]]
+  * such as [[https://redis.io/commands/zadd ZADD]],
+  * [[https://redis.io/commands/zrank ZRANK]],
+  * [[https://redis.io/commands/zrange ZRANGE]],
+  * etc. This project is an academic exercise which attempts to improve on some of the restrictions of Redis,
+  * while maintaining the robustness of it. Academically, it is also an exercise in designing and implementing a
+  * micro service, and experimenting with modern cloud principles.
+  * <p>
+  * Also known as a [[https://en.wikipedia.org/wiki/Score_(game)#High_score High Score Table]], this service tracks
+  * scores for a number of contests, events, etc. See also: [[https://github.com/kolotyluk/leaderboard README]]
+  */
+package object leaderboard {
 
 }

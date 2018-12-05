@@ -2,7 +2,7 @@ package net.kolotyluk.leaderboard
 
 import java.util.UUID
 
-import net.kolotyluk.scala.extras.{Configuration, Logging}
+import net.kolotyluk.scala.extras.Logging
 
 import _root_.scala.util.Random
 import scala.collection.mutable.ArrayBuffer

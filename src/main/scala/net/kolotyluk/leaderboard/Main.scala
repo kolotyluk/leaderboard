@@ -3,7 +3,7 @@ package net.kolotyluk.leaderboard
 import akka.actor.typed.ActorSystem
 import net.kolotyluk.leaderboard.behavior.guardian
 import net.kolotyluk.leaderboard.behavior.guardian.Bind
-import net.kolotyluk.scala.extras.{Configuration, Environment, Logging}
+import net.kolotyluk.scala.extras.{Environment, Logging}
 
 import scala.util.{Failure, Success}
 
@@ -16,13 +16,15 @@ object Main
   // Safest way to indicate something is happening, don't rely on logging yet
   println(s"Starting ${getClass.getName}...")
   println("Reporting environment and configuration for troubleshooting purposes. Don't disable this.")
-  printEnvironment
-  printConfiguration
+
+  println(environment.getEnvironmentReport())
+  println(config.getConfigurationReport())
+
 
   logger.info("Logging started")
 
   // Start the Akka actor system, with the top level guardian actor, using its default behavior
-  val system = ActorSystem(guardian.behavior, config.getAkkaSystemName(), com.typesafe.config.ConfigFactory.load)
+  val system = ActorSystem(guardian.behavior, config.getAkkaSystemName()) //, com.typesafe.config.ConfigFactory.load)
 
   logger.info(s"Akka Actor System Started")
 

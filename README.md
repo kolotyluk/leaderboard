@@ -11,6 +11,28 @@ of the restrictions of Redis, while maintaining the robustness of it.
 Academically, it is also an exercercise in designing and implementing a
 microservice, and experimenting with modern cloud principles.
 
+# DevOps
+
+## Maven
+
+### Clean
+
+    mvn clean
+
+### Compile
+
+    mvn compile
+
+### Unit Tests
+
+    mvn test
+
+### Documenation
+
+    mvn scala:doc
+
+Look in `target/site/scaladocs/index.html`
+
 # Redis Limitations
 
 ## Scores

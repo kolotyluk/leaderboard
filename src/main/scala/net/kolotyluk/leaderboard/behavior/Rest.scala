@@ -6,10 +6,10 @@ import akka.actor.typed.{Behavior, Terminated}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.RouteConcatenation
 import akka.stream.ActorMaterializer
+import net.kolotyluk.leaderboard.Configuration
 import net.kolotyluk.leaderboard.service.{LeaderboardService, PingService}
 import net.kolotyluk.leaderboard.swagger.SwaggerDocService
-import net.kolotyluk.scala.extras.{Configuration,Logging}
-import net.kolotyluk.leaderboard.LocalConfiguration
+import net.kolotyluk.scala.extras.Logging
 
 import scala.util.{Failure, Success}
 
