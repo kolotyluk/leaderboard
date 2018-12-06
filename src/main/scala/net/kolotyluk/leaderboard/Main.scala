@@ -1,8 +1,8 @@
 package net.kolotyluk.leaderboard
 
 import akka.actor.typed.ActorSystem
-import net.kolotyluk.leaderboard.behavior.guardian
-import net.kolotyluk.leaderboard.behavior.guardian.Bind
+import net.kolotyluk.leaderboard.actor.guardian
+import net.kolotyluk.leaderboard.actor.Guardian.Bind
 import net.kolotyluk.scala.extras.{Environment, Logging}
 
 import scala.util.{Failure, Success}
@@ -20,7 +20,6 @@ object Main
   println(environment.getEnvironmentReport())
   println(config.getConfigurationReport())
 
-
   logger.info("Logging started")
 
   // Start the Akka actor system, with the top level guardian actor, using its default behavior
@@ -28,7 +27,7 @@ object Main
 
   logger.info(s"Akka Actor System Started")
 
-  system ! (Bind()) // to our HTTP REST endpoint
+  system ! Bind() // to our HTTP REST endpoint
 
   system.whenTerminated.onComplete {
     case Success(terminated) =>

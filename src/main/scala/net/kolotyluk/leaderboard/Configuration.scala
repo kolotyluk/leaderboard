@@ -1,5 +1,7 @@
 package net.kolotyluk.leaderboard
 
+import java.net.{InetAddress, UnknownHostException}
+
 import net.kolotyluk.scala.extras.Logging
 
 /** =Local Configuration=
@@ -42,7 +44,35 @@ trait Configuration extends net.kolotyluk.scala.extras.Configuration {
       * @param default "0.0.0.0" akka system name if not found in config files
       * @return configured rest address
       */
-    def getRestAddress(default: Some[String] = Some("0.0.0.0")) : String = config.getDefaultString("rest.address", default)
+    def getRestAddress(default: Some[String] = Some("0.0.0.0")) : String = {
+      val path = "rest.address"
+      val address = config.getDefaultString(path, default)
+      try {
+        val inetAddress = InetAddress.getByName(address)
+        logger.info(s"rest.address = $address, inetAddress = $inetAddress")
+        address
+      } catch {
+        case cause: UnknownHostException ⇒
+          val message = s"host not found at $address"
+          logger.error(message, cause)
+          throw new ConfigurationException(path, address,  message, cause)
+      }
+    }
+
+    /**=HTTP Rest Hostname=
+      * The hostname for the URL
+      *
+      * @return
+      */
+    def getRestHostname() : String = {
+      val address = getRestAddress()
+      address match {
+        case "0.0.0.0" | "0:0:0:0:0:0:0:0" | "127.0.0.1" | "::1" ⇒ "localhost"
+        case _ ⇒
+          val iNetAddress = InetAddress.getByName(address)
+          iNetAddress.getHostName
+      }
+    }
 
     /** =HTTP Rest Port=
       *

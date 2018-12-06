@@ -13,11 +13,11 @@ package net.kolotyluk.leaderboard
   * val guardian = new Guardian() // top level of our actor hierarchy
   * val system = ActorSystem(guardian.behavior, systemName)
   * }}}
-  * where [[net.kolotyluk.leaderboard.behavior.Guardian]] defines the behavior.
+  * where [[net.kolotyluk.leaderboard.actor.Guardian]] defines the behavior.
   *
   *
   */
-package object behavior {
-  val guardian = new Guardian() // top level of our actor hierarchy
+package object actor {
+  val rest = new Rest()
+  val guardian = new Guardian(rest) // top level of our actor hierarchy
 }
-

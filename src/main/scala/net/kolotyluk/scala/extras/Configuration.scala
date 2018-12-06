@@ -36,7 +36,13 @@ import scala.collection.JavaConverters._
   * val restPort = config.getRestPort()
   * }}}
   */
-  trait Configuration {
+  trait Configuration extends Logging {
+
+  case class ConfigurationException(path: String, value: Any, message: String, cause: Throwable) extends RuntimeException {
+    def this(path: String, value: Any, message: String) = this(path, value, message, null)
+    logger.error(s"Configuration error at ${PathBase.pathBase}.$path = $value; check your reference.conf or application.conf settings")
+    logger.error(message, cause)
+  }
 
   /** =Enhanced Typesafe Config=
     * The basic Typesafe Config with extra implicit members defined on it.
@@ -73,10 +79,10 @@ import scala.collection.JavaConverters._
             config.getConfig(PathBase.pathBase)
         }
       }  catch {
-        case cause: com.typesafe.config.ConfigException.Missing =>
+        case cause: com.typesafe.config.ConfigException.Missing ⇒
           logger.error(s"You need to define '${PathBase.pathBase}' in reference.conf or application.conf", cause)
           throw cause
-        case cause: com.typesafe.config.ConfigException.WrongType =>
+        case cause: com.typesafe.config.ConfigException.WrongType ⇒
           logger.error("Internal problem with Typesafe Configuration handling", cause)
           throw cause
       }
