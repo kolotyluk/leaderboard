@@ -1,21 +1,19 @@
-package net.kolotyluk.leaderboard.actor
+package net.kolotyluk.leaderboard.Akka
 
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.scaladsl.adapter.TypedActorSystemOps
-import akka.actor.typed.{Behavior, Terminated}
+import akka.actor.typed.{ActorRef, Behavior, Terminated}
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.server.RouteConcatenation
+import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import net.kolotyluk.leaderboard.Configuration
-import net.kolotyluk.leaderboard.actor.Rest.{Done, Fail, Message, Spawn}
-import net.kolotyluk.leaderboard.service.{FailService, LeaderboardService, PingService}
-import net.kolotyluk.leaderboard.swagger.SwaggerDocService
+import net.kolotyluk.leaderboard.Akka.RestActor.{Done, Fail, Message, Spawn}
 import net.kolotyluk.scala.extras.Logging
 
 import scala.util.{Failure, Success}
 
 
-object Rest {
+object RestActor {
   sealed trait Message
   case class Done(cause: String) extends Message
   case class Fail(cause: Throwable) extends Message
@@ -23,15 +21,31 @@ object Rest {
 }
 
 /** =HTTP REST API=
-  * <p>
-  * Binds to HTTP port using [[https://doc.akka.io/docs/akka-http/current/server-side/index.html Akka HTTP Server API]].
+  * Binds to one or more interfaces listening for HTTP Requests
+  *
+  * ==Akka HTTP==
+  * Binds using [[https://doc.akka.io/docs/akka-http/current/server-side/index.html Akka HTTP Server API]].
+  * This results in creating a [[https://doc.akka.io/docs/akka/2.5/stream Stream]] of incoming session requests,
+  * which produces a Stream for each session. These are materialized as child actors of this actor.
   *
   */
-class Rest extends RouteConcatenation with Configuration with Logging {
-  logger.info("actor initializing...")
+class RestActor(routes: Route) extends Configuration with Logging {
+  logger.info("constructing...")
+
+  var actorRefOption:  Option[ActorRef[RestActor.Message]] = None
+
+  def getActorRef(): ActorRef[RestActor.Message] = {
+    actorRefOption match {
+      case None ⇒ throw new Exception
+      case Some(actorRef) ⇒ actorRef
+    }
+  }
 
   val behavior: Behavior[Message] = Behaviors.setup { actorContext ⇒
-    logger.info("setting up...")
+    logger.info("initializing...")
+
+    assert(actorContext != null)
+    actorRefOption = Some(actorContext.self)
 
     // TODO remove this for production, used for testing
     //val cancelable = actorContext.schedule(200 seconds, actorContext.self, Done("timed out"))
@@ -39,12 +53,6 @@ class Rest extends RouteConcatenation with Configuration with Logging {
     implicit val actorSystem = actorContext.system.toUntyped // compatibility with legacy Akka
     implicit val materializer = ActorMaterializer()
     implicit val executionContext = actorContext.system.executionContext
-
-    val routes =
-      (new FailService(actorContext.self)).route ~
-      (new PingService).route ~
-      (new LeaderboardService).routes ~
-      SwaggerDocService.routes
 
     val address = config.getRestAddress()
     val port = config.getRestPort()
@@ -57,7 +65,7 @@ class Rest extends RouteConcatenation with Configuration with Logging {
       case Failure(cause) ⇒ cause.printStackTrace
     }
 
-    Behaviors.receive[Rest.Message] { (actorCell, message) ⇒
+    Behaviors.receive[RestActor.Message] { (actorCell, message) ⇒
       logger.info(s"received $message")
       message match {
         case Done(cause) ⇒

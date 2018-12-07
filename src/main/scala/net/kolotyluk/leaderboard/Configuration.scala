@@ -55,7 +55,7 @@ trait Configuration extends net.kolotyluk.scala.extras.Configuration {
         case cause: UnknownHostException ⇒
           val message = s"host not found at $address"
           logger.error(message, cause)
-          throw new ConfigurationException(path, address,  message, cause)
+          throw new ConfigurationError(path, address,  message, cause)
       }
     }
 

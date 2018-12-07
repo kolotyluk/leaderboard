@@ -217,14 +217,20 @@
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
-<!--
         <dependency>
-            <groupId>org.specs2</groupId>
-            <artifactId>specs2_${scala.tools.version}</artifactId>
-            <version>1.13</version>
+            <groupId>io.gatling.highcharts</groupId>
+            <artifactId>gatling-charts-highcharts</artifactId>
+            <version>3.0.1.1</version>
             <scope>test</scope>
         </dependency>
--->
+        <!--
+                <dependency>
+                    <groupId>org.specs2</groupId>
+                    <artifactId>specs2_${scala.tools.version}</artifactId>
+                    <version>1.13</version>
+                    <scope>test</scope>
+                </dependency>
+        -->
         <dependency>
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest_${scala.tools.version}</artifactId>
@@ -381,6 +387,11 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>io.gatling</groupId>
+                <artifactId>gatling-maven-plugin</artifactId>
+                <version>3.0.1</version>
             </plugin>
         </plugins>
     </build>

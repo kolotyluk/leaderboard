@@ -9,6 +9,7 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
+import net.kolotyluk.leaderboard.Akka.{LeaderboardEndpoint, PingEndpoint}
 import net.kolotyluk.scala.extras.Logging
 
 class REST extends Logging {
@@ -28,13 +29,13 @@ class REST extends Logging {
     implicit val executionContextExecutor = actorContext.executionContext
 
     val routes: Route =
-      (new PingService).route ~
+      (new PingEndpoint).route ~
       path("leaderboards") {
         get {
           complete(HttpEntity(ContentTypes.`text/plain(UTF-8)`, "pong"))
         }
       } ~
-        (new LeaderboardService).routes ~
+        (new LeaderboardEndpoint).routes ~
       path("swagger") { getFromResource("swagger/index.html") } ~
       getFromResourceDirectory("swagger")
       //SwaggerDocService.routes

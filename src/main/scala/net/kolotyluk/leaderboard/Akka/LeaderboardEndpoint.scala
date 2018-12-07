@@ -1,4 +1,4 @@
-package net.kolotyluk.leaderboard.service
+package net.kolotyluk.leaderboard.Akka
 
 import akka.http.scaladsl.model.StatusCodes.{BadRequest, MethodNotAllowed, NotFound}
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse}
@@ -11,7 +11,7 @@ import scala.util.{Failure, Success}
 
 @Api(value = "/leaderboard", produces = "text/plain(UTF-8)")
 @Path("/leaderboard")
-class LeaderboardService extends Directives {
+class LeaderboardEndpoint extends Directives {
 
   //val routes = leaderboardRoute
 

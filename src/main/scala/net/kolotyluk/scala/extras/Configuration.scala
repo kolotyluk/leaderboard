@@ -38,7 +38,20 @@ import scala.collection.JavaConverters._
   */
   trait Configuration extends Logging {
 
-  case class ConfigurationException(path: String, value: Any, message: String, cause: Throwable) extends RuntimeException {
+  /** =Fatal Configuration Error=
+    * Indicates and unrecoverable configuration problem was encountered.
+    * <p>
+    * A ConfigurationError indicates an unrecoverable condition was encountered during configuration, and that the
+    * application or service should be terminated. Configuration problems are usually human error when initially
+    * setting up an application or service, so it's generally best to fail big, and fail early, so that the problem
+    * can be remedied.
+    *
+    * @param path from pathBase, of configuration setting
+    * @param value value found
+    * @param message diagnosis and prognosis
+    * @param cause underlying Throwable
+    */
+  class ConfigurationError(path: String, value: Any, message: String, cause: Throwable) extends Error {
     def this(path: String, value: Any, message: String) = this(path, value, message, null)
     logger.error(s"Configuration error at ${PathBase.pathBase}.$path = $value; check your reference.conf or application.conf settings")
     logger.error(message, cause)
