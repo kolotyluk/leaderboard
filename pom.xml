@@ -286,6 +286,15 @@
         </pluginManagement>
         <plugins>
             <plugin>
+                <!--
+                    https://gatling.io/docs/3.0/extensions/maven_plugin/
+                    https://github.com/gatling/gatling-maven-plugin-demo
+                -->
+                <groupId>io.gatling</groupId>
+                <artifactId>gatling-maven-plugin</artifactId>
+                <version>3.0.1</version>
+            </plugin>
+            <plugin>
                 <!-- https://mvnrepository.com/artifact/net.alchim31.maven/scala-maven-plugin -->
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
@@ -299,30 +308,44 @@
                 </dependencies>
                 <executions>
                     <execution>
-<!--
                         <goals>
                             <goal>compile</goal>
                             <goal>testCompile</goal>
                         </goals>
--->
                         <configuration>
+<!--
                             <args>
-                                <arg>-doc-root-content rootdoc.txt</arg>
+                                <arg>-doc-root-content</arg>
+                                <arg>-rootdoc.txt</arg>
                             </args>
+-->
                             <jvmArgs>
                                 <jvmArg>-Xms1024m</jvmArg>
                                 <jvmArg>-Xmx4096m</jvmArg>
                             </jvmArgs>
                         </configuration>
                         <!--
-                                                <configuration>
-                                                    <args>
-                                                        <arg>-make:transitive</arg>
-                                                        <arg>-dependencyfile</arg>
-                                                        <arg>${project.build.directory}/.scala_dependencies</arg>
-                                                    </args>
-                                                </configuration>
+                        <configuration>
+                            <args>
+                                <arg>-make:transitive</arg>
+                                <arg>-dependencyfile</arg>
+                                <arg>${project.build.directory}/.scala_dependencies</arg>
+                            </args>
+                        </configuration>
                         -->
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -388,12 +411,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>io.gatling</groupId>
-                <artifactId>gatling-maven-plugin</artifactId>
-                <version>3.0.1</version>
-            </plugin>
-        </plugins>
+      </plugins>
     </build>
 
     <reporting>
@@ -401,6 +419,7 @@
             <plugin>
                 <groupId>org.scala-tools</groupId>
                 <artifactId>maven-scala-plugin</artifactId>
+                <version>2.15.2</version>
             </plugin>
         </plugins>
     </reporting>

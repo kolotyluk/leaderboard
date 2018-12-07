@@ -13,11 +13,11 @@ class FooSpec extends FlatSpec with Matchers  {
     assert(stack.pop() === 1)
   }
 
-  it should "throw NoSuchElementException if an empty stack is popped" in {
+/*  it should "throw NoSuchElementException if an empty stack is popped" in {
     val emptyStack = new ArrayStack[String]
     assertThrows[NoSuchElementException] {
       emptyStack.pop()
     }
-  }
+  }*/
 
 }
