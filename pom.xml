@@ -293,6 +293,9 @@
                 <groupId>io.gatling</groupId>
                 <artifactId>gatling-maven-plugin</artifactId>
                 <version>3.0.1</version>
+                <configuration>
+                    <simulationClass>it.GatlingPingFloodSimulationIT</simulationClass>
+                </configuration>
             </plugin>
             <plugin>
                 <!-- https://mvnrepository.com/artifact/net.alchim31.maven/scala-maven-plugin -->

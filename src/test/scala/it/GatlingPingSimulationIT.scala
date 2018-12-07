@@ -19,10 +19,10 @@ class GatlingPingSimulationIT extends Simulation {
     .acceptLanguageHeader("en-US,en;q=0.5")
     .userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0")
 
-  val scn = scenario("Ping") // A scenario is a chain of requests and pauses
-    .exec(http("request_1")
+  val simpleUser = scenario("Ping") // A scenario is a chain of requests and pauses
+    .exec(http("ping request")
     .get("/ping"))
     .pause(7) // Note that Gatling has recorder real time pauses
 
-  setUp(scn.inject(atOnceUsers(1)).protocols(httpProtocol))
+  setUp(simpleUser.inject(atOnceUsers(1)).protocols(httpProtocol))
 }
