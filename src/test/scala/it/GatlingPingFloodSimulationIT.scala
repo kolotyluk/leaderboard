@@ -51,8 +51,8 @@ import io.gatling.http.Predef._
   */
 class GatlingPingFloodSimulationIT extends Simulation {
 
-  val requestCount = 1000
-  val userCount = 10
+  val requestCount = 100000
+  val userCount = 1000
 
   val httpProtocol = http
     //.baseUrl("http://localhost:8080") // Here is the root for all relative URLs

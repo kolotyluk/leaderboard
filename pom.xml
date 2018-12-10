@@ -296,6 +296,15 @@
                 <configuration>
                     <simulationClass>it.GatlingPingFloodSimulationIT</simulationClass>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>Ping Flood</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <!-- https://mvnrepository.com/artifact/net.alchim31.maven/scala-maven-plugin -->
