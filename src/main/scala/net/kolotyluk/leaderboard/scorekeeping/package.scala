@@ -18,12 +18,11 @@ package object scorekeeping extends Configuration with Logging {
 
   /** =getRange Result=
     *
-    * [[Leaderboard.getRange()]] is a paged API, where the caller can iterate through the leaderboard
+    * [[ConcurrentLeaderboard.getRange()]] is a paged API, where the caller can iterate through the leaderboard
     * standings, one page at a time.
     *
-    *
-    * @param placings of members between start and stop of [[Leaderboard.getRange()]] call, where the size of
-    *                 placings may be less than stop - start.
+    * @param placings   of members between start and stop of [[ConcurrentLeaderboard.getRange()]] call, where the size of
+    *                   placings may be less than stop - start.
     * @param totalCount of members on the leaderboard
     */
   case class Range(placings: ArrayBuffer[Placing], totalCount: Long)
@@ -39,7 +38,7 @@ package object scorekeeping extends Configuration with Logging {
     * Basically, the ties will always be broken in favor of the lexical ordering of the member ID. Some Redis
     * leaderboard implementations us the update time to break ties, where either the first or last member
     * update wins in the tie. While this is valid, if the leaderboard service is split across multiple
-    * runtimes, especially on different systems, the clock skew could unfairly bias the tie tie breaking.
+    * runtimes, especially on different systems, the clock skew could unfairly bias the tie breaking.
     * Similarly, GUIDs or UUIDs are not fairly distributed.
     *
     * @param value
@@ -61,10 +60,11 @@ package object scorekeeping extends Configuration with Logging {
     }
   }
 
-  /** =Standing Place of Count=
+  /** =Standing Place in Count=
+    * Place in count on current leaderboard.
     *
-    * @param place
-    * @param count
+    * @param place in count
+    * @param count of scores on leaderboard
     */
   case class Standing(place: Int, count: Int)
 

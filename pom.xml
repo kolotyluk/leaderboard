@@ -141,6 +141,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.11</version>
+        </dependency>
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-jaxrs</artifactId>
@@ -311,6 +317,16 @@
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
                 <version>3.4.4</version>
+                <configuration>
+                    <args>
+                        <arg>-doc-root-content</arg>
+                        <arg>rootdoc.txt</arg>
+                    </args>
+                    <jvmArgs>
+                        <jvmArg>-Xms1024m</jvmArg>
+                        <jvmArg>-Xmx4096m</jvmArg>
+                    </jvmArgs>
+                </configuration>
                 <dependencies>
                     <dependency>
                         <groupId>org.scala-lang</groupId>
@@ -318,35 +334,6 @@
                         <version>${scala.version}</version>
                     </dependency>
                 </dependencies>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                            <goal>testCompile</goal>
-                        </goals>
-                        <configuration>
-<!--
-                            <args>
-                                <arg>-doc-root-content</arg>
-                                <arg>-rootdoc.txt</arg>
-                            </args>
--->
-                            <jvmArgs>
-                                <jvmArg>-Xms1024m</jvmArg>
-                                <jvmArg>-Xmx4096m</jvmArg>
-                            </jvmArgs>
-                        </configuration>
-                        <!--
-                        <configuration>
-                            <args>
-                                <arg>-make:transitive</arg>
-                                <arg>-dependencyfile</arg>
-                                <arg>${project.build.directory}/.scala_dependencies</arg>
-                            </args>
-                        </configuration>
-                        -->
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -375,17 +362,7 @@
                             <groupId>net.alchim31.maven</groupId>
                             <artifactId>scala-maven-plugin</artifactId>
                             <version>3.4.4</version>
-                            <configuration>
-                                <args>
-                                    <arg>-doc-root-content rootdoc.txt</arg>
-                                </args>
-                                <jvmArgs>
-                                    <jvmArg>-Xms64m</jvmArg>
-                                    <jvmArg>-Xmx1024m</jvmArg>
-                                </jvmArgs>
-                            </configuration>
                         </plugin>
-                        ...
                     </reportPlugins>
                 </configuration>
             </plugin>
@@ -428,11 +405,41 @@
 
     <reporting>
         <plugins>
+<!--
+            <plugin>
+                &lt;!&ndash; https://mvnrepository.com/artifact/net.alchim31.maven/scala-maven-plugin &ndash;&gt;
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>3.4.4</version>
+                <configuration>
+                    <args>
+                        <arg>-doc-root-content</arg>
+                        <arg>-rootdoc.txt</arg>
+                    </args>
+                    <jvmArgs>
+                        <jvmArg>-Xms1024m</jvmArg>
+                        <jvmArg>-Xmx4096m</jvmArg>
+                    </jvmArgs>
+                </configuration>
+            </plugin>
+-->
+<!--
             <plugin>
                 <groupId>org.scala-tools</groupId>
                 <artifactId>maven-scala-plugin</artifactId>
                 <version>2.15.2</version>
+                <configuration>
+                    <args>
+                        <arg>-doc-root-content</arg>
+                        <arg>-rootdoc.txt</arg>
+                    </args>
+                    <jvmArgs>
+                        <jvmArg>-Xms1024m</jvmArg>
+                        <jvmArg>-Xmx4096m</jvmArg>
+                    </jvmArgs>
+                </configuration>
             </plugin>
+-->
         </plugins>
     </reporting>
 
