@@ -8,7 +8,7 @@ import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 import scala.util.{Failure, Random, Success}
 
-class LeaderboardSpec extends UnitSpec {
+class ConcurrentLeaderboardSpec extends UnitSpec {
 
   behavior of "Leaderboard"
 
@@ -16,7 +16,7 @@ class LeaderboardSpec extends UnitSpec {
 
     val joeBlow = "Joe Blow"
 
-    val leaderboard = Leaderboard.add match {
+    val leaderboard = ConcurrentLeaderboard.add match {
       case Failure(cause) => throw cause
       case Success(leaderboard) => leaderboard
     }
@@ -93,7 +93,7 @@ class LeaderboardSpec extends UnitSpec {
 
   it must "handle 2 members correctly" in {
 
-    val leaderboard = Leaderboard.add match {
+    val leaderboard = ConcurrentLeaderboard.add match {
       case Failure(cause) => throw cause
       case Success(leaderboard) => leaderboard
     }
@@ -148,7 +148,7 @@ class LeaderboardSpec extends UnitSpec {
 
   it must "handle concurrent updates correctly" in {
 
-    val leaderboard = Leaderboard.add match {
+    val leaderboard = ConcurrentLeaderboard.add match {
       case Failure(cause) => throw cause
       case Success(leaderboard) => leaderboard
     }
@@ -215,7 +215,7 @@ class LeaderboardSpec extends UnitSpec {
     Metrics.resetTotalSpinCount;    info(s"TotalSpinCount  = ${Metrics.getTotalSpinCount}")
     Metrics.resetTotalSpinTime;     info(s"TotalSpinTime  = ${Metrics.getTotalSpinTime}")
 
-    val leaderboard = Leaderboard.add match {
+    val leaderboard = ConcurrentLeaderboard.add match {
       case Failure(cause) => throw cause
       case Success(leaderboard) => leaderboard
     }
@@ -263,7 +263,7 @@ class LeaderboardSpec extends UnitSpec {
     Metrics.resetTotalSpinCount;    info(s"TotalSpinCount  = ${Metrics.getTotalSpinCount}")
     Metrics.resetTotalSpinTime;     info(s"TotalSpinTime  = ${Metrics.getTotalSpinTime}")
 
-    val leaderboard = Leaderboard.add match {
+    val leaderboard = ConcurrentLeaderboard.add match {
       case Failure(cause) => throw cause
       case Success(leaderboard) => leaderboard
     }
@@ -307,7 +307,7 @@ class LeaderboardSpec extends UnitSpec {
 
     val range = leaderboard.getRange(0, leaderboard.getCount)
 
-    range.placings.foreach(placing => println(s" ${placing.member} ${placing.place} ${placing.score}"))
+    // range.placings.foreach(placing => println(s" ${placing.member} ${placing.place} ${placing.score}"))
 
   }
 }
