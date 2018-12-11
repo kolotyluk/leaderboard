@@ -6,10 +6,10 @@ import net.kolotyluk.scala.extras.{Identity, Logging}
 
 import scala.collection.mutable.ArrayBuffer
 
-class ConsecutiveLeaderboard(memberToScore: Map[String,Option[Score]], scoreToMember: util.NavigableMap[Score,String]) extends Leaderboard with Logging {
-
-  val uuid = UUID.randomUUID()
-  var name = uuid.toString
+class ConsecutiveLeaderboard(
+    memberToScore: Map[String,Option[Score]],
+    scoreToMember: util.NavigableMap[Score,String]
+  ) extends Leaderboard with Logging {
 
   override def delete(member: String): Boolean = {
     memberToScore.get(member) match {
@@ -110,8 +110,6 @@ class ConsecutiveLeaderboard(memberToScore: Map[String,Option[Score]], scoreToMe
   override def getUrlIdentifier(uuid: UUID = UUID.randomUUID()): String = Identity.getUrlIdentifier(uuid)
 
   //def put(member: String, score: Option[Score]): Option[Option[Score]] = ???
-
-  override def setName(name: Option[String]): Unit = ???
 
   override def update(mode: UpdateMode, member: String, value: BigInt): Unit = {
     val score = Score(value, randomLong)

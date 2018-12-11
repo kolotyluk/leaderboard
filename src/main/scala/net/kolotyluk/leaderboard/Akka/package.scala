@@ -32,6 +32,8 @@ package object Akka extends RouteConcatenation {
     leaderboardEndpoint.routes ~
     SwaggerDocService.routes
 
+  val leaderboardManagerActor = new LeaderboardManagerActor()
+
   val restActor = new RestActor(routes)
-  val guardianActor = new GuardianActor(restActor) // top level of our actor hierarchy
+  val guardianActor = new GuardianActor(leaderboardManagerActor, restActor) // top level of our actor hierarchy
 }

@@ -1,17 +1,21 @@
 package net.kolotyluk.leaderboard.Akka
 
+import java.util
+import java.util.UUID
+import java.util.concurrent.ConcurrentSkipListMap
+
 import akka.actor.ActorInitializationException
 import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.{ActorRef, Behavior, SupervisorStrategy, Terminated}
-import akka.http.scaladsl.server.RouteConcatenation
+import akka.actor.typed.{ActorRef, Behavior, Terminated}
+import net.kolotyluk.leaderboard.Akka.LeaderboardActor.Spawn
+import net.kolotyluk.leaderboard.Akka.LeaderboardActor.Update
 import net.kolotyluk.leaderboard.Configuration
-import net.kolotyluk.leaderboard.Akka.GuardianActor.{Bind, Done, Spawn}
+import net.kolotyluk.leaderboard.scorekeeping.{ConsecutiveLeaderboard, Score, UpdateMode}
 import net.kolotyluk.scala.extras.Logging
 
-object GuardianActor {
+object LeaderboardActor {
   sealed trait Message
-  case class Bind() extends Message
-  case class Done(cause: String) extends Message
+  case class Update(member: String, updateMode: UpdateMode, score: Score) extends Message
   case class Spawn[M](behavior: Behavior[M], name:String) extends Message
 }
 
@@ -39,48 +43,28 @@ object GuardianActor {
   * @see [[https://doc.akka.io/docs/akka/2.5.18/typed/actors.html#introduction Akka Typed Introduction]]
   * @see [[https://doc.akka.io/docs/akka/2.5/typed/fault-tolerance.html#supervision Akka Typed Supervision]]
   */
-class GuardianActor(leaderboardManagerActor: LeaderboardManagerActor, restActor: RestActor) extends RouteConcatenation with Configuration with Logging {
+class LeaderboardActor(uuid: UUID, name: String) extends Configuration with Logging {
   logger.info("constructing...")
 
-  var leaderboardManagerActorRef : ActorRef[LeaderboardManagerActor.Message] = null
+  val memberToScore = new util.HashMap[String,Option[Score]]
+  val scoreToMember = new ConcurrentSkipListMap[Score,String]
+  val leaderboard = new ConsecutiveLeaderboard(memberToScore, scoreToMember)
+
   var restActorRef : ActorRef[RestActor.Message] = null
 
-  val behavior: Behavior[GuardianActor.Message] = Behaviors.setup { actorContext ⇒
+  val behavior: Behavior[LeaderboardActor.Message] = Behaviors.setup { actorContext ⇒
 
     logger.info("initializing...")
 
     // TODO remove this for production, used for testing
     //val cancelable = actorContext.schedule(200 seconds, actorContext.self, Done("timed out"))
 
-    Behaviors.receive[GuardianActor.Message] { (actorCell, message) ⇒
+    Behaviors.receive[LeaderboardActor.Message] { (actorCell, message) ⇒
       logger.debug(s"received $message")
       message match {
-        case Bind() ⇒
-          try {
-            restActorRef = actorCell.spawn(restActor.behavior, "REST")
-            assert (restActorRef != null)
-            Behaviors.supervise(restActor.behavior)
-              .onFailure[ConfigurationError](SupervisorStrategy.stop)
-              .orElse(Behavior.same)
-            actorCell.watch(restActorRef)
-
-            leaderboardManagerActorRef = actorCell.spawn(leaderboardManagerActor.behavior, "leaderboard-manager")
-            assert (leaderboardManagerActorRef != null)
-            Behaviors.supervise(leaderboardManagerActor.behavior)
-              .onFailure[ConfigurationError](SupervisorStrategy.stop)
-              .orElse(Behavior.same)
-            actorCell.watch(leaderboardManagerActorRef)
-
-            Behaviors.same
-          } catch {
-            case cause: AssertionError ⇒
-              logger.error("Could not spawn Rest Behavior", cause)
-              // TODO something better
-              Behaviors.stopped
-          }
-        case Done(cause) ⇒
-          logger.info(s"Done: $cause")
-          Behaviors.stopped
+        case Update(member: String, updateMode: UpdateMode, score: Score) ⇒
+          leaderboard.update(updateMode, member, score)
+          Behaviors.same
         case Spawn(behavior, name) ⇒
           logger.info(s"spawning $name")
           val actorRef = actorCell.spawn(behavior, name)

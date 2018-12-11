@@ -1,17 +1,21 @@
 package net.kolotyluk.leaderboard.Akka
 
+import java.util.UUID
+
 import akka.actor.ActorInitializationException
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior, SupervisorStrategy, Terminated}
-import akka.http.scaladsl.server.RouteConcatenation
+import net.kolotyluk.leaderboard.Akka.LeaderboardManagerActor.{Create, Spawn, Update}
 import net.kolotyluk.leaderboard.Configuration
-import net.kolotyluk.leaderboard.Akka.GuardianActor.{Bind, Done, Spawn}
+import net.kolotyluk.leaderboard.scorekeeping.{Score, UpdateMode}
 import net.kolotyluk.scala.extras.Logging
 
-object GuardianActor {
+import scala.collection.mutable
+
+object LeaderboardManagerActor {
   sealed trait Message
-  case class Bind() extends Message
-  case class Done(cause: String) extends Message
+  case class Create(name: String) extends Message
+  case class Update(leaderboard: UUID, member: String, updateMode: UpdateMode, score: Score) extends Message
   case class Spawn[M](behavior: Behavior[M], name:String) extends Message
 }
 
@@ -39,37 +43,35 @@ object GuardianActor {
   * @see [[https://doc.akka.io/docs/akka/2.5.18/typed/actors.html#introduction Akka Typed Introduction]]
   * @see [[https://doc.akka.io/docs/akka/2.5/typed/fault-tolerance.html#supervision Akka Typed Supervision]]
   */
-class GuardianActor(leaderboardManagerActor: LeaderboardManagerActor, restActor: RestActor) extends RouteConcatenation with Configuration with Logging {
+class LeaderboardManagerActor() extends Configuration with Logging {
   logger.info("constructing...")
 
-  var leaderboardManagerActorRef : ActorRef[LeaderboardManagerActor.Message] = null
+  val uuidToLeaderboard = new mutable.HashMap[UUID,LeaderboardActor]
+
   var restActorRef : ActorRef[RestActor.Message] = null
 
-  val behavior: Behavior[GuardianActor.Message] = Behaviors.setup { actorContext ⇒
+  val behavior: Behavior[LeaderboardManagerActor.Message] = Behaviors.setup { actorContext ⇒
 
     logger.info("initializing...")
 
     // TODO remove this for production, used for testing
     //val cancelable = actorContext.schedule(200 seconds, actorContext.self, Done("timed out"))
 
-    Behaviors.receive[GuardianActor.Message] { (actorCell, message) ⇒
+    Behaviors.receive[LeaderboardManagerActor.Message] { (actorCell, message) ⇒
       logger.debug(s"received $message")
       message match {
-        case Bind() ⇒
+        case Create(name: String) ⇒
           try {
-            restActorRef = actorCell.spawn(restActor.behavior, "REST")
-            assert (restActorRef != null)
-            Behaviors.supervise(restActor.behavior)
+            val uuid = UUID.randomUUID()
+            val leaderboardActor = new LeaderboardActor(uuid, name)
+            val leaderboardActorRef = actorCell.spawn(leaderboardActor.behavior, s"leaderboard-$name")
+            assert(leaderboardActorRef != null)
+            Behaviors.supervise(leaderboardActor.behavior)
               .onFailure[ConfigurationError](SupervisorStrategy.stop)
               .orElse(Behavior.same)
-            actorCell.watch(restActorRef)
+            actorCell.watch(leaderboardActorRef)
 
-            leaderboardManagerActorRef = actorCell.spawn(leaderboardManagerActor.behavior, "leaderboard-manager")
-            assert (leaderboardManagerActorRef != null)
-            Behaviors.supervise(leaderboardManagerActor.behavior)
-              .onFailure[ConfigurationError](SupervisorStrategy.stop)
-              .orElse(Behavior.same)
-            actorCell.watch(leaderboardManagerActorRef)
+            uuidToLeaderboard.put(uuid,leaderboardActor)
 
             Behaviors.same
           } catch {
@@ -78,14 +80,13 @@ class GuardianActor(leaderboardManagerActor: LeaderboardManagerActor, restActor:
               // TODO something better
               Behaviors.stopped
           }
-        case Done(cause) ⇒
-          logger.info(s"Done: $cause")
-          Behaviors.stopped
         case Spawn(behavior, name) ⇒
           logger.info(s"spawning $name")
           val actorRef = actorCell.spawn(behavior, name)
           actorCell.watch(actorRef)
           //actorRef ! Start()
+          Behaviors.same
+        case Update(leaderboard: UUID, member: String, updateMode: UpdateMode, score: Score) =>
           Behaviors.same
       }
     } receiveSignal {

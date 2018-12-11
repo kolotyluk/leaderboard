@@ -4,6 +4,9 @@ import java.util.UUID
 
 trait Leaderboard {
 
+  var uuid: UUID = null
+  var name: String = null
+
   /** =Delete Member
     * Delete member from leaderboard
     * @param member
@@ -58,8 +61,6 @@ trait Leaderboard {
   def getUrlIdentifier(uuid: UUID = UUID.randomUUID()): String
 
   def getUuid: UUID
-
-  def setName(name: Option[String])
 
   /** =Update Member Score=
     * Update member's score on leaderboard

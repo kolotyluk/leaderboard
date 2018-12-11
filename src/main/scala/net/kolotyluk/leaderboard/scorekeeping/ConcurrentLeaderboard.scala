@@ -42,7 +42,7 @@ object ConcurrentLeaderboard extends LeaderboardManager {
   def add(name: Option[String], uuid: UUID = UUID.randomUUID()): Try[ConcurrentLeaderboard] = {
     uuidToLeaderboard.get(uuid) match {
       case None =>
-        val leaderboard = new ConcurrentLeaderboard(uuid, None)
+        val leaderboard = new ConcurrentLeaderboard()
         uuidToLeaderboard.put(uuid, leaderboard) match {
           case None => Success(leaderboard)
           case Some(predecessor) =>
@@ -109,15 +109,13 @@ object ConcurrentLeaderboard extends LeaderboardManager {
   *
   * @author eric@kolotyluk.net
   */
-class ConcurrentLeaderboard(uuid: UUID, var name: Option[String]) extends Leaderboard with Configuration with Logging {
+class ConcurrentLeaderboard() extends Leaderboard with Configuration with Logging {
 
   // val memberToScore = new TrieMap[String,Option[Score]]
   val memberToScore = new ConcurrentHashMap[String,Option[Score]]
   val scoreToMember = new ConcurrentSkipListMap[Score,String]
 
-  def setName(name: Option[String]) = this.name = name
-
-  def getInfo: Info = Info(uuid, name, getCount)
+  def getInfo: Info = Info(uuid, Some(name), getCount)
 
   def getUrlIdentifier(identifier: String): UUID = Identity.getUrlIdentifier(identifier)
 
@@ -168,7 +166,7 @@ class ConcurrentLeaderboard(uuid: UUID, var name: Option[String]) extends Leader
     memberToScore.size
   }
 
-  def getName: Option[String] = name
+  def getName: Option[String] = Some(name)
 
   def getUuid: UUID = uuid
 
