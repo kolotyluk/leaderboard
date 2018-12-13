@@ -1,4 +1,5 @@
 package net.kolotyluk.leaderboard.scorekeeping
+
 import java.util
 import java.util.{Map, UUID}
 
@@ -7,23 +8,25 @@ import net.kolotyluk.scala.extras.{Identity, Logging}
 
 import scala.collection.mutable.ArrayBuffer
 
-class ConsecutiveLeaderboard(
+class SynchronizedLeaderboard(
     memberToScore: Map[String,Option[Score]],
     scoreToMember: util.NavigableMap[Score,String]
   ) extends LeaderboardSync with Logging {
 
   override def delete(member: String) = {
-    memberToScore.get(member) match {
-      case null =>
-        logger.warn(s"member = $member not found on leaderboard $name")
-        false
-      case None =>
-        memberToScore.remove(member)
-        true
-      case Some(score) =>
-        scoreToMember.remove(score)
-        memberToScore.remove(member)
-        true
+    memberToScore.synchronized {
+      memberToScore.get(member) match {
+        case null =>
+          logger.warn(s"member = $member not found on leaderboard $name")
+          false
+        case None =>
+          memberToScore.remove(member)
+          true
+        case Some(score) =>
+          scoreToMember.remove(score)
+          memberToScore.remove(member)
+          true
+      }
     }
   }
 
@@ -65,13 +68,15 @@ class ConsecutiveLeaderboard(
   }
 
   override def getScore(member: String) = {
-    memberToScore.get(member) match {
-      case null =>
-        None
-      case None =>
-        None
-      case Some(score) =>
-        Some(score.value)
+    memberToScore.synchronized {
+      memberToScore.get(member) match {
+        case null =>
+          None
+        case None =>
+          None
+        case Some(score) =>
+          Some(score.value)
+      }
     }
   }
 
@@ -84,23 +89,24 @@ class ConsecutiveLeaderboard(
     * @return None if member not present, Some[Standing] otherwise
     */
   override def getStanding(member: String) = {
-
-    memberToScore.get(member) match {
-      case null =>
-        None
-      case None =>
-        None
-      case Some(score) =>
-        val scores = scoreToMember.keySet().iterator()
-        var count: Int = 0
-        var place: Int = 0
-        while (scores.hasNext) {
-          count += 1
-          val key = scores.next()
-          if (key == score) place = count
-        }
-        assert(count > 0, "scoreToMember is empty")
-        Some(Standing(place, count))
+    memberToScore.synchronized {
+      memberToScore.get(member) match {
+        case null =>
+          None
+        case None =>
+          None
+        case Some(score) =>
+          val scores = scoreToMember.keySet().iterator()
+          var count: Int = 0
+          var place: Int = 0
+          while (scores.hasNext) {
+            count += 1
+            val key = scores.next()
+            if (key == score) place = count
+          }
+          assert(count > 0, "scoreToMember is empty")
+          Some(Standing(place, count))
+      }
     }
   }
 
@@ -115,7 +121,6 @@ class ConsecutiveLeaderboard(
   override def update(mode: UpdateMode, member: String, value: BigInt) = {
     val score = Score(value, randomLong)
     update(mode, member, score)
-    Done
   }
 
   /** =Update Leaderboard with Existing Score=
@@ -136,7 +141,7 @@ class ConsecutiveLeaderboard(
       * @param oldScore
       * @param newScore
       */
-    def addScore(member: String, oldScore: Score, newScore: Score): Unit = {
+    def addScore(member: String, oldScore: Score, newScore: Score) = {
       scoreToMember.remove(oldScore)
       scoreToMember.put(newScore, member)
       memberToScore.put(member, Some(newScore))
@@ -152,20 +157,22 @@ class ConsecutiveLeaderboard(
       memberToScore.put(member, Some(score))
     }
 
-    memberToScore.get(member) match {
-      case null | None =>
-        setScore(member, newScore)
-      case Some(score) =>
-        if (score.value != newScore.value || score.random != newScore.random) {
-          mode match {
-            case Increment =>
-              addScore(member, score, Score(score.value + newScore.value, newScore.random))
-            case Replace =>
-              addScore(member, score, newScore)
+    memberToScore.synchronized {
+      memberToScore.get(member) match {
+        case null | None =>
+          setScore(member, newScore)
+        case Some(score) =>
+          if (score.value != newScore.value || score.random != newScore.random) {
+            mode match {
+              case Increment =>
+                addScore(member, score, Score(score.value + newScore.value, newScore.random))
+              case Replace =>
+                addScore(member, score, newScore)
+            }
           }
       }
     }
+
     Done
   }
-
 }

@@ -4,19 +4,34 @@ import java.util
 import java.util.UUID
 import java.util.concurrent.ConcurrentSkipListMap
 
-import akka.actor.ActorInitializationException
+import akka.Done
+import akka.actor.typed.scaladsl.AskPattern._
 import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.{ActorRef, Behavior, Terminated}
-import net.kolotyluk.leaderboard.Akka.LeaderboardActor.Spawn
-import net.kolotyluk.leaderboard.Akka.LeaderboardActor.Update
-import net.kolotyluk.leaderboard.Configuration
-import net.kolotyluk.leaderboard.scorekeeping.{ConsecutiveLeaderboard, Score, UpdateMode}
-import net.kolotyluk.scala.extras.Logging
+import akka.actor.typed.{ActorContext, ActorRef, Behavior, Terminated}
+import akka.actor.{ActorInitializationException, Scheduler}
+import akka.util.Timeout
+
+import net.kolotyluk.leaderboard.Akka.LeaderboardActor._
+import net.kolotyluk.leaderboard.scorekeeping.{ConsecutiveLeaderboard, LeaderboardAsync, Score, Standing, UpdateMode}
+import net.kolotyluk.leaderboard.{Configuration, scorekeeping}
+import net.kolotyluk.scala.extras.{Identity, Logging}
+
+import scala.concurrent.duration._
+import scala.concurrent.{ExecutionContext, Future}
+import scala.language.postfixOps
 
 object LeaderboardActor {
-  sealed trait Message
-  case class Update(member: String, updateMode: UpdateMode, score: Score) extends Message
-  case class Spawn[M](behavior: Behavior[M], name:String) extends Message
+  sealed trait Request
+  case class Delete(member: String, replyTo: ActorRef[Boolean]) extends Request
+  case class GetCount(replyTo: ActorRef[Int]) extends Request
+  case class GetInfo(replyTo: ActorRef[scorekeeping.Info]) extends Request
+  case class GetName(replyTo: ActorRef[Option[String]]) extends Request
+  case class GetRange(start: Long, stop: Long, replyTo: ActorRef[scorekeeping.Range]) extends Request
+  case class GetScore(member: String, replyTo: ActorRef[Option[BigInt]]) extends Request
+  case class GetStanding(member: String, replyTo: ActorRef[Option[Standing]]) extends Request
+  // case class Update(member: String, updateMode: UpdateMode, score: Score) extends Request
+  case class Update(member: String, updateMode: UpdateMode, score: Score, replyTo: ActorRef[Done]) extends Request
+  case class Spawn[M](behavior: Behavior[M], name:String) extends Request
 }
 
 /** =Outermost Behavior of ActorSystem=
@@ -43,8 +58,19 @@ object LeaderboardActor {
   * @see [[https://doc.akka.io/docs/akka/2.5.18/typed/actors.html#introduction Akka Typed Introduction]]
   * @see [[https://doc.akka.io/docs/akka/2.5/typed/fault-tolerance.html#supervision Akka Typed Supervision]]
   */
-class LeaderboardActor(uuid: UUID, name: String) extends Configuration with Logging {
+class LeaderboardActor(initialUUID: UUID, initialName: String) extends LeaderboardAsync with Configuration with Logging {
+  uuid = initialUUID
+  name = initialName
+
   logger.info("constructing...")
+
+  var actorContext:  ActorContext[LeaderboardActor.Request] = null
+  var selfActorReference:  ActorRef[LeaderboardActor.Request] = null
+
+  implicit val timeout: Timeout = 3 seconds
+  implicit var scheduler: Scheduler = null
+  implicit var executionContext: ExecutionContext = null
+
 
   val memberToScore = new util.HashMap[String,Option[Score]]
   val scoreToMember = new ConcurrentSkipListMap[Score,String]
@@ -52,18 +78,44 @@ class LeaderboardActor(uuid: UUID, name: String) extends Configuration with Logg
 
   var restActorRef : ActorRef[RestActor.Message] = null
 
-  val behavior: Behavior[LeaderboardActor.Message] = Behaviors.setup { actorContext ⇒
+  val behavior: Behavior[LeaderboardActor.Request] = Behaviors.setup { actorContext ⇒
 
     logger.info("initializing...")
+
+    scheduler = actorContext.system.scheduler
+    selfActorReference =  actorContext.self
+    executionContext = actorContext.executionContext
 
     // TODO remove this for production, used for testing
     //val cancelable = actorContext.schedule(200 seconds, actorContext.self, Done("timed out"))
 
-    Behaviors.receive[LeaderboardActor.Message] { (actorCell, message) ⇒
+    Behaviors.receive[LeaderboardActor.Request] { (actorCell, message) ⇒
       logger.debug(s"received $message")
       message match {
-        case Update(member: String, updateMode: UpdateMode, score: Score) ⇒
+        case Delete(member: String, replyTo: ActorRef[Boolean]) ⇒
+          replyTo ! leaderboard.delete(member)
+          Behaviors.same
+        case GetCount(replyTo: ActorRef[Int]) ⇒
+          replyTo ! leaderboard.getCount
+          Behaviors.same
+        case GetInfo(replyTo: ActorRef[scorekeeping.Info]) ⇒
+          replyTo ! leaderboard.getInfo
+          Behaviors.same
+        case GetName(replyTo: ActorRef[Option[String]]) ⇒
+          replyTo ! leaderboard.getName
+          Behaviors.same
+        case GetRange(start: Long, stop: Long, replyTo: ActorRef[scorekeeping.Range]) ⇒
+          replyTo ! leaderboard.getRange(start, stop)
+          Behaviors.same
+        case GetScore(member: String, replyTo: ActorRef[Option[BigInt]]) ⇒
+          replyTo ! leaderboard.getScore(member)
+          Behaviors.same
+        case GetStanding(member: String, replyTo: ActorRef[Option[Standing]]) ⇒
+          replyTo ! leaderboard.getStanding(member)
+          Behaviors.same
+        case Update(member: String, updateMode: UpdateMode, score: Score, replyTo: ActorRef[Done]) ⇒
           leaderboard.update(updateMode, member, score)
+          replyTo ! Done
           Behaviors.same
         case Spawn(behavior, name) ⇒
           logger.info(s"spawning $name")
@@ -113,4 +165,88 @@ class LeaderboardActor(uuid: UUID, name: String) extends Configuration with Logg
         Behaviors.same
     }
   }
+
+  /** =Delete Member
+    * Delete member from leaderboard
+    * @param member
+    * @return true, if member was on leaderboard
+    */
+  override def delete(member: String) =
+    selfActorReference ? (actorRef ⇒ Delete(member, actorRef))
+
+  /** =Leaderboard Member Count=
+    * Get the total count of all members on the leaderboard
+    *
+    * @return count
+    */
+  override def getCount=
+    selfActorReference ? (actorRef ⇒ GetCount(actorRef))
+
+  override def getInfo =
+    selfActorReference ? (actorRef ⇒ GetInfo(actorRef))
+
+  override def getName =
+    selfActorReference ? (actorRef ⇒ GetName(actorRef))
+
+  /** =Get Range of Scores=
+    * <p>
+    * Return a range of scores from start to stop
+    * <p>
+    *
+    * @param start
+    * @param stop
+    * @return
+    * @throws IndexOutOfBoundsException if more than Int.MaxValue scores in the result
+    */
+override def getRange(start: Long, stop: Long): Future[scorekeeping.Range] =
+  selfActorReference ? (actorRef ⇒ GetRange(start: Long, stop: Long, actorRef))
+
+
+  /** =Member's Score=
+    * Get the member's score from the leaderboard
+    *
+    * @param member
+    * @return score
+    */
+override def getScore(member: String) =
+  selfActorReference ? (actorRef ⇒ GetScore(member, actorRef))
+
+  /** =Compute Standing=
+    * <p>
+    * Iterate through the map to compute member standing
+    *
+    * ==Performance==
+    * O(N) where N = count of members on leaderboard
+    *
+    * @param member
+    * @return None if member not present, Some[Standing] otherwise
+    */
+override def getStanding(member: String) =
+  selfActorReference ? (actorRef ⇒ GetStanding(member, actorRef))
+
+
+override def getUrlIdentifier(identifier: String) = Future{Identity.getUrlIdentifier(identifier)}
+override def getUrlIdentifier(uuid: UUID) = Future{Identity.getUrlIdentifier(uuid)}
+override def getUuid = Future{uuid}
+
+  /** =Update Member Score=
+    * Update member's score on leaderboard
+    */
+override def update(mode: UpdateMode, member: String, value: BigInt) = update(mode, member, Score(value))
+
+  /** =Update Member Score=
+    * Update member's score on leaderboard
+    * <p>
+    * This should only be called from another ScoreKeeper, running in a different Akka Cluster Node.
+    * <p>
+    * Performance is a little better for Replace than Increment, but for both cases, performance is O(log n).
+    * <p>
+    * ==Performance==
+    * O(log N) where N = count of members on the leaderboard
+    *
+    * @param member   member ID
+    * @param newScore existing score created by another ScoreKeeper
+    */
+  override def update(mode: UpdateMode, member: String, newScore: Score) =
+    selfActorReference ? (actorRef ⇒ Update(member, mode, newScore, actorRef))
 }

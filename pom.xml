@@ -23,7 +23,10 @@
     <artifactId>service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <url>https://kolotyluk.github.io/projects/leaderboard</url>
+<!--
+    <url>https://kolotyluk.github.io/leaderboard</url>
+-->
+    <url>https://github.com/kolotyluk/leaderboard</url>
     <name>Leaderboard Micro Service</name>
     <description>Leaderboard tracking for game developers</description>
 
@@ -39,7 +42,7 @@
     </licenses>
 
     <scm>
-        <url>https://kolotyluk.github.io/projects/leaderboard</url>
+        <url>https://github.com/kolotyluk/leaderboard</url>
         <connection>scm:git:https://github.com/kolotyluk/leaderboard.git</connection>
         <developerConnection>scm:git:https://github.com/kolotyluk/leaderboard.git</developerConnection>
         <tag>HEAD</tag>
@@ -91,6 +94,7 @@
     <properties>
         <akka.http.version>10.1.5</akka.http.version>
         <akka.version>2.5.18</akka.version>
+        <github.global.server>github</github.global.server>
         <jackson.version>2.9.7</jackson.version>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
@@ -327,18 +331,30 @@
         </pluginManagement>
         <plugins>
             <plugin>
+                <!--
+                    manually: https://pages.github.com/
+                    plug-in:  https://github.github.com/maven-plugins/site-plugin/
+                -->
                 <groupId>com.github.github</groupId>
                 <artifactId>site-maven-plugin</artifactId>
                 <version>0.12</version>
                 <configuration>
+                    <server>github</server>
+                    <repositoryName>leaderboard</repositoryName>
+                    <repositoryOwnwer>kolotyluk</repositoryOwnwer>
+
+                    <!-- Destination directory -->
+                    <path>projects/leaderboard</path>
+
+<!--
                     <path>${project.version}</path>
+-->
                     <message>Creating site for ${project.name} ${project.version}</message>
                     <merge>true</merge>
                     <noJekyll>true</noJekyll>
 <!--
-                    <server>github</server>
+                    <oauth2Token>${github.oauth2Token}</oauth2Token>
 -->
-                    <oauth2Token>646fd18a5621c6b8437b774d429b087e39874866</oauth2Token>
                 </configuration>
                 <executions>
                     <execution>
@@ -377,12 +393,9 @@
                 <version>3.4.4</version>
                 <configuration>
                     <scalaVersion>${scala.version}</scalaVersion>
-<!--
                     <args>
-                        <arg>-doc-root-content</arg>
-                        <arg>rootdoc.txt</arg>
+                        <arg>-feature</arg>
                     </args>
--->
                     <jvmArgs>
                         <jvmArg>-Xms1024m</jvmArg>
                         <jvmArg>-Xmx4096m</jvmArg>
@@ -439,54 +452,12 @@
                     </execution>
                 </executions>
             </plugin>
-<!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>3.0</version>
-                <configuration>
-                    <reportPlugins>
-                        <plugin>
-                            <artifactId>maven-project-info-reports-plugin</artifactId>
-                            <version>2.2</version>
-                        </plugin>
-                        <plugin>
-                            <groupId>net.alchim31.maven</groupId>
-                            <artifactId>scala-maven-plugin</artifactId>
-                            <version>3.4.4</version>
-                        </plugin>
-                    </reportPlugins>
-                </configuration>
-            </plugin>
--->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.7.1</version>
                 <configuration>
-<!--
-                    <reportPlugins>
-                        <plugin>
-                            <artifactId>maven-project-info-reports-plugin</artifactId>
-                            <version>2.2</version>
-                        </plugin>
-                        <plugin>
-                            <groupId>net.alchim31.maven</groupId>
-                            <artifactId>scala-maven-plugin</artifactId>
-                            <version>3.4.4</version>
-                            <configuration>
-                                <args>
-                                    <arg>-doc-root-content</arg>
-                                    <arg>rootdoc.txt</arg>
-                                </args>
-                                <jvmArgs>
-                                    <jvmArg>-Xms64m</jvmArg>
-                                    <jvmArg>-Xmx1024m</jvmArg>
-                                </jvmArgs>
-                            </configuration>
-                        </plugin>
-                    </reportPlugins>
--->
+                    <skipDeploy>true</skipDeploy>
                 </configuration>
             </plugin>
             <plugin>

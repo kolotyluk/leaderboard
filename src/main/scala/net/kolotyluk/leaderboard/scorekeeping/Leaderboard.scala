@@ -2,7 +2,12 @@ package net.kolotyluk.leaderboard.scorekeeping
 
 import java.util.UUID
 
+import akka.Done
+
+import scala.language.higherKinds
+
 trait Leaderboard {
+  type Response[A]
 
   var uuid: UUID = null
   var name: String = null
@@ -12,17 +17,17 @@ trait Leaderboard {
     * @param member
     * @return true, if member was on leaderboard
     */
-  def delete(member: String): Boolean
+  def delete(member: String): Response[Boolean]
 
   /** =Leaderboard Member Count=
     * Get the total count of all members on the leaderboard
     * @return count
     */
-  def getCount: Int
+  def getCount: Response[Int]
 
-  def getInfo: Info
+  def getInfo: Response[Info]
 
-  def getName: Option[String]
+  def getName: Response[Option[String]]
 
   /** =Get Range of Scores=
     * <p>
@@ -34,7 +39,7 @@ trait Leaderboard {
     * @return
     * @throws IndexOutOfBoundsException if more than Int.MaxValue scores in the result
     */
-  def getRange(start: Long, stop: Long): Range
+  def getRange(start: Long, stop: Long): Response[Range]
 
   /** =Member's Score=
     * Get the member's score from the leaderboard
@@ -42,7 +47,7 @@ trait Leaderboard {
     * @param member
     * @return score
     */
-  def getScore(member: String): Option[BigInt]
+  def getScore(member: String): Response[Option[BigInt]]
 
   /** =Compute Standing=
     * <p>
@@ -54,18 +59,18 @@ trait Leaderboard {
     * @param member
     * @return None if member not present, Some[Standing] otherwise
     */
-  def getStanding(member: String): Option[Standing]
+  def getStanding(member: String): Response[Option[Standing]]
 
-  def getUrlIdentifier(identifier: String): UUID
+  def getUrlIdentifier(identifier: String): Response[UUID]
 
-  def getUrlIdentifier(uuid: UUID = UUID.randomUUID()): String
+  def getUrlIdentifier(uuid: UUID = UUID.randomUUID()): Response[String]
 
-  def getUuid: UUID
+  def getUuid: Response[UUID]
 
   /** =Update Member Score=
     * Update member's score on leaderboard
     */
-  def update(mode: UpdateMode, member: String, value: BigInt)
+  def update(mode: UpdateMode, member: String, value: BigInt): Response[Done]
 
   /** =Update Member Score=
     * Update member's score on leaderboard
@@ -80,6 +85,6 @@ trait Leaderboard {
     * @param member   member ID
     * @param newScore existing score created by another ScoreKeeper
     */
-  def update(mode: UpdateMode, member: String, newScore: Score)
+  def update(mode: UpdateMode, member: String, newScore: Score): Response[Done]
 
 }

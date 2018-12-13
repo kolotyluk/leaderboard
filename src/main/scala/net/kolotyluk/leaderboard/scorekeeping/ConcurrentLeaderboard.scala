@@ -3,6 +3,7 @@ package net.kolotyluk.leaderboard.scorekeeping
 import java.util.{ConcurrentModificationException, UUID}
 import java.util.concurrent.{ConcurrentHashMap, ConcurrentSkipListMap}
 
+import akka.Done
 import net.kolotyluk.leaderboard.telemetry.Metrics
 import net.kolotyluk.scala.extras.{Configuration, Identity, Logging}
 
@@ -109,19 +110,19 @@ object ConcurrentLeaderboard extends LeaderboardManager {
   *
   * @author eric@kolotyluk.net
   */
-class ConcurrentLeaderboard() extends Leaderboard with Configuration with Logging {
+class ConcurrentLeaderboard() extends LeaderboardSync with Configuration with Logging {
 
   // val memberToScore = new TrieMap[String,Option[Score]]
   val memberToScore = new ConcurrentHashMap[String,Option[Score]]
   val scoreToMember = new ConcurrentSkipListMap[Score,String]
 
-  def getInfo: Info = Info(uuid, Some(name), getCount)
+  override def getInfo = Info(uuid, Some(name), getCount)
 
-  def getUrlIdentifier(identifier: String): UUID = Identity.getUrlIdentifier(identifier)
+  override def getUrlIdentifier(identifier: String) = Identity.getUrlIdentifier(identifier)
 
-  def getUrlIdentifier(uuid: UUID = UUID.randomUUID()): String = Identity.getUrlIdentifier(uuid)
+  override def getUrlIdentifier(uuid: UUID = UUID.randomUUID()) = Identity.getUrlIdentifier(uuid)
 
-  def delete(member: String): Boolean = {
+  override def delete(member: String) = {
     delete(member, 0)
   }
 
@@ -157,18 +158,18 @@ class ConcurrentLeaderboard() extends Leaderboard with Configuration with Loggin
     * @param score
     * @return
     */
-  def put(member: String, score: Option[Score]): Option[Option[Score]] = {
+  def put(member: String, score: Option[Score]) = {
     val value = memberToScore.put(member, None)
     if (value == null) None else Some(value)
   }
 
-  def getCount: Int = {
+  def getCount = {
     memberToScore.size
   }
 
-  def getName: Option[String] = Some(name)
+  override def getName = Some(name)
 
-  def getUuid: UUID = uuid
+  override def getUuid = uuid
 
   /** =Get Range of Scores=
     * <p>
@@ -181,7 +182,7 @@ class ConcurrentLeaderboard() extends Leaderboard with Configuration with Loggin
     * @return
     * @throws IndexOutOfBoundsException if more than Int.MaxValue scores in the result
     */
-  def getRange(start: Long, stop: Long): Range = {
+  override def getRange(start: Long, stop: Long) = {
 
     val totalCount = getCount
 
@@ -202,7 +203,7 @@ class ConcurrentLeaderboard() extends Leaderboard with Configuration with Loggin
     Range(placings, totalCount)
   }
 
-  def getScore(member: String): Option[BigInt] = {
+  override def getScore(member: String): Option[BigInt] = {
     getScore(member, 0)
   }
 
@@ -234,7 +235,7 @@ class ConcurrentLeaderboard() extends Leaderboard with Configuration with Loggin
     if (value == null) None else Some(value)
   }
 
-  def getStanding(member: String): Option[Standing] = {
+  override def getStanding(member: String) = {
     getStanding(member, 0)
   }
 
@@ -280,12 +281,13 @@ class ConcurrentLeaderboard() extends Leaderboard with Configuration with Loggin
     * @param member
     * @param value
     */
-  def update(mode: UpdateMode, member: String, value: BigInt): Unit = {
+  override def update(mode: UpdateMode, member: String, value: BigInt) = {
     update(mode, member, Score(value))
   }
 
-  def update(mode: UpdateMode, member: String, newScore: Score): Unit = {
+  override def update(mode: UpdateMode, member: String, newScore: Score) = {
     updater(mode, member, newScore, 0, System.nanoTime)
+    Done
   }
 
   /** =Update Leaderboard with Existing Score=

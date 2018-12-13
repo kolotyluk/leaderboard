@@ -1,16 +1,17 @@
 package net.kolotyluk.leaderboard.scorekeeping
 
+import java.util
+
 import scala.language.postfixOps
-import scala.util.{Failure, Success}
 
-class ConcurrentLeaderboardSpec extends UnitSpec with LeaderboardBehaviors {
+class SynchronizedLeaderboardSpec extends UnitSpec  with LeaderboardBehaviors {
 
-  behavior of "Concurrent Leaderboard"
+  behavior of "Synchronized Leaderboard"
 
-  val leaderboard = ConcurrentLeaderboard.add match {
-    case Failure(cause) => throw cause
-    case Success(leaderboard) => leaderboard
-  }
+  val memberToScore = new util.HashMap[String, Option[Score]]
+  val scoreToMember = new util.TreeMap[Score, String]
+
+  val leaderboard = new SynchronizedLeaderboard(memberToScore, scoreToMember)
 
   it must behave like handleInitialConditions(leaderboard)
   it must behave like handleTwoMembers(leaderboard)
