@@ -2,8 +2,6 @@ package net.kolotyluk.leaderboard.scorekeeping
 
 import java.util.UUID
 
-import akka.Done
-
 import scala.language.higherKinds
 
 trait Leaderboard {
@@ -70,7 +68,7 @@ trait Leaderboard {
   /** =Update Member Score=
     * Update member's score on leaderboard
     */
-  def update(mode: UpdateMode, member: String, value: BigInt): Response[Done]
+  def update(mode: UpdateMode, member: String, value: BigInt): Response[Score]
 
   /** =Update Member Score=
     * Update member's score on leaderboard
@@ -85,6 +83,6 @@ trait Leaderboard {
     * @param member   member ID
     * @param newScore existing score created by another ScoreKeeper
     */
-  def update(mode: UpdateMode, member: String, newScore: Score): Response[Done]
+  def update(mode: UpdateMode, member: String, newScore: Score): Response[Score]
 
 }

@@ -1,9 +1,8 @@
 package net.kolotyluk.leaderboard.scorekeeping
 
+import java.util.concurrent.{ConcurrentHashMap, ConcurrentMap, ConcurrentNavigableMap, ConcurrentSkipListMap}
 import java.util.{ConcurrentModificationException, UUID}
-import java.util.concurrent.{ConcurrentHashMap, ConcurrentSkipListMap}
 
-import akka.Done
 import net.kolotyluk.leaderboard.telemetry.Metrics
 import net.kolotyluk.scala.extras.{Configuration, Identity, Logging}
 
@@ -43,7 +42,11 @@ object ConcurrentLeaderboard extends LeaderboardManager {
   def add(name: Option[String], uuid: UUID = UUID.randomUUID()): Try[ConcurrentLeaderboard] = {
     uuidToLeaderboard.get(uuid) match {
       case None =>
-        val leaderboard = new ConcurrentLeaderboard()
+        // val memberToScore = new TrieMap[String,Option[Score]]
+        // val memberToScore = new ConcurrentHashMap[String,Option[Score]]
+        // val scoreToMember = new ConcurrentSkipListMap[Score,String]
+
+      val leaderboard = new ConcurrentLeaderboard(new ConcurrentHashMap[String,Option[Score]], new ConcurrentSkipListMap[Score,String])
         uuidToLeaderboard.put(uuid, leaderboard) match {
           case None => Success(leaderboard)
           case Some(predecessor) =>
@@ -110,11 +113,14 @@ object ConcurrentLeaderboard extends LeaderboardManager {
   *
   * @author eric@kolotyluk.net
   */
-class ConcurrentLeaderboard() extends LeaderboardSync with Configuration with Logging {
+class ConcurrentLeaderboard(memberToScore: ConcurrentMap[String,Option[Score]], scoreToMember:  ConcurrentNavigableMap[Score,String])
+  extends LeaderboardSync
+    with Configuration
+    with Logging {
 
   // val memberToScore = new TrieMap[String,Option[Score]]
-  val memberToScore = new ConcurrentHashMap[String,Option[Score]]
-  val scoreToMember = new ConcurrentSkipListMap[Score,String]
+  // val memberToScore = new ConcurrentHashMap[String,Option[Score]]
+  // val scoreToMember = new ConcurrentSkipListMap[Score,String]
 
   override def getInfo = Info(uuid, Some(name), getCount)
 
@@ -171,17 +177,6 @@ class ConcurrentLeaderboard() extends LeaderboardSync with Configuration with Lo
 
   override def getUuid = uuid
 
-  /** =Get Range of Scores=
-    * <p>
-    * Return a range of scores from start to stop
-    * <p>
-    *
-    *
-    * @param start
-    * @param stop
-    * @return
-    * @throws IndexOutOfBoundsException if more than Int.MaxValue scores in the result
-    */
   override def getRange(start: Long, stop: Long) = {
 
     val totalCount = getCount
@@ -287,7 +282,6 @@ class ConcurrentLeaderboard() extends LeaderboardSync with Configuration with Lo
 
   override def update(mode: UpdateMode, member: String, newScore: Score) = {
     updater(mode, member, newScore, 0, System.nanoTime)
-    Done
   }
 
   /** =Update Leaderboard with Existing Score=
@@ -311,7 +305,7 @@ class ConcurrentLeaderboard() extends LeaderboardSync with Configuration with Lo
     * @param newScore existing score created by another ScoreKeeper
     */
   @tailrec
-  private def updater(mode: UpdateMode, member: String, newScore: Score, spinCount: Int, spinStart: Long): Unit = {
+  private def updater(mode: UpdateMode, member: String, newScore: Score, spinCount: Int, spinStart: Long): Score = {
     // Caution: there is some subtle logic below, so don't modify it unless you grok it
 
     try {
@@ -332,6 +326,7 @@ class ConcurrentLeaderboard() extends LeaderboardSync with Configuration with Lo
           throw new ConcurrentModificationException(message)
         }
         memberToScore.put(member, Some(newScore)) // remove the spin-lock
+        newScore
         // END CRITICAL SECTION
       case Some(option) => option match {
         case None =>            // Update in progress, so spin until complete
@@ -372,6 +367,7 @@ class ConcurrentLeaderboard() extends LeaderboardSync with Configuration with Lo
           } // END CRITICAL SECTION
           // Do this outside the critical section to reduce time under lock
           if (spinCount > 0) Metrics.checkSpinTime(System.nanoTime() - spinStart)
+          newScore
       }
     }
   }

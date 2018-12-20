@@ -1,13 +1,14 @@
 package net.kolotyluk.leaderboard.scorekeeping
 
 import net.kolotyluk.leaderboard.telemetry.Metrics
+import net.kolotyluk.scala.extras.Logging
 
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 import scala.language.postfixOps
-import scala.util.{Failure, Random, Success}
+import scala.util.Random
 
 /** =Leaderboard Unit Test Behaviors=
   * Standard behaviors of the Leaderboard interface for all implementations
@@ -23,7 +24,10 @@ import scala.util.{Failure, Random, Success}
   *
   * @param this test specification type
   */
-trait LeaderboardBehaviors { this: UnitSpec =>
+trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
+
+  // Force logging noise to the beginning of the test runs
+  logger.info("logging")
 
   def handleInitialConditions(leaderboard: => LeaderboardSync) {
 
@@ -63,7 +67,7 @@ trait LeaderboardBehaviors { this: UnitSpec =>
       val placing = range.placings.head
       placing.member should be (joeBlow)
       placing.score should be (1)
-      Then("the should contain the member and their score")
+      Then("they should contain the member and their score")
 
       // This next test is highly paranoid because Scala has better string handling than Java,
       // with respect to string comparison, but better to be paranoid, than have incorrect code.
@@ -103,14 +107,10 @@ trait LeaderboardBehaviors { this: UnitSpec =>
     }
   }
 
-  def handleTwoMembers(leaderboard: => Leaderboard): Unit = {
+  def handleTwoMembers(leaderboard: => LeaderboardSync): Unit = {
 
     it must "handle 2 members correctly" in {
 
-      val leaderboard = ConcurrentLeaderboard.add match {
-        case Failure(cause) => throw cause
-        case Success(leaderboard) => leaderboard
-      }
       Given("a new ScoreKeeper")
 
       val joeBlow = "Joe Blow"
@@ -121,7 +121,7 @@ trait LeaderboardBehaviors { this: UnitSpec =>
 
       When("2 members score")
 
-      var range = leaderboard.getRange(0, 1)
+      var range: Range = leaderboard.getRange(0, 1)
 
       range.totalCount should be (2)
       val placings = range.placings
@@ -156,22 +156,20 @@ trait LeaderboardBehaviors { this: UnitSpec =>
       janeWins should be > 30
       Then("each should win roughly half the time")
 
-      println(range)
+      logger.debug(s"handleTwoMembers: range = $range")
     }
-
   }
 
-  def handleHandleConcurrentUpdates(leaderboard: => Leaderboard): Unit = {
+  def handleHandleConcurrentUpdates(leaderboard: => LeaderboardSync): Unit = {
     it must "handle concurrent updates correctly" in {
 
-      val leaderboard = ConcurrentLeaderboard.add match {
-        case Failure(cause) => throw cause
-        case Success(leaderboard) => leaderboard
-      }
       Given(s"a JVM with ${ Runtime.getRuntime().availableProcessors()} available processors")
 
       val joeBlow = "Joe Blow"
       val janeBlow = "Jane Blow"
+
+      leaderboard.update(Replace, joeBlow, 0)
+      leaderboard.update(Replace, janeBlow, 0)
 
       var range = leaderboard.getRange(0, 1)
 
@@ -186,11 +184,11 @@ trait LeaderboardBehaviors { this: UnitSpec =>
 
       for (i <- 1 to scores) {
         futures.append(Future {
-          leaderboard.update(Increment, joeBlow, 1)
-          //logger.debug(s"$joeBlow += 1")
+          val score = leaderboard.update(Increment, joeBlow, 1)
+          if (i < 5) logger.debug(s"$joeBlow score = $score")
         })
         futures.append(Future {
-          leaderboard.update(Increment, janeBlow, 1)
+          val score = leaderboard.update(Increment, janeBlow, 1)
           //logger.debug(s"$janeBlow += 1")
         })
         //range = scoreKeeper.getRange(0, 1)
@@ -208,25 +206,24 @@ trait LeaderboardBehaviors { this: UnitSpec =>
       val result = Await.result(done, 10 seconds)
 
       range = leaderboard.getRange(0, 1)
-      println(s"range = $range")
-
-      val joePlacing = range.placings.head
-      val janePlacing = range.placings.head
+      logger.debug(s"handleHandleConcurrentUpdates: range = $range")
 
       range.totalCount should be (2)
-      joePlacing.score should be (scores)
-      janePlacing.score should be (scores)
+      range.placings.foreach {  placing =>
+        Given(s"member = ${placing.member} score = ${placing.score} place = ${placing.place}")
+        placing.score should be (scores)
+      }
+
+      //joePlacing.score should be (scores)
+      //janePlacing.score should be (scores)
 
       Then(s"each member's score should be $scores")
       And("there should be no concurrency errors")
-
-
-      println()
     }
 
   }
 
-  def handleHandleHighIntensityConcurrentUpdates(leaderboard: => Leaderboard): Unit = {
+  def handleHandleHighIntensityConcurrentUpdates(leaderboard: => LeaderboardSync): Unit = {
     it must "handle high intensity concurrent updates correctly" in {
 
       Metrics.resetLargestSpinCount;  info(s"LargestSpinCount = ${Metrics.getLargestSpinCount}")
@@ -234,14 +231,9 @@ trait LeaderboardBehaviors { this: UnitSpec =>
       Metrics.resetTotalSpinCount;    info(s"TotalSpinCount  = ${Metrics.getTotalSpinCount}")
       Metrics.resetTotalSpinTime;     info(s"TotalSpinTime  = ${Metrics.getTotalSpinTime}")
 
-      val leaderboard = ConcurrentLeaderboard.add match {
-        case Failure(cause) => throw cause
-        case Success(leaderboard) => leaderboard
-      }
-
       val joeBlow = "Joe Blow"
 
-      val iterations = 1000
+      val iterations = 100
       val availableProcessors = Runtime.getRuntime().availableProcessors()
       Given(s"a JVM with $availableProcessors available processors")
 
@@ -252,7 +244,8 @@ trait LeaderboardBehaviors { this: UnitSpec =>
       for (processor <- 1 to availableProcessors) {
         futures.append(Future{
           for (update <- 1 to iterations) {
-            leaderboard.update(Increment, joeBlow, 1)
+            val score = leaderboard.update(Increment, joeBlow, 1)
+            logger.debug(s"Joe's score = $score")
           }
         })
       }
@@ -270,25 +263,20 @@ trait LeaderboardBehaviors { this: UnitSpec =>
       And(s"largestSpinTime = ${Metrics.getLargestSpinTime} nanoseconds, totalSpinTime = ${Metrics.getTotalSpinTime}, spinFraction = ${spinFraction}")
 
       val expectedScore = availableProcessors * iterations
+      Then(s"$joeBlow's score is should be $expectedScore")
       leaderboard.getScore(joeBlow).get should be (expectedScore)
-      Then(s"$joeBlow's score should be $expectedScore")
 
     }
 
   }
 
-  def handleHandleLargeNumberOfMembers(leaderboard: => Leaderboard): Unit = {
+  def handleHandleLargeNumberOfMembers(leaderboard: => LeaderboardSync): Unit = {
     it must "handle a large number of members" in {
 
       Metrics.resetLargestSpinCount;  info(s"LargestSpinCount = ${Metrics.getLargestSpinCount}")
       Metrics.resetLargetsSpinTime;   info(s"LargestSpinTime  = ${Metrics.getLargestSpinTime}")
       Metrics.resetTotalSpinCount;    info(s"TotalSpinCount  = ${Metrics.getTotalSpinCount}")
       Metrics.resetTotalSpinTime;     info(s"TotalSpinTime  = ${Metrics.getTotalSpinTime}")
-
-      val leaderboard = ConcurrentLeaderboard.add match {
-        case Failure(cause) => throw cause
-        case Success(leaderboard) => leaderboard
-      }
 
       val random = new Random
 

@@ -2,11 +2,15 @@ package net.kolotyluk.leaderboard.scorekeeping
 import java.util
 import java.util.{Map, UUID}
 
-import akka.Done
 import net.kolotyluk.scala.extras.{Identity, Logging}
 
 import scala.collection.mutable.ArrayBuffer
 
+/** =Fast Unsafe Leaderboard=
+  * Non-threadsafe leaderboard
+  * <p>
+  * This leaderboard is not thread-safe, and intended to be uses inside an Akka Actor.
+  */
 class ConsecutiveLeaderboard(
     memberToScore: Map[String,Option[Score]],
     scoreToMember: util.NavigableMap[Score,String]
@@ -33,16 +37,6 @@ class ConsecutiveLeaderboard(
 
   override def getName = Some(name)
 
-  /** =Get Range of Scores=
-    * <p>
-    * Return a range of scores from start to stop
-    * <p>
-    *
-    * @param start
-    * @param stop
-    * @return
-    * @throws IndexOutOfBoundsException if more than Int.MaxValue scores in the result
-    */
   override def getRange(start: Long, stop: Long) = {
 
     val totalCount = getCount
@@ -115,20 +109,22 @@ class ConsecutiveLeaderboard(
   override def update(mode: UpdateMode, member: String, value: BigInt) = {
     val score = Score(value, randomLong)
     update(mode, member, score)
-    Done
   }
 
-  /** =Update Leaderboard with Existing Score=
-    * <p>
-    * This should only be called from another ScoreKeeper, running in a different Akka Cluster Node.
-    * <p>
-    * Performance is a little better for Replace than Increment, but for both cases, performance is O(log n).
-    * <p>
-    *
-    * @param member   member ID
-    * @param newScore existing score created by another ScoreKeeper
-    */
-  override def update(mode: UpdateMode, member: String, newScore: Score) = {
+  override def update(mode: UpdateMode, member: String, theScore: Score) = {
+
+    /** =Set Initial Score=
+      * Assumes old score = 0
+      *
+      * @param member
+      * @param InitialScore
+      */
+    def setInitialScore(member: String, InitialScore: Score) = {
+      // logger.debug(s"setInitialScore: member = $member, score = $score")
+      scoreToMember.put(InitialScore, member)
+      memberToScore.put(member, Some(InitialScore))
+      InitialScore
+    }
 
     /** =Add Existing Score=
       *
@@ -136,36 +132,29 @@ class ConsecutiveLeaderboard(
       * @param oldScore
       * @param newScore
       */
-    def addScore(member: String, oldScore: Score, newScore: Score): Unit = {
-      scoreToMember.remove(oldScore)
-      scoreToMember.put(newScore, member)
-      memberToScore.put(member, Some(newScore))
-    }
-
-    /** =Set Initial Score=
-      *
-      * @param member
-      * @param score
-      */
-    def setScore(member: String, score: Score): Unit = {
-      scoreToMember.put(score, member)
-      memberToScore.put(member, Some(score))
+    def setScore(member: String, oldScore: Score, newScore: Score) = {
+      if (oldScore == newScore || oldScore.equals(theScore)) oldScore
+      else {
+        scoreToMember.remove(oldScore)
+        scoreToMember.put(newScore, member)
+        memberToScore.put(member, Some(newScore))
+        newScore
+      }
     }
 
     memberToScore.get(member) match {
       case null | None =>
-        setScore(member, newScore)
-      case Some(score) =>
-        if (score.value != newScore.value || score.random != newScore.random) {
-          mode match {
-            case Increment =>
-              addScore(member, score, Score(score.value + newScore.value, newScore.random))
-            case Replace =>
-              addScore(member, score, newScore)
-          }
-      }
+        setInitialScore(member, theScore)
+      case Some(oldScore) =>
+        mode match {
+          case Replace =>
+            setScore(member, oldScore, theScore)
+          case Increment =>
+            // Reuse the old random so we don't waste time computing another.
+            val sumScore = Score(oldScore.value + theScore.value, theScore.random)
+            setScore(member, oldScore, sumScore)
+        }
     }
-    Done
   }
 
 }

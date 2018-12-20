@@ -4,13 +4,11 @@ import java.util
 import java.util.UUID
 import java.util.concurrent.ConcurrentSkipListMap
 
-import akka.Done
 import akka.actor.typed.scaladsl.AskPattern._
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorContext, ActorRef, Behavior, Terminated}
 import akka.actor.{ActorInitializationException, Scheduler}
 import akka.util.Timeout
-
 import net.kolotyluk.leaderboard.Akka.LeaderboardActor._
 import net.kolotyluk.leaderboard.scorekeeping.{ConsecutiveLeaderboard, LeaderboardAsync, Score, Standing, UpdateMode}
 import net.kolotyluk.leaderboard.{Configuration, scorekeeping}
@@ -30,7 +28,7 @@ object LeaderboardActor {
   case class GetScore(member: String, replyTo: ActorRef[Option[BigInt]]) extends Request
   case class GetStanding(member: String, replyTo: ActorRef[Option[Standing]]) extends Request
   // case class Update(member: String, updateMode: UpdateMode, score: Score) extends Request
-  case class Update(member: String, updateMode: UpdateMode, score: Score, replyTo: ActorRef[Done]) extends Request
+  case class Update(member: String, updateMode: UpdateMode, score: Score, replyTo: ActorRef[Score]) extends Request
   case class Spawn[M](behavior: Behavior[M], name:String) extends Request
 }
 
@@ -113,9 +111,8 @@ class LeaderboardActor(initialUUID: UUID, initialName: String) extends Leaderboa
         case GetStanding(member: String, replyTo: ActorRef[Option[Standing]]) ⇒
           replyTo ! leaderboard.getStanding(member)
           Behaviors.same
-        case Update(member: String, updateMode: UpdateMode, score: Score, replyTo: ActorRef[Done]) ⇒
-          leaderboard.update(updateMode, member, score)
-          replyTo ! Done
+        case Update(member: String, updateMode: UpdateMode, score: Score, replyTo: ActorRef[Score]) ⇒
+          replyTo ! leaderboard.update(updateMode, member, score)
           Behaviors.same
         case Spawn(behavior, name) ⇒
           logger.info(s"spawning $name")
