@@ -13,9 +13,9 @@ class SynchronizedLeaderboardSpec extends UnitSpec  with LeaderboardBehaviors {
 
   val leaderboard = new SynchronizedLeaderboard(memberToScore, scoreToMember)
 
-  it must behave like handleInitialConditions(leaderboard)
-  it must behave like handleTwoMembers(leaderboard)
-  it must behave like handleHandleConcurrentUpdates(leaderboard)
-  it must behave like handleHandleHighIntensityConcurrentUpdates(leaderboard)
-  it must behave like handleHandleLargeNumberOfMembers(leaderboard)
+  it must behave like handleInitialConditionsAsync(leaderboard)
+  it must behave like handleTwoMembersAsync(leaderboard)
+  it must behave like handleConcurrentUpdatesAsync(leaderboard)
+  it must behave like handleHandleHighIntensityConcurrentUpdatesAsync(leaderboard)
+  it must behave like handleHandleLargeNumberOfMembersAsync(leaderboard)
 }

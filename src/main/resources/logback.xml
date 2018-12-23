@@ -25,7 +25,6 @@
         <syslogHost>localhost</syslogHost>
     </appender>
 
-
     <!-- When using Akka, use AsyncAppender -->
     <appender name="ASYNC-CONSOLE" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="STDOUT" />

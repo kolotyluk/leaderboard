@@ -1,14 +1,45 @@
 <configuration debug="true">
 
+    <!-- see also: https://doc.akka.io/docs/akka/2.5/logging.html -->
+
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <!-- encoders are  by default assigned the type
-             ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+        <!--
+            encoders are by default assigned the type
+            ch.qos.logback.classic.encoder.PatternLayoutEncoder
+        -->
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <!--
+                Seems not possible to change the Akka logging pattern with SLF4J, so we defer here
+                https://stackoverflow.com/questions/24696793/akka-logging-pattern-unchangeable
+            -->
+            <pattern>[%-5level] [%date{ISO8601}] [%thread] [%logger{36}] %msg%n</pattern>
+            <!--
+                        <pattern>%-5level %date{ISO8601} %logger{36} %X{sourceThread} - %msg%n</pattern>
+            -->
         </encoder>
     </appender>
 
-    <root level="debug">
+    <appender name="SYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">
+        <facility>USER</facility>
+        <suffixPattern>[%thread] %logger %msg</suffixPattern>
+        <syslogHost>localhost</syslogHost>
+    </appender>
+
+    <!-- When using Akka, use AsyncAppender -->
+    <appender name="ASYNC-CONSOLE" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="STDOUT" />
+    </appender>
+
+    <!-- When using Akka, use AsyncAppender -->
+    <appender name="ASYNC-SYSLOG" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="SYSLOG" />
+    </appender>
+
+    <!-- When using Akka, use AsyncAppender -->
+    <root level="info">
+        <appender-ref ref="ASYNC-CONSOLE" />
+<!--
+        <appender-ref ref="ASYNC-SYSLOG" />
+-->
     </root>
 </configuration>

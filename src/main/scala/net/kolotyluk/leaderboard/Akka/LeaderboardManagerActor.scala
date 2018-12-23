@@ -1,5 +1,6 @@
 package net.kolotyluk.leaderboard.Akka
 
+import java.util
 import java.util.UUID
 
 import akka.actor.ActorInitializationException
@@ -7,7 +8,7 @@ import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior, SupervisorStrategy, Terminated}
 import net.kolotyluk.leaderboard.Akka.LeaderboardManagerActor.{Create, Spawn, Update}
 import net.kolotyluk.leaderboard.Configuration
-import net.kolotyluk.leaderboard.scorekeeping.{Score, UpdateMode}
+import net.kolotyluk.leaderboard.scorekeeping.{ConsecutiveLeaderboard, Score, UpdateMode}
 import net.kolotyluk.scala.extras.Logging
 
 import scala.collection.mutable
@@ -63,7 +64,10 @@ class LeaderboardManagerActor() extends Configuration with Logging {
         case Create(name: String) ⇒
           try {
             val uuid = UUID.randomUUID()
-            val leaderboardActor = new LeaderboardActor(uuid, name)
+            val memberToScore = new util.HashMap[String,Option[Score]]
+            val scoreToMember = new util.TreeMap[Score,String]
+            val leaderboard = new ConsecutiveLeaderboard(memberToScore, scoreToMember)
+            val leaderboardActor = new LeaderboardActor(leaderboard)
             val leaderboardActorRef = actorCell.spawn(leaderboardActor.behavior, s"leaderboard-$name")
             assert(leaderboardActorRef != null)
             Behaviors.supervise(leaderboardActor.behavior)

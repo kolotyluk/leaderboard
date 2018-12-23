@@ -3,6 +3,7 @@ package net.kolotyluk.leaderboard.scorekeeping
 import java.util.concurrent.{ConcurrentHashMap, ConcurrentMap, ConcurrentNavigableMap, ConcurrentSkipListMap}
 import java.util.{ConcurrentModificationException, UUID}
 
+import net.kolotyluk.leaderboard.scorekeeping
 import net.kolotyluk.leaderboard.telemetry.Metrics
 import net.kolotyluk.scala.extras.{Configuration, Identity, Logging}
 
@@ -305,7 +306,7 @@ class ConcurrentLeaderboard(memberToScore: ConcurrentMap[String,Option[Score]], 
     * @param newScore existing score created by another ScoreKeeper
     */
   @tailrec
-  private def updater(mode: UpdateMode, member: String, newScore: Score, spinCount: Int, spinStart: Long): Score = {
+  private def updater(mode: UpdateMode, member: String, newScore: Score, spinCount: Int, spinStart: Long): scorekeeping.Score = {
     // Caution: there is some subtle logic below, so don't modify it unless you grok it
 
     try {
@@ -336,6 +337,7 @@ class ConcurrentLeaderboard(memberToScore: ConcurrentMap[String,Option[Score]], 
           for (i <- -1 to spinCount * spinCount) Thread.`yield`
           updater(mode, member, newScore, spinCount + 1, spinStart)
         case Some(oldScore) =>
+          var score = newScore
           try { // BEGIN CRITICAL SECTION
             // Member already on the leaderboard
             if (scoreToMember.remove(oldScore) == null) {
@@ -343,14 +345,13 @@ class ConcurrentLeaderboard(memberToScore: ConcurrentMap[String,Option[Score]], 
               logger.error(message)
               throw new ConcurrentModificationException(message)
             } else {
-              val score =
                 mode match {
                   case Replace =>
                     //logger.debug(s"$member: newScore = $newScore")
-                    newScore
+                    // newScore
                   case Increment =>
                     //logger.debug(s"$member: newScore = $newScore, oldScore = $oldScore")
-                    Score(newScore.value + oldScore.value)
+                    score = Score(oldScore.value + newScore.value,newScore.random )
                 }
               //logger.debug(s"$member: updated score = $score")
               scoreToMember.put(score, member)
@@ -367,7 +368,7 @@ class ConcurrentLeaderboard(memberToScore: ConcurrentMap[String,Option[Score]], 
           } // END CRITICAL SECTION
           // Do this outside the critical section to reduce time under lock
           if (spinCount > 0) Metrics.checkSpinTime(System.nanoTime() - spinStart)
-          newScore
+          score
       }
     }
   }

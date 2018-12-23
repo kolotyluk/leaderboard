@@ -238,8 +238,8 @@
         <!-- Test -->
         <dependency>
             <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-testkit_${scala.tools.version}</artifactId>
-            <version>${akka.version}</version>
+            <artifactId>akka-actor-testkit-typed_${scala.tools.version}</artifactId>
+            <version>2.5.19</version>
             <scope>test</scope>
         </dependency>
         <dependency>
