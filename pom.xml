@@ -374,7 +374,10 @@
                 <artifactId>gatling-maven-plugin</artifactId>
                 <version>3.0.1</version>
                 <configuration>
-                    <simulationClass>it.GatlingPingFloodSimulationIT</simulationClass>
+                    <jvmArgs>
+                        <jvmArg>-Dgatling.test.host=localhost:8080</jvmArg>
+                    </jvmArgs>
+                    <simulationClass>it.GatlingPingSimulationIT</simulationClass>
                 </configuration>
                 <executions>
                     <execution>
