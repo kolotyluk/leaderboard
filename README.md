@@ -11,7 +11,7 @@ of the restrictions of Redis, while maintaining the robustness of it.
 Academically, it is also an exercercise in designing and implementing a
 microservice, and experimenting with modern cloud principles.
 
-See also [Diary](DIARY.md)
+See also [Diary](DIARY.md), [Benchmarks](BENCHMARKS.md)
 
 # DevOps
 
