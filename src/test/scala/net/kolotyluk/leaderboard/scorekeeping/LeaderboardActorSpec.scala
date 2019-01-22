@@ -5,6 +5,7 @@ import java.util.concurrent.{ConcurrentHashMap, ConcurrentSkipListMap}
 import akka.actor.testkit.typed.scaladsl.ActorTestKit
 import net.kolotyluk.leaderboard.Akka.LeaderboardActor
 import org.scalatest.BeforeAndAfterAll
+import unit.UnitSpec
 
 import scala.language.postfixOps
 

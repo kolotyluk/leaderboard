@@ -1,7 +1,12 @@
 package net.kolotyluk.leaderboard
 
+import java.util.UUID
+
 import akka.http.scaladsl.server.{Route, RouteConcatenation}
 import net.kolotyluk.leaderboard.Akka.swagger.SwaggerDocService
+import net.kolotyluk.leaderboard.scorekeeping.Leaderboard
+
+import scala.collection.concurrent.TrieMap
 
 /** =Akka Actors=
   * ==Overview==
@@ -36,4 +41,8 @@ package object Akka extends RouteConcatenation {
 
   val restActor = new RestActor(routes)
   val guardianActor = new GuardianActor(leaderboardManagerActor, restActor) // top level of our actor hierarchy
+
+  val nameToUuid = new TrieMap[String,UUID]
+  val uuidToLeaderboard = new TrieMap[UUID,Leaderboard]
 }
+

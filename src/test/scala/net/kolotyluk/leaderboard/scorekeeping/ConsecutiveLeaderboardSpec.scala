@@ -3,6 +3,7 @@ package net.kolotyluk.leaderboard.scorekeeping
 import java.util
 
 import org.scalatest.Ignore
+import unit.UnitSpec
 
 import scala.language.postfixOps
 

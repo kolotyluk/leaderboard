@@ -31,6 +31,32 @@ See also [Diary](DIARY.md), [Benchmarks](BENCHMARKS.md)
 
 ### Load / Performance Tests
 
+Edit pom.xml and set `gatling.test.host`
+
+    <plugin>
+        <groupId>io.gatling</groupId>
+        <artifactId>gatling-maven-plugin</artifactId>
+        <version>3.0.1</version>
+        <configuration>
+            <jvmArgs>
+                <jvmArg>-Dgatling.test.host=localhost:8080</jvmArg>
+            </jvmArgs>
+            <simulationClass>it.GatlingPingSimulationIT</simulationClass>
+        </configuration>
+        <executions>
+            <execution>
+                <id>Ping</id>
+                <phase>integration-test</phase>
+                <goals>
+                    <goal>test</goal>
+                </goals>
+            </execution>
+        </executions>
+    </plugin>
+
+
+then run
+
     mvn gatling:test
 
 ### Documenation

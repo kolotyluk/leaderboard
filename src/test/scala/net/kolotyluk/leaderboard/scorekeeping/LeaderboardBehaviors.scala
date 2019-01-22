@@ -4,6 +4,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 import net.kolotyluk.leaderboard.telemetry.Metrics
 import net.kolotyluk.scala.extras.Logging
+import unit.UnitSpec
 
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.ExecutionContext.Implicits.global

@@ -2,6 +2,8 @@ package net.kolotyluk.leaderboard.scorekeeping
 
 import java.util.concurrent.{ConcurrentHashMap, ConcurrentSkipListMap}
 
+import unit.UnitSpec
+
 import scala.language.postfixOps
 
 class SynchronizedConcurrentLeaderboardSpec extends UnitSpec  with LeaderboardBehaviors {
