@@ -2,10 +2,10 @@ package net.kolotyluk.leaderboard.Akka
 
 import java.util.UUID
 
+import akka.actor.Scheduler
 import akka.actor.typed.scaladsl.AskPattern._
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorContext, ActorRef, Behavior, Terminated}
-import akka.actor.{ActorInitializationException, Scheduler}
 import akka.util.Timeout
 import net.kolotyluk.leaderboard.Akka.LeaderboardActor._
 import net.kolotyluk.leaderboard.scorekeeping.{LeaderboardAsync, LeaderboardSync, Score, Standing, UpdateMode}
@@ -124,33 +124,34 @@ class LeaderboardActor(leaderboard: LeaderboardSync) extends LeaderboardAsync wi
         logger.warn(s"received signal with event = $event with actorContext = $actorContext")
         event match {
           case terminated@Terminated(actorRef) ⇒
-            val failure = terminated.failure
-            logger.warn(s"actorRef = $actorRef, failure = $failure")
-            failure match {
-              case None ⇒
-                logger.error(s"FATAL stopping service because of unknown failure")
-                Behaviors.stopped
-              case Some(cause) ⇒
-                if (cause.isInstanceOf[ActorInitializationException]) {
-                  if (cause.getCause.isInstanceOf[ConfigurationError]) {
-                    // Constructing a ConfigurationError logs it's own diagnostics
-                    // Terminate things so that configuration problems can be resolved first
-                    logger.error(s"FATAL - stopping service because of ConfigurationError during Actor Initialization")
-                    Behaviors.stopped
-                  } else {
-                    // Any problem during Actor Initialization is probably transient and serious enough that it is
-                    // unwise to continue with the system. TODO: reconsider this
-                    logger.error(s"FATAL - stopping service because of ActorInitializationException", cause)
-                    Behaviors.stopped
-                  }
-                } else {
-                  logger.warn(s"unknown cause = $cause, continuing...")
-                  Behaviors.same
-                }
-              case _ ⇒
-                logger.warn(s"unknown failure = $failure, continuing...")
-                Behaviors.same
-            }
+            Behaviors.same
+//            val failure = terminated.failure
+//            logger.warn(s"actorRef = $actorRef, failure = $failure")
+//            failure match {
+//              case None ⇒
+//                logger.error(s"FATAL stopping service because of unknown failure")
+//                Behaviors.stopped
+//              case Some(cause) ⇒
+//                if (cause.isInstanceOf[ActorInitializationException]) {
+//                  if (cause.getCause.isInstanceOf[ConfigurationError]) {
+//                    // Constructing a ConfigurationError logs it's own diagnostics
+//                    // Terminate things so that configuration problems can be resolved first
+//                    logger.error(s"FATAL - stopping service because of ConfigurationError during Actor Initialization")
+//                    Behaviors.stopped
+//                  } else {
+//                    // Any problem during Actor Initialization is probably transient and serious enough that it is
+//                    // unwise to continue with the system. TODO: reconsider this
+//                    logger.error(s"FATAL - stopping service because of ActorInitializationException", cause)
+//                    Behaviors.stopped
+//                  }
+//                } else {
+//                  logger.warn(s"unknown cause = $cause, continuing...")
+//                  Behaviors.same
+//                }
+//              case _ ⇒
+//                logger.warn(s"unknown failure = $failure, continuing...")
+//                Behaviors.same
+//            }
           case _ ⇒
             logger.warn(s"unknown event = $event, continuing...")
             Behaviors.same

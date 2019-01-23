@@ -1,35 +1,32 @@
 package net.kolotyluk.leaderboard.Akka
 
 import java.util
-import java.util.UUID
+import java.util.{NoSuchElementException, UUID}
 import java.util.concurrent.{ConcurrentHashMap, ConcurrentSkipListMap}
 
 import akka.event.Logging
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.model.StatusCodes._
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse}
-import akka.http.scaladsl.server.{Directives, MalformedRequestContentRejection, RejectionHandler, RequestEntityExpectedRejection, Route, UnsupportedRequestContentTypeRejection}
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpRequest, HttpResponse}
+import akka.http.scaladsl.server.{Directives, ExceptionHandler, MalformedRequestContentRejection, RejectionHandler, RequestEntityExpectedRejection, Route, UnsupportedRequestContentTypeRejection}
 import io.swagger.annotations._
 import javax.ws.rs.Path
-import net.kolotyluk.leaderboard.scorekeeping.{ConcurrentLeaderboard, ConsecutiveLeaderboard, Score, SynchronizedConcurrentLeaderboard, SynchronizedLeaderboard}
+import net.kolotyluk.leaderboard.Akka.endpoint.EndpointException
+import net.kolotyluk.leaderboard.scorekeeping.{ConcurrentLeaderboard, ConsecutiveLeaderboard, Leaderboard, Score, SynchronizedConcurrentLeaderboard, SynchronizedLeaderboard}
 import net.kolotyluk.scala.extras.Logging
 import spray.json.DefaultJsonProtocol
 
-abstract class LeaderboardException extends Exception {
-  def getHttpResponse: HttpResponse
-}
+import scala.language.implicitConversions
 
-class DuplicateNameException(name: String) extends LeaderboardException {
-  def getHttpResponse() : HttpResponse= {
-    HttpResponse(BadRequest, entity = s"leaderboard?name=$name already exists")
-  }
-}
+//case class LeaderboardRejection(response: HttpResponse) extends scala.AnyRef with Rejection {
+//}
 
-class UknownKindException(kind: String) extends LeaderboardException {
-  def getHttpResponse() : HttpResponse= {
-    HttpResponse(BadRequest, entity = s"leaderboard.kind=$kind unknown! Specify one of: ConcurrentLeaderboard, LeaderboardActor, SynchronizedConcurrentLeaderboard, SynchronizedLeaderboard")
-  }
-}
+//final case class UnknownKindRejection()
+//  extends LeaderboardRejection(null) {
+//  def this(kind: String) {
+//    this(HttpResponse(BadRequest, entity = s"leaderboard.kind=$kind unknown! Specify one of: ConcurrentLeaderboard, LeaderboardActor, SynchronizedConcurrentLeaderboard, SynchronizedLeaderboard"))
+//  }
+//}
 
 final case class LeaderboardGetResponse(name: String, state: String, members: Long)
 
@@ -37,16 +34,86 @@ final case class LeaderboardPostRequest(name: String, kind: String)
 
 final case class LeaderboardPostResponse(name: Option[String], id: String)
 
-trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
+trait LeaderboardJsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val requestFormat = jsonFormat2(LeaderboardPostRequest)
   implicit val responseFormat = jsonFormat2(LeaderboardPostResponse)
 }
 
 @Api(value = "/leaderboard", produces = "text/plain(UTF-8)")
 @Path("/leaderboard")
-class LeaderboardEndpoint extends Directives with JsonSupport with Logging {
+class LeaderboardEndpoint extends Directives with LeaderboardJsonSupport with Logging {
 
-  //val routes = leaderboardRoute
+  class DuplicateIDException(id: UUID)
+    extends EndpointException(HttpResponse(InternalServerError, entity = s"leaderboard id=$id already exists")) {
+  }
+
+  class DuplicateNameException(name: String)
+    extends EndpointException(HttpResponse(BadRequest, entity = s"leaderboard?name=$name already exists")) {
+  }
+
+  class IdNotFoundException(name: String)
+    extends EndpointException(HttpResponse(NotFound, entity = s"leaderboard name=$name does not exist")) {
+  }
+
+  class NameNotFoundException(id: String)
+    extends EndpointException(HttpResponse(NotFound, entity = s"leaderboard id=$id does not exist")) {
+  }
+  class UnknownKindException(name: String, kind: String)
+    extends EndpointException(HttpResponse(BadRequest,
+      entity = s"In {'name' : '$name', 'kind' : '$kind'}, $kind is unknown! Specify one of: ${Kind.values.mkString(", ")}")) {
+  }
+
+  object Kind extends Enumeration {
+    protected case class Val(constructor: UUID => Leaderboard) extends super.Val {
+      def create(nameOption: Option[String]): LeaderboardPostResponse = {
+        val uuid = UUID.randomUUID
+        val leaderboard = constructor(uuid)
+        uuidToLeaderboard.put(uuid,leaderboard) match {
+          case None =>
+            LeaderboardPostResponse(nameOption, uuid.toString)
+          case Some(item) =>
+            // TODO There should not be an existing leaderboard with this ID
+            throw new InternalError()
+        }
+        LeaderboardPostResponse(nameOption, uuid.toString)
+      }
+    }
+    implicit def valueToKindVal(x: Value): Val = x.asInstanceOf[Val]
+
+    val ConcurrentLeaderboard = Val(
+      uuid => {
+        val memberToScore = new ConcurrentHashMap[String,Option[Score]]
+        val scoreToMember = new ConcurrentSkipListMap[Score,String]
+        new ConcurrentLeaderboard(memberToScore, scoreToMember)
+      }
+    )
+
+    val LeaderboardActor = Val(
+      uuid => {
+        val memberToScore = new ConcurrentHashMap[String,Option[Score]]
+        val scoreToMember = new ConcurrentSkipListMap[Score,String]
+        val leaderboard = new ConsecutiveLeaderboard(memberToScore, scoreToMember)
+        val leaderboardActor = new LeaderboardActor(leaderboard)
+        leaderboard
+      }
+    )
+
+    val SynchronizedConcurrentLeaderboard = Val(
+      uuid => {
+        val memberToScore = new ConcurrentHashMap[String, Option[Score]]
+        val scoreToMember = new ConcurrentSkipListMap[Score, String]
+        new SynchronizedConcurrentLeaderboard(memberToScore, scoreToMember)
+      }
+    )
+
+    val SynchronizedLeaderboard = Val(
+      name => {
+        val memberToScore = new util.HashMap[String, Option[Score]]
+        val scoreToMember = new util.TreeMap[Score, String]
+        new SynchronizedLeaderboard(memberToScore, scoreToMember)
+      }
+    )
+  }
 
   def routes: Route =
     path("leaderboard" ) {
@@ -81,7 +148,17 @@ class LeaderboardEndpoint extends Directives with JsonSupport with Logging {
       }
     }
 
-  val postBodyRejections = RejectionHandler.newBuilder().handle{
+  def postExceptionHandler: ExceptionHandler =
+    ExceptionHandler {
+      case cause: DuplicateIDException =>
+        logger.error(cause)
+        complete(cause.response)
+      case cause: EndpointException =>
+        logger.warn(cause)
+        complete(cause.response)
+    }
+
+  val postRejectionHandler = RejectionHandler.newBuilder().handle{
       case RequestEntityExpectedRejection =>
         complete(BadRequest, "RequestEntityExpectedRejection") // TODO there seems to be no way to get here?
       case UnsupportedRequestContentTypeRejection(supported) =>
@@ -89,6 +166,8 @@ class LeaderboardEndpoint extends Directives with JsonSupport with Logging {
       case MalformedRequestContentRejection(message, cause) =>
         logger.error(cause)
         complete(BadRequest, s"MalformedRequestContentRejection $message")
+//      case LeaderboardRejection(response) =>
+//        complete(response)
     }.result()
 
   /** =POST leaderboard=
@@ -100,7 +179,7 @@ class LeaderboardEndpoint extends Directives with JsonSupport with Logging {
     * PowerShell: Invoke-WebRequest -Method Post http://localhost:8080/leaderboard?name=foo
     * PowerShell: Invoke-WebRequest http://localhost:8080/leaderboard -Method Post -ContentType "application/json" -Body '{"name":"foo","kind":"ConcurrentLeaderboard"}'
     * }}}
-    * @param name
+    * @param nameOption
     * @return
     */
   @Path("?name={name}")
@@ -109,46 +188,53 @@ class LeaderboardEndpoint extends Directives with JsonSupport with Logging {
     new ApiResponse(code = 200, message = "Return leaderboard created confirmation", response = classOf[String]),
     new ApiResponse(code = 405, message = "Return leaderboard already exists", response = classOf[String])
   ))
-  def leaderboardPost(name: Option[String]): Route =
+  def leaderboardPost(nameOption: Option[String]): Route =
     post {
       logRequest("leaderboard", Logging.DebugLevel) {
-        handleRejections(postBodyRejections) {
-          entity(as[LeaderboardPostRequest]) { leaderboard =>
-            try {
-              complete(leaderboardCreate(Some(leaderboard.name), Some(leaderboard.kind)))
-            } catch {
-              case cause: LeaderboardException => complete(cause.getHttpResponse)
-              case cause: Throwable =>
-                complete(HttpResponse(InternalServerError, entity = s"Exception thrown from LeaderboardPost: ${cause.getMessage}"))
+        handleExceptions(postExceptionHandler) {
+          handleRejections(postRejectionHandler) {
+            entity(as[LeaderboardPostRequest]) { leaderboard =>
+              // unix shell: curl -H "Content-Type: application/json" -d '{"name":"foo","kind":"ConcurrentLeaderboard"}' -X POST http://localhost:8080/leaderboard
+              // PowerShell: Invoke-WebRequest http://localhost:8080/leaderboard -Method Post -ContentType "application/json" -Body '{"name":"foo","kind":"ConcurrentLeaderboard"}'
+              try {
+                complete(leaderboardCreate(Some(leaderboard.name), Some(leaderboard.kind)))
+              } catch {
+                case cause: DuplicateIDException =>
+                  logger.error(cause)
+                  complete(cause.response)
+                case cause: EndpointException =>
+                  logger.warn(cause)
+                  complete(cause.response)
+                case cause: Throwable =>
+                  logger.error(cause)
+                  complete(HttpResponse(InternalServerError, entity = s"Exception thrown from LeaderboardPost: ${cause.getMessage}"))
+              }
+            } ~
+            entity(as[HttpRequest]) { httpRequest =>
+              if (httpRequest.entity.getContentLengthOption().getAsLong == 0)
+                // unix shell: curl -d "" http://localhost:8080/leaderboard?name=foo
+                // PowerShell: Invoke-WebRequest -Method Post http://localhost:8080/leaderboard?name=foo
+                complete(leaderboardCreate(nameOption, None)) // default leaderboard
+              else
+                complete(HttpResponse(BadRequest, entity = "****  Something Wrong  ****")) // TODO this better
             }
-          } //~ complete(HttpResponse(BadRequest, entity = "****body missing****"))
-          //} //~
-            // complete(concurrentLeaderboard(None))
-            //complete(HttpResponse(BadRequest, entity = "****body missing****"))
-        } // ~ complete(HttpResponse(BadRequest, entity = "****body missing****"))
+          }
+        }
       }
-
-//      complete {
-//        ConcurrentLeaderboard.add(name) match {
-//          case Failure(cause) => HttpResponse(MethodNotAllowed, entity = s"leaderboard?name=$name already exists")
-//          case Success(leaderboard) => s"Leaderboard $name created"
-//        }
-//      }
     }
 
   def leaderboardCreate(nameOption: Option[String], kindOption: Option[String]): LeaderboardPostResponse = {
     def create(): LeaderboardPostResponse = {
       kindOption match {
-        case None | Some("LeaderboardActor") =>
-          leaderboardActor(nameOption)
-        case Some("ConcurrentLeaderboard") =>
-          concurrentLeaderboard(nameOption)
-        case Some("SynchronizedConcurrentLeaderboard") =>
-          synchronizedConcurrentLeaderboard(nameOption)
-        case Some("SynchronizedLeaderboard") =>
-          synchronizedLeaderboard(nameOption)
+        case None =>
+          Kind.LeaderboardActor.create(nameOption)
         case Some(kind) =>
-          throw new UknownKindException(kind)
+          try {
+            Kind.withName(kind).create(nameOption)
+          } catch {
+            case cause: NoSuchElementException =>
+              throw new UnknownKindException(nameOption.getOrElse(""), kind)
+          }
       }
     }
 
@@ -159,60 +245,6 @@ class LeaderboardEndpoint extends Directives with JsonSupport with Logging {
         if (nameToUuid.contains(name)) {
           throw new DuplicateNameException(name)
         } else create()
-    }
-  }
-
-  def concurrentLeaderboard(nameOption: Option[String]) : LeaderboardPostResponse = {
-    val memberToScore = new ConcurrentHashMap[String,Option[Score]]
-    val scoreToMember = new ConcurrentSkipListMap[Score,String]
-    val leaderboard = new ConcurrentLeaderboard(memberToScore, scoreToMember)
-    val uuid = UUID.randomUUID()
-    uuidToLeaderboard.put(uuid,leaderboard) match {
-      case None =>
-        LeaderboardPostResponse(nameOption, uuid.toString)
-      case Some(item) =>
-        throw new InternalError()
-    }
-  }
-
-  def leaderboardActor(nameOption: Option[String]) : LeaderboardPostResponse = {
-    val memberToScore = new ConcurrentHashMap[String,Option[Score]]
-    val scoreToMember = new ConcurrentSkipListMap[Score,String]
-    val leaderboard = new ConsecutiveLeaderboard(memberToScore, scoreToMember)
-    val leaderboardActor = new LeaderboardActor(leaderboard)
-
-    val uuid = UUID.randomUUID()
-    uuidToLeaderboard.put(uuid,leaderboard) match {
-      case None =>
-        LeaderboardPostResponse(nameOption, uuid.toString)
-      case Some(item) =>
-        throw new InternalError()
-    }
-  }
-
-  def synchronizedConcurrentLeaderboard(nameOption: Option[String]) : LeaderboardPostResponse = {
-    val memberToScore = new ConcurrentHashMap[String, Option[Score]]
-    val scoreToMember = new ConcurrentSkipListMap[Score, String]
-    val leaderboard = new SynchronizedConcurrentLeaderboard(memberToScore, scoreToMember)
-    val uuid = UUID.randomUUID()
-    uuidToLeaderboard.put(uuid,leaderboard) match {
-      case None =>
-        LeaderboardPostResponse(nameOption, uuid.toString)
-      case Some(item) =>
-        throw new InternalError()
-    }
-  }
-
-  def synchronizedLeaderboard(nameOption: Option[String]) : LeaderboardPostResponse = {
-    val memberToScore = new util.HashMap[String, Option[Score]]
-    val scoreToMember = new util.TreeMap[Score, String]
-    val leaderboard = new SynchronizedLeaderboard(memberToScore, scoreToMember)
-    val uuid = UUID.randomUUID()
-    uuidToLeaderboard.put(uuid,leaderboard) match {
-      case None =>
-        LeaderboardPostResponse(nameOption, uuid.toString)
-      case Some(item) =>
-        throw new InternalError()
     }
   }
 
