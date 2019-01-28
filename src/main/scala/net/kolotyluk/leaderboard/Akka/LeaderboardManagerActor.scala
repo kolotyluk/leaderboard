@@ -7,8 +7,8 @@ import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior, SupervisorStrategy, Terminated}
 import net.kolotyluk.leaderboard.Akka.LeaderboardManagerActor.{Create, Spawn, Update}
 import net.kolotyluk.leaderboard.Configuration
-import net.kolotyluk.leaderboard.scorekeeping.{ConsecutiveLeaderboard, Score, UpdateMode}
-import net.kolotyluk.scala.extras.Logging
+import net.kolotyluk.leaderboard.scorekeeping.{ConsecutiveLeaderboard, LeaderboardIdentifier, MemberIdentifier, Score, UpdateMode}
+import net.kolotyluk.scala.extras.{Internalized, Logging}
 
 import scala.collection.mutable
 
@@ -46,7 +46,7 @@ object LeaderboardManagerActor {
 class LeaderboardManagerActor() extends Configuration with Logging {
   logger.info("constructing...")
 
-  val uuidToLeaderboard = new mutable.HashMap[UUID,LeaderboardActor]
+  val leaderboardIdentifierToLeaderboard = new mutable.HashMap[LeaderboardIdentifier,LeaderboardActor]
 
   var restActorRef : ActorRef[RestActor.Message] = null
 
@@ -62,11 +62,11 @@ class LeaderboardManagerActor() extends Configuration with Logging {
       message match {
         case Create(name: String) ⇒
           try {
-            val uuid = UUID.randomUUID()
-            val memberToScore = new util.HashMap[String,Option[Score]]
-            val scoreToMember = new util.TreeMap[Score,String]
-            val leaderboard = new ConsecutiveLeaderboard(memberToScore, scoreToMember)
-            val leaderboardActor = new LeaderboardActor(leaderboard)
+            val leaderboardIdentifier = Internalized(UUID.randomUUID())
+            val memberToScore = new util.HashMap[MemberIdentifier,Option[Score]]
+            val scoreToMember = new util.TreeMap[Score,MemberIdentifier]
+            val leaderboard = new ConsecutiveLeaderboard(leaderboardIdentifier, memberToScore, scoreToMember)
+            val leaderboardActor = new LeaderboardActor(leaderboardIdentifier, leaderboard)
             val leaderboardActorRef = actorCell.spawn(leaderboardActor.behavior, s"leaderboard-$name")
             assert(leaderboardActorRef != null)
             Behaviors.supervise(leaderboardActor.behavior)
@@ -74,7 +74,7 @@ class LeaderboardManagerActor() extends Configuration with Logging {
               .orElse(Behavior.same)
             actorCell.watch(leaderboardActorRef)
 
-            uuidToLeaderboard.put(uuid,leaderboardActor)
+            leaderboardIdentifierToLeaderboard.put(leaderboardIdentifier,leaderboardActor)
 
             Behaviors.same
           } catch {

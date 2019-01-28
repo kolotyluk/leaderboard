@@ -1,9 +1,10 @@
 package net.kolotyluk.leaderboard.telemetry
 
-import java.util.ConcurrentModificationException
+import java.util.{ConcurrentModificationException, UUID}
 import java.util.concurrent.atomic.AtomicLong
 
-import net.kolotyluk.scala.extras.{Configuration, Logging}
+import net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier
+import net.kolotyluk.scala.extras.{Configuration, Internalized, Logging}
 
 object Metrics extends Configuration with Logging {
 
@@ -14,9 +15,9 @@ object Metrics extends Configuration with Logging {
   var largestSpinCount = new AtomicLong(0)
   var totalSpinCount = new AtomicLong(0)
 
-  var largestSpinMember: String = "no one"
+  var largestSpinMember: MemberIdentifier = Internalized(new UUID(0,0))
 
-  def checkSpinCount(member: String, spinCount: Long) = {
+  def checkSpinCount(memberIdentifier: MemberIdentifier, spinCount: Long) = {
 
     var currentCount = largestSpinCount.get
     while (spinCount > currentCount && !largestSpinCount.compareAndSet(currentCount, spinCount)) currentCount = largestSpinCount.get
@@ -24,14 +25,14 @@ object Metrics extends Configuration with Logging {
     var total = totalSpinCount.get
     while (!totalSpinCount.compareAndSet(total, total + spinCount)) total = totalSpinCount.get
 
-    if (spinCount > currentCount) largestSpinMember = member
+    if (spinCount > currentCount) largestSpinMember = memberIdentifier
 
       //largestSpinCount = spinCount
       //logger.info(s"spinCount = $spinCount, largestSpinCount = $largestSpinCount")
 
 
     if (spinCount > msximumSpinCount) {
-      throw new ConcurrentModificationException(maximumSpinCountExceeded.format(msximumSpinCount, member))
+      throw new ConcurrentModificationException(maximumSpinCountExceeded.format(msximumSpinCount, memberIdentifier))
     }
   }
 

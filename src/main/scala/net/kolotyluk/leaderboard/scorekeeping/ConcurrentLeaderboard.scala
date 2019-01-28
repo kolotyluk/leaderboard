@@ -5,7 +5,7 @@ import java.util.{ConcurrentModificationException, UUID}
 
 import net.kolotyluk.leaderboard.scorekeeping
 import net.kolotyluk.leaderboard.telemetry.Metrics
-import net.kolotyluk.scala.extras.{Configuration, Identity, Logging}
+import net.kolotyluk.scala.extras.{Configuration, Internalized, Logging}
 
 import scala.annotation.tailrec
 import scala.collection.concurrent.TrieMap
@@ -18,65 +18,64 @@ import scala.util.{Failure, Success, Try}
 object ConcurrentLeaderboard extends LeaderboardManager {
   val maximumSpinCountExceeded = "%s: This is probably caused because a lock was set on %s, but never removed, possibly because of thread failure."
 
-  val nameToUuid = new TrieMap[String,UUID]
-  val uuidToLeaderboard = new TrieMap[UUID,ConcurrentLeaderboard]
+  val nameToId = new TrieMap[String,LeaderboardIdentifier]
+  val idToLeaderboard = new TrieMap[LeaderboardIdentifier,ConcurrentLeaderboard]
 
   /** =Add New Leaderboard=
     *
     * @return new Leaderboard instance
     */
-  def add(): Try[ConcurrentLeaderboard] = add(None)
+  def add(): Try[ConcurrentLeaderboard] = add(None,Internalized(UUID.randomUUID()))
 
   def add(name: String): Try[ConcurrentLeaderboard] = {
-    nameToUuid.get(name) match {
+    nameToId.get(name) match {
       case None =>
-        add(Some(name)) match {
+        add(Some(name), Internalized(UUID.randomUUID())) match {
           case Failure(cause) => Failure(new Exception(s"Leaderboard '$name' cannot be created", cause))
           case Success(leaderboard) =>
-            nameToUuid.put(name, leaderboard.getUuid)
+            nameToId.put(name, leaderboard.leaderboardIdentifier)
             Success(leaderboard)
         }
-      case Some(uuid) => Failure(new Exception(s"Leaderboard '$name' already exists"))
+      case Some(_) => Failure(new Exception(s"Leaderboard '$name' already exists"))
     }
   }
 
-  def add(name: Option[String], uuid: UUID = UUID.randomUUID()): Try[ConcurrentLeaderboard] = {
-    uuidToLeaderboard.get(uuid) match {
+  def add(name: Option[String], leaderboardIdentifier: LeaderboardIdentifier): Try[ConcurrentLeaderboard] = {
+    idToLeaderboard.get(leaderboardIdentifier) match {
       case None =>
         // val memberToScore = new TrieMap[String,Option[Score]]
         // val memberToScore = new ConcurrentHashMap[String,Option[Score]]
         // val scoreToMember = new ConcurrentSkipListMap[Score,String]
 
-      val leaderboard = new ConcurrentLeaderboard(new ConcurrentHashMap[String,Option[Score]], new ConcurrentSkipListMap[Score,String])
-        uuidToLeaderboard.put(uuid, leaderboard) match {
+      val leaderboard = new ConcurrentLeaderboard(leaderboardIdentifier, new ConcurrentHashMap[MemberIdentifier,Option[Score]], new ConcurrentSkipListMap[Score,MemberIdentifier])
+        idToLeaderboard.put(leaderboardIdentifier, leaderboard) match {
           case None => Success(leaderboard)
           case Some(predecessor) =>
             // TODO Technically this cannot happen because we have already tested for it
-            Failure(new Exception(s"Leaderboard $uuid already exists"))
+            Failure(new Exception(s"Leaderboard $leaderboardIdentifier already exists"))
         }
-      case Some(leaderboard) => Failure(new Exception(s"Leaderboard $uuid already exists"))
+      case Some(leaderboard) => Failure(new Exception(s"Leaderboard $leaderboardIdentifier already exists"))
     }
   }
 
-  def get(uuid: UUID): Option[ConcurrentLeaderboard] = uuidToLeaderboard.get(uuid)
+  def get(leaderboardIdentifier: LeaderboardIdentifier): Option[ConcurrentLeaderboard] = idToLeaderboard.get(leaderboardIdentifier)
 
   def get(name: String): Option[ConcurrentLeaderboard] = {
-    nameToUuid.get(name) match {
+    nameToId.get(name) match {
       case None => None
-      case Some(uuid) => get(uuid)
+      case Some(leaderboardIdentifier) => get(leaderboardIdentifier)
     }
   }
 
-  def getInfo(name: String): Option[Info] = {
-    nameToUuid.get(name) match {
+  def getInfo(name: String): Option[LeaderboardInfo] = {
+    nameToId.get(name) match {
       case None => None
-      case Some(uuid) => getInfo(uuid)
+      case Some(leaderboardIdentifier) => getInfo(leaderboardIdentifier)
     }
   }
 
-  def getInfo(uuid: UUID): Option[Info] = {
-
-    uuidToLeaderboard.get(uuid) match {
+  def getInfo(leaderboardIdentifier: LeaderboardIdentifier): Option[LeaderboardInfo] = {
+    idToLeaderboard.get(leaderboardIdentifier) match {
       case None => None
       case Some(leaderboard) => Some(leaderboard.getInfo)
     }
@@ -114,7 +113,7 @@ object ConcurrentLeaderboard extends LeaderboardManager {
   *
   * @author eric@kolotyluk.net
   */
-class ConcurrentLeaderboard(memberToScore: ConcurrentMap[String,Option[Score]], scoreToMember:  ConcurrentNavigableMap[Score,String])
+class ConcurrentLeaderboard(val leaderboardIdentifier: LeaderboardIdentifier, memberToScore: ConcurrentMap[MemberIdentifier,Option[Score]], scoreToMember:  ConcurrentNavigableMap[Score,MemberIdentifier])
   extends LeaderboardSync
     with Configuration
     with Logging {
@@ -123,37 +122,33 @@ class ConcurrentLeaderboard(memberToScore: ConcurrentMap[String,Option[Score]], 
   // val memberToScore = new ConcurrentHashMap[String,Option[Score]]
   // val scoreToMember = new ConcurrentSkipListMap[Score,String]
 
-  override def getInfo = Info(uuid, Some(name), getCount)
+  // override def getInfo = LeaderboardInfo(Some(name), getCount)
 
-  override def getUrlIdentifier(identifier: String) = Identity.getUrlIdentifier(identifier)
-
-  override def getUrlIdentifier(uuid: UUID = UUID.randomUUID()) = Identity.getUrlIdentifier(uuid)
-
-  override def delete(member: String) = {
-    delete(member, 0)
+  override def delete(memberIdentifier: MemberIdentifier) = {
+    delete(memberIdentifier, 0)
   }
 
   @tailrec
-  private def delete(member: String, spinCount: Long): Boolean = {
+  private def delete(memberIdentifier: MemberIdentifier, spinCount: Long): Boolean = {
     try {
-      Metrics.checkSpinCount(member, spinCount)
+      Metrics.checkSpinCount(memberIdentifier, spinCount)
     } catch {
       case cause: ConcurrentModificationException =>
-        throw new ConcurrentModificationException(ConcurrentLeaderboard.maximumSpinCountExceeded.format("delete", member), cause)
+        throw new ConcurrentModificationException(ConcurrentLeaderboard.maximumSpinCountExceeded.format("delete", memberIdentifier), cause)
     }
 
     // Set the spin-lock
-    put(member, None) match {
+    put(memberIdentifier, None) match {
       case None =>    // already deleted
         false
       case Some(option) => option match {
         case None =>  // Update in progress, so spin until complete
           //logger.debug(s"delete: $member locked")
           //Thread.sleep(1)
-          delete(member, spinCount + 1)
+          delete(memberIdentifier, spinCount + 1)
         case Some (oldScore) => // CRITICAL SECTION
           scoreToMember.remove (oldScore)
-          memberToScore.remove (member) // removes lock too
+          memberToScore.remove (memberIdentifier) // removes lock too
           true
       }
     }
@@ -165,7 +160,7 @@ class ConcurrentLeaderboard(memberToScore: ConcurrentMap[String,Option[Score]], 
     * @param score
     * @return
     */
-  def put(member: String, score: Option[Score]) = {
+  def put(member: MemberIdentifier, score: Option[Score]) = {
     val value = memberToScore.put(member, None)
     if (value == null) None else Some(value)
   }
@@ -174,9 +169,11 @@ class ConcurrentLeaderboard(memberToScore: ConcurrentMap[String,Option[Score]], 
     memberToScore.size
   }
 
-  override def getName = Some(name)
+  override def getIdentifier = leaderboardIdentifier
 
-  override def getUuid = uuid
+  override def getInfo = LeaderboardInfo(leaderboardIdentifier, Some(name), getCount)
+
+  override def getName = Some(name)
 
   override def getRange(start: Long, stop: Long) = {
 
@@ -199,40 +196,42 @@ class ConcurrentLeaderboard(memberToScore: ConcurrentMap[String,Option[Score]], 
     Range(placings, totalCount)
   }
 
-  override def getScore(member: String): Option[BigInt] = {
-    getScore(member, 0)
+  override def getScore(memberIdentifier: MemberIdentifier): Option[BigInt] = {
+    //if (memberIdentifier == null) logger.error(s"\n\n\n\n\nget(memberIdentifier: MemberIdentifier): memberIdentifier = $memberIdentifier\n\n\n\n\n")
+    getScore(memberIdentifier, 0)
   }
 
   @tailrec
-  final def getScore(member: String, spinCount: Long): Option[BigInt] = {
+  final def getScore(memberIdentifier: MemberIdentifier, spinCount: Long): Option[BigInt] = {
     try {
-      Metrics.checkSpinCount(member, spinCount)
+      Metrics.checkSpinCount(memberIdentifier, spinCount)
     } catch {
       case cause: ConcurrentModificationException =>
-        throw new ConcurrentModificationException(ConcurrentLeaderboard.maximumSpinCountExceeded.format("getScore", member), cause)
+        throw new ConcurrentModificationException(ConcurrentLeaderboard.maximumSpinCountExceeded.format("getScore", memberIdentifier), cause)
     }
 
 
-    get(member) match {
+    get(memberIdentifier) match {
       case None => None
       case Some(option) => option match {
         case None => // Update in progress, so spin until complete
           //logger.debug(s"getScore: $member locked")
           //Thread.sleep(1)
-          getScore(member, spinCount + 1)
+          getScore(memberIdentifier, spinCount + 1)
         case Some(score) => // CRITICAL SECTION
           Some(score.value)
       }
     }
   }
 
-  def get(member: String): Option[Option[Score]] = {
-    val value = memberToScore.get(member)
+  def get(memberIdentifier: MemberIdentifier): Option[Option[Score]] = {
+    //logger.warn(s"\n\n\n\n\nget(memberIdentifier: MemberIdentifier): memberIdentifier = $memberIdentifier\n\n\n\n\n")
+    val value = memberToScore.get(memberIdentifier)
     if (value == null) None else Some(value)
   }
 
-  override def getStanding(member: String) = {
-    getStanding(member, 0)
+  override def getStanding(memberIdentifier: MemberIdentifier) = {
+    getStanding(memberIdentifier, 0)
   }
 
   /** =Compute Standing=
@@ -243,7 +242,7 @@ class ConcurrentLeaderboard(memberToScore: ConcurrentMap[String,Option[Score]], 
     * @param member
     * @return None if member not present, Some[Standing] otherwise
     */
-  def getStanding(member: String, spinCount: Long): Option[Standing] = {
+  def getStanding(member: MemberIdentifier, spinCount: Long): Option[Standing] = {
     try {
       Metrics.checkSpinCount(member, spinCount)
     } catch {
@@ -277,12 +276,12 @@ class ConcurrentLeaderboard(memberToScore: ConcurrentMap[String,Option[Score]], 
     * @param member
     * @param value
     */
-  override def update(mode: UpdateMode, member: String, value: BigInt) = {
-    update(mode, member, Score(value))
+  override def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, value: BigInt) = {
+    update(mode, memberIdentifier, Score(value))
   }
 
-  override def update(mode: UpdateMode, member: String, newScore: Score) = {
-    updater(mode, member, newScore, 0, System.nanoTime)
+  override def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, newScore: Score) = {
+    updater(mode, memberIdentifier, newScore, 0, System.nanoTime)
   }
 
   /** =Update Leaderboard with Existing Score=
@@ -306,27 +305,27 @@ class ConcurrentLeaderboard(memberToScore: ConcurrentMap[String,Option[Score]], 
     * @param newScore existing score created by another ScoreKeeper
     */
   @tailrec
-  private def updater(mode: UpdateMode, member: String, newScore: Score, spinCount: Int, spinStart: Long): scorekeeping.Score = {
+  private def updater(mode: UpdateMode, memberIdentifier: MemberIdentifier, newScore: Score, spinCount: Int, spinStart: Long): scorekeeping.Score = {
     // Caution: there is some subtle logic below, so don't modify it unless you grok it
 
     try {
-      Metrics.checkSpinCount(member, spinCount)
+      Metrics.checkSpinCount(memberIdentifier, spinCount)
     } catch {
       case cause: ConcurrentModificationException =>
-        throw new ConcurrentModificationException(ConcurrentLeaderboard.maximumSpinCountExceeded.format("update", member), cause)
+        throw new ConcurrentModificationException(ConcurrentLeaderboard.maximumSpinCountExceeded.format("update", memberIdentifier), cause)
     }
 
     // Set the spin-lock
-    put(member, None) match {
+    put(memberIdentifier, None) match {
       case None =>
         // BEGIN CRITICAL SECTION
         // Member's first time on the board
-        if (scoreToMember.put(newScore, member) != null) {
-          val message = s"$member: added new member in memberToScore, but found old member in scoreToMember"
+        if (scoreToMember.put(newScore, memberIdentifier) != null) {
+          val message = s"$memberIdentifier: added new member in memberToScore, but found old member in scoreToMember"
           logger.error(message)
           throw new ConcurrentModificationException(message)
         }
-        memberToScore.put(member, Some(newScore)) // remove the spin-lock
+        memberToScore.put(memberIdentifier, Some(newScore)) // remove the spin-lock
         newScore
         // END CRITICAL SECTION
       case Some(option) => option match {
@@ -335,13 +334,13 @@ class ConcurrentLeaderboard(memberToScore: ConcurrentMap[String,Option[Score]], 
           // Waste time so the lock holder can finish, by yielding the processor to other threads
           // Exponential back-off seems to offer the best behavior
           for (i <- -1 to spinCount * spinCount) Thread.`yield`
-          updater(mode, member, newScore, spinCount + 1, spinStart)
+          updater(mode, memberIdentifier, newScore, spinCount + 1, spinStart)
         case Some(oldScore) =>
           var score = newScore
           try { // BEGIN CRITICAL SECTION
             // Member already on the leaderboard
             if (scoreToMember.remove(oldScore) == null) {
-              val message = s"$member: oldScore not found in scoreToMember, concurrency defect"
+              val message = s"$memberIdentifier: oldScore not found in scoreToMember, concurrency defect"
               logger.error(message)
               throw new ConcurrentModificationException(message)
             } else {
@@ -354,8 +353,8 @@ class ConcurrentLeaderboard(memberToScore: ConcurrentMap[String,Option[Score]], 
                     score = Score(oldScore.value + newScore.value,newScore.random )
                 }
               //logger.debug(s"$member: updated score = $score")
-              scoreToMember.put(score, member)
-              memberToScore.put(member, Some(score))  // remove the spin-lock
+              scoreToMember.put(score, memberIdentifier)
+              memberToScore.put(memberIdentifier, Some(score))  // remove the spin-lock
               //logger.debug(s"update: $member unlocked")
             }
           } catch {
@@ -363,8 +362,8 @@ class ConcurrentLeaderboard(memberToScore: ConcurrentMap[String,Option[Score]], 
               // Unlikely to get here, but just in case, delete the member, which should also delete the lock,
               // and prevent spinning forever.
               scoreToMember.remove(oldScore)
-              memberToScore.remove(member)
-              logger.error(s"Exception in critical section. Removing member $member", cause)
+              memberToScore.remove(memberIdentifier)
+              logger.error(s"Exception in critical section. Removing member $memberIdentifier", cause)
           } // END CRITICAL SECTION
           // Do this outside the critical section to reduce time under lock
           if (spinCount > 0) Metrics.checkSpinTime(System.nanoTime() - spinStart)

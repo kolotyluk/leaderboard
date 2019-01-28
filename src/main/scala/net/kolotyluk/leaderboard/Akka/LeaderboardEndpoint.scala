@@ -12,8 +12,8 @@ import akka.http.scaladsl.server.{Directives, ExceptionHandler, MalformedRequest
 import io.swagger.annotations._
 import javax.ws.rs.Path
 import net.kolotyluk.leaderboard.Akka.endpoint.EndpointException
-import net.kolotyluk.leaderboard.scorekeeping.{ConcurrentLeaderboard, ConsecutiveLeaderboard, Leaderboard, Score, SynchronizedConcurrentLeaderboard, SynchronizedLeaderboard}
-import net.kolotyluk.scala.extras.Logging
+import net.kolotyluk.leaderboard.scorekeeping.{ConcurrentLeaderboard, ConsecutiveLeaderboard, Leaderboard, LeaderboardIdentifier, MemberIdentifier, Score, SynchronizedConcurrentLeaderboard, SynchronizedLeaderboard}
+import net.kolotyluk.scala.extras.{Internalized, Logging}
 import spray.json.DefaultJsonProtocol
 
 import scala.language.implicitConversions
@@ -30,7 +30,7 @@ import scala.language.implicitConversions
 
 final case class LeaderboardGetResponse(name: String, state: String, members: Long)
 
-final case class LeaderboardPostRequest(name: String, kind: String)
+final case class LeaderboardPostRequest(name: Option[String], kind: String)
 
 final case class LeaderboardPostResponse(name: Option[String], id: String)
 
@@ -54,6 +54,9 @@ class LeaderboardEndpoint extends Directives with LeaderboardJsonSupport with Lo
   class IdNotFoundException(name: String)
     extends EndpointException(HttpResponse(NotFound, entity = s"leaderboard name=$name does not exist")) {
   }
+  class InconsistentNameException(parameterName: String, payloadName: String)
+    extends EndpointException(HttpResponse(BadRequest, entity = s"ambiguous request: leaderboard parameter name=$parameterName and payload name=$payloadName do not match")) {
+  }
 
   class NameNotFoundException(id: String)
     extends EndpointException(HttpResponse(NotFound, entity = s"leaderboard id=$id does not exist")) {
@@ -64,53 +67,53 @@ class LeaderboardEndpoint extends Directives with LeaderboardJsonSupport with Lo
   }
 
   object Kind extends Enumeration {
-    protected case class Val(constructor: UUID => Leaderboard) extends super.Val {
+    protected case class Val(constructor: LeaderboardIdentifier => Leaderboard) extends super.Val {
       def create(nameOption: Option[String]): LeaderboardPostResponse = {
-        val uuid = UUID.randomUUID
-        val leaderboard = constructor(uuid)
-        uuidToLeaderboard.put(uuid,leaderboard) match {
+        val leaderboardIdentifier = Internalized(UUID.randomUUID)
+        val leaderboard = constructor(leaderboardIdentifier)
+        leaderboardIdentifierToLeaderboard.put(leaderboardIdentifier,leaderboard) match {
           case None =>
-            LeaderboardPostResponse(nameOption, uuid.toString)
+            LeaderboardPostResponse(nameOption, leaderboardIdentifier.toString)
           case Some(item) =>
             // TODO There should not be an existing leaderboard with this ID
             throw new InternalError()
         }
-        LeaderboardPostResponse(nameOption, uuid.toString)
+        LeaderboardPostResponse(nameOption, leaderboardIdentifier.toString)
       }
     }
     implicit def valueToKindVal(x: Value): Val = x.asInstanceOf[Val]
 
     val ConcurrentLeaderboard = Val(
-      uuid => {
-        val memberToScore = new ConcurrentHashMap[String,Option[Score]]
-        val scoreToMember = new ConcurrentSkipListMap[Score,String]
-        new ConcurrentLeaderboard(memberToScore, scoreToMember)
+      leaderboardIdentifier => {
+        val memberToScore = new ConcurrentHashMap[MemberIdentifier,Option[Score]]
+        val scoreToMember = new ConcurrentSkipListMap[Score,MemberIdentifier]
+        new ConcurrentLeaderboard(leaderboardIdentifier, memberToScore, scoreToMember)
       }
     )
 
     val LeaderboardActor = Val(
-      uuid => {
-        val memberToScore = new ConcurrentHashMap[String,Option[Score]]
-        val scoreToMember = new ConcurrentSkipListMap[Score,String]
-        val leaderboard = new ConsecutiveLeaderboard(memberToScore, scoreToMember)
-        val leaderboardActor = new LeaderboardActor(leaderboard)
+      leaderboardIdentifier => {
+        val memberToScore = new ConcurrentHashMap[MemberIdentifier,Option[Score]]
+        val scoreToMember = new ConcurrentSkipListMap[Score,MemberIdentifier]
+        val leaderboard = new ConsecutiveLeaderboard(leaderboardIdentifier, memberToScore, scoreToMember)
+        val leaderboardActor = new LeaderboardActor(leaderboardIdentifier, leaderboard)
         leaderboard
       }
     )
 
     val SynchronizedConcurrentLeaderboard = Val(
-      uuid => {
-        val memberToScore = new ConcurrentHashMap[String, Option[Score]]
-        val scoreToMember = new ConcurrentSkipListMap[Score, String]
-        new SynchronizedConcurrentLeaderboard(memberToScore, scoreToMember)
+      leaderboardIdentifier => {
+        val memberToScore = new ConcurrentHashMap[MemberIdentifier, Option[Score]]
+        val scoreToMember = new ConcurrentSkipListMap[Score, MemberIdentifier]
+        new SynchronizedConcurrentLeaderboard(leaderboardIdentifier, memberToScore, scoreToMember)
       }
     )
 
     val SynchronizedLeaderboard = Val(
-      name => {
-        val memberToScore = new util.HashMap[String, Option[Score]]
-        val scoreToMember = new util.TreeMap[Score, String]
-        new SynchronizedLeaderboard(memberToScore, scoreToMember)
+      leaderboardIdentifier => {
+        val memberToScore = new util.HashMap[MemberIdentifier, Option[Score]]
+        val scoreToMember = new util.TreeMap[Score, MemberIdentifier]
+        new SynchronizedLeaderboard(leaderboardIdentifier, memberToScore, scoreToMember)
       }
     )
   }
@@ -179,7 +182,7 @@ class LeaderboardEndpoint extends Directives with LeaderboardJsonSupport with Lo
     * PowerShell: Invoke-WebRequest -Method Post http://localhost:8080/leaderboard?name=foo
     * PowerShell: Invoke-WebRequest http://localhost:8080/leaderboard -Method Post -ContentType "application/json" -Body '{"name":"foo","kind":"ConcurrentLeaderboard"}'
     * }}}
-    * @param nameOption
+    * @param nameParameter
     * @return
     */
   @Path("?name={name}")
@@ -188,7 +191,7 @@ class LeaderboardEndpoint extends Directives with LeaderboardJsonSupport with Lo
     new ApiResponse(code = 200, message = "Return leaderboard created confirmation", response = classOf[String]),
     new ApiResponse(code = 405, message = "Return leaderboard already exists", response = classOf[String])
   ))
-  def leaderboardPost(nameOption: Option[String]): Route =
+  def leaderboardPost(nameParameter: Option[String]): Route =
     post {
       logRequest("leaderboard", Logging.DebugLevel) {
         handleExceptions(postExceptionHandler) {
@@ -197,7 +200,20 @@ class LeaderboardEndpoint extends Directives with LeaderboardJsonSupport with Lo
               // unix shell: curl -H "Content-Type: application/json" -d '{"name":"foo","kind":"ConcurrentLeaderboard"}' -X POST http://localhost:8080/leaderboard
               // PowerShell: Invoke-WebRequest http://localhost:8080/leaderboard -Method Post -ContentType "application/json" -Body '{"name":"foo","kind":"ConcurrentLeaderboard"}'
               try {
-                complete(leaderboardCreate(Some(leaderboard.name), Some(leaderboard.kind)))
+                leaderboard.name match {
+                  case None =>
+                    complete(leaderboardCreate(nameParameter, Some(leaderboard.kind)))
+                  case Some(payloadName) =>
+                    nameParameter match {
+                      case None =>
+                        complete(leaderboardCreate(leaderboard.name, Some(leaderboard.kind)))
+                      case Some(parameterName) =>
+                        if (payloadName == parameterName)
+                          complete(leaderboardCreate(leaderboard.name, Some(leaderboard.kind)))
+                        else
+                          throw new InconsistentNameException(parameterName, payloadName)
+                    }
+                }
               } catch {
                 case cause: DuplicateIDException =>
                   logger.error(cause)
@@ -214,7 +230,7 @@ class LeaderboardEndpoint extends Directives with LeaderboardJsonSupport with Lo
               if (httpRequest.entity.getContentLengthOption().getAsLong == 0)
                 // unix shell: curl -d "" http://localhost:8080/leaderboard?name=foo
                 // PowerShell: Invoke-WebRequest -Method Post http://localhost:8080/leaderboard?name=foo
-                complete(leaderboardCreate(nameOption, None)) // default leaderboard
+                complete(leaderboardCreate(nameParameter, None)) // default leaderboard
               else
                 complete(HttpResponse(BadRequest, entity = "****  Something Wrong  ****")) // TODO this better
             }
@@ -242,7 +258,7 @@ class LeaderboardEndpoint extends Directives with LeaderboardJsonSupport with Lo
       case None =>
         create()
       case Some(name) =>
-        if (nameToUuid.contains(name)) {
+        if (nameToLeaderboardIdentifier.contains(name)) {
           throw new DuplicateNameException(name)
         } else create()
     }

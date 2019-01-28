@@ -1,5 +1,7 @@
 package net.kolotyluk
 
+import net.kolotyluk.scala.extras.Internalized
+
 /** =Leaderboard Service=
   * Leaderboard Microservice which implements standalone leaderboard service
   * inspired by [[https://redis.io/topics/data-types Redis Sorted Sets]]
@@ -16,5 +18,7 @@ package net.kolotyluk
   * scores for a number of contests, events, etc. See also: [[https://github.com/kolotyluk/leaderboard README]]
   */
 package object leaderboard {
+
+  type InternalIdentifier = Internalized
 
 }

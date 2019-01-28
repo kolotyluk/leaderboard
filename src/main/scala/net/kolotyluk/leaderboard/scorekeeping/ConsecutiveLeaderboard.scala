@@ -12,28 +12,31 @@ import scala.collection.mutable.ArrayBuffer
   * This leaderboard is not thread-safe, and intended to be uses inside an Akka Actor.
   */
 class ConsecutiveLeaderboard(
-    memberToScore: Map[String,Option[Score]],
-    scoreToMember: util.NavigableMap[Score,String]
+    leaderboardIdentifier: LeaderboardIdentifier,
+    memberToScore: Map[MemberIdentifier,Option[Score]],
+    scoreToMember: util.NavigableMap[Score,MemberIdentifier]
   ) extends LeaderboardSync with Logging {
 
-  override def delete(member: String) = {
-    memberToScore.get(member) match {
+  override def delete(memberIdentifier: MemberIdentifier) = {
+    memberToScore.get(memberIdentifier) match {
       case null =>
-        logger.warn(s"member = $member not found on leaderboard $name")
+        logger.warn(s"member = $memberIdentifier not found on leaderboard $name")
         false
       case None =>
-        memberToScore.remove(member)
+        memberToScore.remove(memberIdentifier)
         true
       case Some(score) =>
         scoreToMember.remove(score)
-        memberToScore.remove(member)
+        memberToScore.remove(memberIdentifier)
         true
     }
   }
 
   override def getCount = memberToScore.size
 
-  override def getInfo = Info(uuid, Some(name), memberToScore.size())
+  override def getIdentifier = leaderboardIdentifier
+
+  override def getInfo = LeaderboardInfo(leaderboardIdentifier, Some(name), memberToScore.size())
 
   override def getName = Some(name)
 
@@ -58,7 +61,7 @@ class ConsecutiveLeaderboard(
     Range(placings, totalCount)
   }
 
-  override def getScore(member: String) = {
+  override def getScore(member: MemberIdentifier) = {
     memberToScore.get(member) match {
       case null =>
         None
@@ -77,9 +80,9 @@ class ConsecutiveLeaderboard(
     * @param member
     * @return None if member not present, Some[Standing] otherwise
     */
-  override def getStanding(member: String) = {
+  override def getStanding(memberIdentifier: MemberIdentifier) = {
 
-    memberToScore.get(member) match {
+    memberToScore.get(memberIdentifier) match {
       case null =>
         None
       case None =>
@@ -98,20 +101,14 @@ class ConsecutiveLeaderboard(
     }
   }
 
-  override def getUuid = uuid
-
-  override def getUrlIdentifier(identifier: String) = Identity.getUrlIdentifier(identifier)
-
-  override def getUrlIdentifier(uuid: UUID = UUID.randomUUID()) = Identity.getUrlIdentifier(uuid)
-
   //def put(member: String, score: Option[Score]): Option[Option[Score]] = ???
 
-  override def update(mode: UpdateMode, member: String, value: BigInt) = {
+  override def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, value: BigInt) = {
     val score = Score(value, randomLong)
-    update(mode, member, score)
+    update(mode, memberIdentifier, score)
   }
 
-  override def update(mode: UpdateMode, member: String, theScore: Score) = {
+  override def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, theScore: Score) = {
 
     /** =Set Initial Score=
       * Assumes old score = 0
@@ -119,10 +116,10 @@ class ConsecutiveLeaderboard(
       * @param member
       * @param InitialScore
       */
-    def setInitialScore(member: String, InitialScore: Score) = {
+    def setInitialScore(memberIdentifier: MemberIdentifier, InitialScore: Score) = {
       // logger.debug(s"setInitialScore: member = $member, score = $score")
-      scoreToMember.put(InitialScore, member)
-      memberToScore.put(member, Some(InitialScore))
+      scoreToMember.put(InitialScore, memberIdentifier)
+      memberToScore.put(memberIdentifier, Some(InitialScore))
       InitialScore
     }
 
@@ -132,27 +129,27 @@ class ConsecutiveLeaderboard(
       * @param oldScore
       * @param newScore
       */
-    def setScore(member: String, oldScore: Score, newScore: Score) = {
+    def setScore(memberIdentifier: MemberIdentifier, oldScore: Score, newScore: Score) = {
       if (oldScore == newScore || oldScore.equals(theScore)) oldScore
       else {
         scoreToMember.remove(oldScore)
-        scoreToMember.put(newScore, member)
-        memberToScore.put(member, Some(newScore))
+        scoreToMember.put(newScore, memberIdentifier)
+        memberToScore.put(memberIdentifier, Some(newScore))
         newScore
       }
     }
 
-    memberToScore.get(member) match {
+    memberToScore.get(memberIdentifier) match {
       case null | None =>
-        setInitialScore(member, theScore)
+        setInitialScore(memberIdentifier, theScore)
       case Some(oldScore) =>
         mode match {
           case Replace =>
-            setScore(member, oldScore, theScore)
+            setScore(memberIdentifier, oldScore, theScore)
           case Increment =>
             // Reuse the old random so we don't waste time computing another.
             val sumScore = Score(oldScore.value + theScore.value, theScore.random)
-            setScore(member, oldScore, sumScore)
+            setScore(memberIdentifier, oldScore, sumScore)
         }
     }
   }
