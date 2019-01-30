@@ -2,7 +2,7 @@ package net.kolotyluk.leaderboard.akka
 
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import net.kolotyluk.leaderboard.Akka.pingEndpoint
+import net.kolotyluk.leaderboard.Akka.endpoint.pingEndpoint
 import unit.UnitSpec
 import akka.http.scaladsl.model.StatusCodes
 

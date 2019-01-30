@@ -19,6 +19,6 @@ import net.kolotyluk.scala.extras.Internalized
   */
 package object leaderboard {
 
-  type InternalIdentifier = Internalized
+  type InternalIdentifier[T] = Internalized[T]
 
 }

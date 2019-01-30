@@ -1,5 +1,7 @@
 package net.kolotyluk.leaderboard
 
+import java.util.UUID
+
 import net.kolotyluk.scala.extras.Logging
 
 import _root_.scala.util.Random
@@ -7,8 +9,8 @@ import scala.collection.mutable.ArrayBuffer
 
 package object scorekeeping extends Configuration with Logging {
 
-  type LeaderboardIdentifier = InternalIdentifier
-  type MemberIdentifier = InternalIdentifier
+  type LeaderboardIdentifier = InternalIdentifier[UUID]
+  type MemberIdentifier = InternalIdentifier[UUID]
 
   case class LeaderboardInfo(leaderboardIdentifier: LeaderboardIdentifier, name: Option[String], memberCount: Int)
 

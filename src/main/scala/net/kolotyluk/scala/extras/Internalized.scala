@@ -9,8 +9,14 @@ import scala.collection.concurrent.TrieMap
   * Behaves similar to [[java.lang.String#intern]]
   *
   */
-class Internalized(val value: Any) {
+class Internalized[T](val value: T) {
   override def equals(that: Any): Boolean = this eq that.asInstanceOf[AnyRef]
+  def getValue[T]: T = {
+    //if (value.isInstanceOf[T])
+      value.asInstanceOf[T]
+    //else
+    //  throw new Exception()
+  }
 }
 
 /** =Maintain a Manifest of Objects=
@@ -41,6 +47,6 @@ class Internalized(val value: Any) {
   * @see [[net.kolotyluk.scala.extras.InternalizedSpec]]
   */
 object Internalized {
-  val manifest = new TrieMap[Any,Internalized]
-  def apply[T](value: T): Internalized = manifest.getOrElseUpdate(value,new Internalized(value))
+  val manifest = new TrieMap[Any,Internalized[Any]]
+  def apply[T](value: T): Internalized[T] = manifest.getOrElseUpdate(value,new Internalized[Any](value)).asInstanceOf[Internalized[T]]
 }

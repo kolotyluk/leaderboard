@@ -3,6 +3,14 @@ package net.kolotyluk.leaderboard.Akka
 import java.nio.ByteBuffer
 import java.util.{Base64, UUID}
 
+import akka.http.scaladsl.server.Route
+import net.kolotyluk.leaderboard.Akka.swagger.SwaggerDocService
+import net.kolotyluk.leaderboard.InternalIdentifier
+import net.kolotyluk.leaderboard.scorekeeping.{Leaderboard, LeaderboardIdentifier}
+import net.kolotyluk.scala.extras.Internalized
+
+import scala.collection.concurrent.TrieMap
+
 /** =Akka HTTP Endpoints=
   *
   * ==Examples==
@@ -90,6 +98,19 @@ import java.util.{Base64, UUID}
   */
 package object endpoint {
 
+  val nameToLeaderboardIdentifier = new TrieMap[String,LeaderboardIdentifier]
+  val identifierToLeaderboard = new TrieMap[LeaderboardIdentifier,Leaderboard]
+
+  val failEndpoint = new FailEndpoint
+  val pingEndpoint = new PingEndpoint
+  val leaderboardEndpoint = new LeaderboardEndpoint
+
+  val routes: Route =
+    failEndpoint.route ~
+      pingEndpoint.route ~
+      leaderboardEndpoint.routes ~
+      SwaggerDocService.routes
+
   def uuidToUrlId(uuid: UUID): String =
     Base64
       .getUrlEncoder
@@ -99,7 +120,7 @@ package object endpoint {
         .putLong(uuid.getLeastSignificantBits())
         .array())
 
-  def UrlIdToUuid(id: String): UUID = {
+  def urlIdToUuid(id: String): UUID = {
     try {
       val byteBuffer = ByteBuffer.wrap(Base64.getUrlDecoder.decode(id))
       val high = byteBuffer.getLong
@@ -111,6 +132,18 @@ package object endpoint {
         exception.initCause(cause)
         throw exception
     }
+  }
+
+  def internalIdentifierToUrlId(internalIdentifier: InternalIdentifier[UUID]): String = {
+    if (internalIdentifier.value.isInstanceOf[UUID])
+      uuidToUrlId(internalIdentifier.value.asInstanceOf[UUID])
+    else
+      throw new Exception()
+  }
+
+  def urlIdToInternalIdentifier(urlId: String): InternalIdentifier[UUID] = {
+    val uuid = urlIdToUuid(urlId)
+    Internalized(uuid)
   }
 
 }

@@ -1,7 +1,7 @@
 package net.kolotyluk.leaderboard.akka
 
 import akka.http.scaladsl.model.StatusCodes
-import net.kolotyluk.leaderboard.Akka.{LeaderboardJsonSupport, LeaderboardPostRequest, LeaderboardPostResponse, leaderboardEndpoint}
+import net.kolotyluk.leaderboard.Akka.endpoint.{LeaderboardJsonSupport, LeaderboardPostRequest, LeaderboardPostResponse, leaderboardEndpoint}
 import unit.RoutingSpec
 
 import scala.language.postfixOps
