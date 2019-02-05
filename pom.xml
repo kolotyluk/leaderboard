@@ -346,7 +346,7 @@
                 <configuration>
                     <server>github</server>
                     <repositoryName>leaderboard</repositoryName>
-                    <repositoryOwnwer>kolotyluk</repositoryOwnwer>
+                    <!--<repositoryOwnwer>kolotyluk</repositoryOwnwer>-->
 
                     <!-- Destination directory -->
                     <path>projects/leaderboard</path>
@@ -494,6 +494,7 @@
                     <junitxml>.</junitxml>
                     <filereports>WDF TestSuite.txt</filereports>
                     <htmlreporters>${project.build.directory}/html/scalatest</htmlreporters>
+                    <parallel>false</parallel>
                 </configuration>
                 <executions>
                     <execution>

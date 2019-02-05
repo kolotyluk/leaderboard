@@ -4,12 +4,10 @@ import java.nio.ByteBuffer
 import java.util.{Base64, UUID}
 
 import akka.http.scaladsl.server.Route
+import net.kolotyluk.akka.scala.extras.base64uuid
 import net.kolotyluk.leaderboard.Akka.swagger.SwaggerDocService
 import net.kolotyluk.leaderboard.InternalIdentifier
-import net.kolotyluk.leaderboard.scorekeeping.{Leaderboard, LeaderboardIdentifier}
 import net.kolotyluk.scala.extras.Internalized
-
-import scala.collection.concurrent.TrieMap
 
 /** =Akka HTTP Endpoints=
   *
@@ -98,17 +96,13 @@ import scala.collection.concurrent.TrieMap
   */
 package object endpoint {
 
-  val nameToLeaderboardIdentifier = new TrieMap[String,LeaderboardIdentifier]
-  val identifierToLeaderboard = new TrieMap[LeaderboardIdentifier,Leaderboard]
-
   val failEndpoint = new FailEndpoint
   val pingEndpoint = new PingEndpoint
-  val leaderboardEndpoint = new LeaderboardEndpoint
 
   val routes: Route =
     failEndpoint.route ~
       pingEndpoint.route ~
-      leaderboardEndpoint.routes ~
+      leaderboard.leaderboardEndpoint.routes ~
       SwaggerDocService.routes
 
   def uuidToUrlId(uuid: UUID): String =
@@ -127,7 +121,7 @@ package object endpoint {
       val low = byteBuffer.getLong
       new UUID(high,low)
     } catch {
-      case cause: Throwable =>
+      case cause: IllegalArgumentException =>
         val exception = new InvalidUrlIdException(id)
         exception.initCause(cause)
         throw exception

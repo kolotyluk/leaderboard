@@ -33,6 +33,38 @@ id3 == null
 id3.eq(null)
 id3.equals(null)
 
+val foo = "91e02865-0102-4b09-b487-bbfacb0ff759"
+println(foo.length)
+
+//def urlIdToUuid(base64UrlId: String): UUID = {
+//  try {
+//    val byteBuffer = ByteBuffer.wrap(Base64.getUrlDecoder.decode(base64UrlId))
+//    val high = byteBuffer.getLong
+//    val low = byteBuffer.getLong
+//    new UUID(high,low)
+//  } catch {
+//    case cause: IllegalArgumentException =>
+//      println(s"cause = $cause")
+//      if (base64UrlId.length != 22) {
+//        val message = s"base64UrlId = $base64UrlId does not contain exactly 22 characters"
+//        println(message)
+//        throw new InvalidBase64UrlToUuidException(message, cause)
+//      } else {
+//        val message = s"base64UrlId = $base64UrlId contains invalid base 64 URL characters"
+//        println(message)
+//        throw new InvalidBase64UrlToUuidException(message, cause)
+//      }
+//  }
+//}
+//
+//val uuid1 = urlIdToUuid("keAoZQECSwm0h7v6yw_3WQ")
+//
+//try {
+//  urlIdToUuid("keAoZQECSwm0h7v6yw_3W@")
+//} catch {
+//  case cause: Throwable =>
+//    println(cause.getMessage)
+//}
 
 
 //id1 == id3

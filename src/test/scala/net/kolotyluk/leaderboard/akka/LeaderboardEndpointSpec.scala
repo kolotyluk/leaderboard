@@ -1,7 +1,11 @@
-package net.kolotyluk.leaderboard.akka
+package net.kolotyluk.leaderboard.akka.endpoint.leaderboard
 
-import akka.http.scaladsl.model.StatusCodes
-import net.kolotyluk.leaderboard.Akka.endpoint.{LeaderboardJsonSupport, LeaderboardPostRequest, LeaderboardPostResponse, leaderboardEndpoint}
+import java.util.UUID
+
+import akka.http.scaladsl.model.StatusCodes.{BadRequest, OK}
+import net.kolotyluk.leaderboard.Akka.endpoint.urlIdToInternalIdentifier
+import net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.leaderboardEndpoint
+import net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.{LeaderboardJsonSupport, LeaderboardPostRequest, LeaderboardPostResponse, LeaderboardStatusResponses}
 import unit.RoutingSpec
 
 import scala.language.postfixOps
@@ -14,37 +18,70 @@ class LeaderboardEndpointSpec extends RoutingSpec with LeaderboardJsonSupport {
   val createSynchronizedLeaderboard = LeaderboardPostRequest(Some("foo"), "SynchronizedLeaderboard")
   val createBogusLeaderboard = LeaderboardPostRequest(Some("foo"), "BogusLeaderboard")
 
-  behavior of "LeaderboardEndpoint"
+  behavior of "/leaderboard Endpoint"
 
-  it should "return a correct response for POST requests to create default leaderboard" in {
+  it should "return a correct response for minimal GET requests" in {
+    Get("/leaderboard") ~> leaderboardEndpoint.routes  ~> check {
+      Given("GET /leaderboard")
+      status shouldBe OK
+      When("status == OK")
+      responseAs[LeaderboardStatusResponses].leaderboards.size shouldEqual 0
+      Then("response.leaderboards.size == 0")
+    }
+  }
+
+  it should "return a correct response for minimal POST requests" in {
     Post("/leaderboard") ~> leaderboardEndpoint.routes  ~> check {
       Given("POST /leaderboard")
-      status shouldEqual StatusCodes.OK
+      status shouldBe OK
       When("status == OK")
-      responseAs[LeaderboardPostResponse].name shouldEqual None
-      Then("response.name == None")
+      val response = responseAs[LeaderboardPostResponse]
+      urlIdToInternalIdentifier(response.id).getValue[UUID] shouldBe a [UUID]
+      Then("response.id parses to a UUID")
+      response.name shouldBe None
+      And("response.name == None")
+    }
+
+    val name = "foo"
+
+    Post(s"/leaderboard?name=$name") ~> leaderboardEndpoint.routes  ~> check {
+      Given(s"POST /leaderboard?name=$name")
+      status shouldBe OK
+      When("status == OK")
+      val response = responseAs[LeaderboardPostResponse]
+      urlIdToInternalIdentifier(response.id).getValue[UUID] shouldBe a [UUID]
+      Then("response.id parses to a UUID")
+      response.name shouldBe Some(name)
+      And(s"response.name == $name")
     }
   }
 
   it should "return a correct response for POST requests to create ConcurrentLeaderboard" in {
-    Post("/leaderboard", createConcurrentLeaderboard) ~> leaderboardEndpoint.routes ~> check {
-      Given(s"POST /leaderboard ${createConcurrentLeaderboard.toString}")
-      status shouldEqual StatusCodes.OK
+    val payload = LeaderboardPostRequest(None, "ConcurrentLeaderboard")
+    Post("/leaderboard", payload) ~> leaderboardEndpoint.routes ~> check {
+      // TODO figure out how to marshal this to a simple payload string
+      Given(s"POST /leaderboard $payload")
+      status shouldBe OK
       When("status == OK")
       val response = responseAs[LeaderboardPostResponse]
-      And(s"response.name = ${response.name}")
-      response.name shouldEqual Some("foo")
-      Then("response.name == Some(\"foo\")")
+      urlIdToInternalIdentifier(response.id).getValue[UUID] shouldBe a [UUID]
+      Then("response.id parses to a UUID")
+      response.name shouldBe None
+      And("response.name == None")
     }
   }
 
-  it should "return an error response for POST requests to create ConcurrentLeaderboard named 'contest'" in {
-    Post("/leaderboard?name=contest", createConcurrentLeaderboard) ~> leaderboardEndpoint.routes ~> check {
-      Given(s"POST /leaderboard?name=contest ${createConcurrentLeaderboard.toString}")
-      status shouldEqual StatusCodes.BadRequest
-      When(s"status = ${StatusCodes.BadRequest}")
-      Then(s"response = $response")
-//      When("status == OK")
+  it should "return an error response for POST requests to create leaderboard with  name conflicts" in {
+    val payload = LeaderboardPostRequest(Some("foo"), "ConcurrentLeaderboard")
+    Post("/leaderboard?name=contest", payload) ~> leaderboardEndpoint.routes ~> check {
+      Given(s"POST /leaderboard?name=contest $payload")
+      status shouldBe BadRequest
+      When(s"status = BadRequest")
+      responseAs[String] should startWith ("ambiguous request:")
+      Then(s"it failed because it's an ambiguous request")
+
+
+      //      When("status == OK")
 //      val response = responseAs[LeaderboardPostResponse]
 //      response.name shouldEqual None
 //      Then("response.name == Some(\"contest\")")

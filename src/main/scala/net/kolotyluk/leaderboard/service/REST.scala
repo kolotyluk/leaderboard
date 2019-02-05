@@ -9,7 +9,8 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
-import net.kolotyluk.leaderboard.Akka.endpoint.{LeaderboardEndpoint, PingEndpoint}
+import net.kolotyluk.leaderboard.Akka.endpoint.PingEndpoint
+import net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.LeaderboardEndpoint
 import net.kolotyluk.scala.extras.Logging
 
 class REST extends Logging {

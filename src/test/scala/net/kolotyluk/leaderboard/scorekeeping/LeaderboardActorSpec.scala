@@ -1,7 +1,7 @@
 package net.kolotyluk.leaderboard.scorekeeping
 
+import java.util
 import java.util.UUID
-import java.util.concurrent.{ConcurrentHashMap, ConcurrentSkipListMap}
 
 import akka.actor.testkit.typed.scaladsl.ActorTestKit
 import net.kolotyluk.leaderboard.Akka.LeaderboardActor
@@ -20,8 +20,8 @@ class LeaderboardActorSpec extends UnitSpec with LeaderboardBehaviors with Befor
   behavior of "Leaderboard Actor"
 
   val leaderboardIdentifier = Internalized(UUID.randomUUID())
-  val memberToScore = new ConcurrentHashMap[MemberIdentifier,Option[Score]]
-  val scoreToMember = new ConcurrentSkipListMap[Score,MemberIdentifier]
+  val memberToScore = new util.HashMap[MemberIdentifier,Option[Score]]
+  val scoreToMember = new util.TreeMap[Score,MemberIdentifier]
 
   val leaderboard = new ConsecutiveLeaderboard(leaderboardIdentifier, memberToScore, scoreToMember)
   val leaderboardActor = new LeaderboardActor(leaderboardIdentifier, leaderboard)

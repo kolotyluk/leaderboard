@@ -3,7 +3,8 @@ package net.kolotyluk.leaderboard.Akka.swagger
 import com.github.swagger.akka.SwaggerHttpService
 import com.github.swagger.akka.model.Info
 import io.swagger.v3.oas.models.ExternalDocumentation
-import net.kolotyluk.leaderboard.Akka.endpoint.{LeaderboardEndpoint, PingEndpoint}
+import net.kolotyluk.leaderboard.Akka.endpoint.{PingEndpoint}
+import net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.LeaderboardEndpoint
 
 object SwaggerDocService extends SwaggerHttpService {
   override val apiClasses: Set[Class[_]] = Set(classOf[LeaderboardEndpoint], classOf[PingEndpoint])
