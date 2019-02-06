@@ -286,8 +286,8 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
                         <a href="UnknownLeaderboardException.html" title="">UnknownLeaderboardException</a>
                       </li><li class="current-entities indented6">
                         <span class="separator"></span>
-                        <a class="class" href="" title=""></a>
-                        <a href="" title="">UnknownLeaderboardIdentifierException</a>
+                        <a class="class" href="" title="When referring to a leaderboard, the leaderboard ID specified could not be found."></a>
+                        <a href="" title="When referring to a leaderboard, the leaderboard ID specified could not be found.">UnknownLeaderboardIdentifierException</a>
                       </li><li class="current-entities indented6">
                         <span class="separator"></span>
                         <a class="class" href="UnknownLeaderboardIdentifierException2.html" title=""></a>
@@ -323,17 +323,34 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">UnknownLeaderboardIdentifierException</span><span class="result"> extends <a href="../EndpointError.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointError">EndpointError</a></span>
+        <span class="name">UnknownLeaderboardIdentifierException</span><span class="result"> extends <a href="../EndpointException2.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointException2">EndpointException2</a></span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><h3>Unknown Leaderboard Identifier</h3><h4>Explanation</h4><h4>Examples</h4><pre>unix shell: curl http:<span class="cmt">//localhost:8080/leaderboard/fiqkXE39T_WcUcCPtGcoaQ</span>
-PowerShell: Invoke-WebRequest -Method Get http:<span class="cmt">//localhost:8080/leaderboard/fiqkXE39T_WcUcCPtGcoaQ</span></pre></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><h3>Unknown Leaderboard Identifier</h3><p>When referring to a leaderboard, the leaderboard ID specified could not be found.</p><ol class="decimal"><li>Leaderboards must first explicitly be created before they are referenced</li><li>If the leaderboard is deleted, so is its Identifier</li></ol><h4>Examples</h4><pre>unix shell: curl http:<span class="cmt">//localhost:8080/leaderboard/fiqkXE39T_WcUcCPtGcoaQ</span>
+PowerShell: Invoke-WebRequest -Method Get http:<span class="cmt">//localhost:8080/leaderboard/fiqkXE39T_WcUcCPtGcoaQ</span></pre><p>results in:</p><pre>StatusCode        : <span class="num">404</span>
+StatusDescription : Not Found
+Content           : {
+                      <span class="lit">"cause"</span>: <span class="lit">"The specified leaderboard cannot be found: urlId=IMvWdANITIWZxm7efUKVAg, uuid=20cbd674-0348-4c85-99c6-6ede7d429502"</span>,
+                      <span class="lit">"explanation"</span>: <span class="lit">"http://kolotyluk.github.io/projects/leaderboard/scaladocs/net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/UnknownLeaderboardIdentifierException.html"</span>,
+                      <span class="lit">"systemLogMessage"</span>: <span class="lit">"unknown leaderboard: urlId=IMvWdANITIWZxm7efUKVAg, uuid=20cbd674-0348-4c85-99c6-6ede7d429502"</span>
+                    }</pre><h5>Solutions</h5><p>First create a leaderboard</p><pre>unix shell: curl -d <span class="lit">""</span> http:<span class="cmt">//localhost:8080/leaderboard</span>
+PowerShell: Invoke-WebRequest -Method Post http:<span class="cmt">//localhost:8080/leaderboard</span></pre><p>You should see something like:</p><pre>StatusCode        : <span class="num">201</span>
+StatusDescription : Created
+Content           : {
+                      <span class="lit">"id"</span>: <span class="lit">"a3Kyn9UXQj6FiFJaPR9ZyA"</span>
+                    }</pre><p>Check your solution.</p><pre>unix shell: curl http:<span class="cmt">//localhost:8080/leaderboard/a3Kyn9UXQj6FiFJaPR9ZyA</span>
+PowerShell: Invoke-WebRequest -Method Get http:<span class="cmt">//localhost:8080/leaderboard/a3Kyn9UXQj6FiFJaPR9ZyA</span></pre><p>Yous should see something like:</p><pre>StatusCode        : <span class="num">200</span>
+StatusDescription : OK
+Content           : {
+                      <span class="lit">"id"</span>: <span class="lit">"a3Kyn9UXQj6FiFJaPR9ZyA"</span>,
+                      <span class="lit">"size"</span>: <span class="num">0</span>
+                    }</pre></div><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="../EndpointError.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointError">EndpointError</a>, <span class="extype" name="java.lang.Error">Error</span>, <span class="extype" name="java.lang.Throwable">Throwable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../EndpointException2.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointException2">EndpointException2</a>, <span class="extype" name="java.lang.Exception">Exception</span>, <span class="extype" name="java.lang.Throwable">Throwable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -359,7 +376,7 @@ PowerShell: Invoke-WebRequest -Method Get http:<span class="cmt">//localhost:808
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.UnknownLeaderboardIdentifierException"><span>UnknownLeaderboardIdentifierException</span></li><li class="in" name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointError"><span>EndpointError</span></li><li class="in" name="java.lang.Error"><span>Error</span></li><li class="in" name="java.lang.Throwable"><span>Throwable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.UnknownLeaderboardIdentifierException"><span>UnknownLeaderboardIdentifierException</span></li><li class="in" name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointException2"><span>EndpointException2</span></li><li class="in" name="java.lang.Exception"><span>Exception</span></li><li class="in" name="java.lang.Throwable"><span>Throwable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -575,7 +592,7 @@ PowerShell: Invoke-WebRequest -Method Get http:<span class="cmt">//localhost:808
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointError#errorPayload" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointException2#errorPayload" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="errorPayload:net.kolotyluk.leaderboard.Akka.endpoint.ErrorPayload"></a><a id="errorPayload:ErrorPayload"></a>
       <span class="permalink">
       <a href="../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/UnknownLeaderboardIdentifierException.html#errorPayload:net.kolotyluk.leaderboard.Akka.endpoint.ErrorPayload" title="Permalink">
@@ -590,7 +607,7 @@ PowerShell: Invoke-WebRequest -Method Get http:<span class="cmt">//localhost:808
         <span class="name">errorPayload</span><span class="result">: <a href="../ErrorPayload.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.ErrorPayload">ErrorPayload</a></span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../EndpointError.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointError">EndpointError</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../EndpointException2.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointException2">EndpointException2</a></dd></dl></div>
     </li><li name="java.lang.Throwable#fillInStackTrace" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="fillInStackTrace():Throwable"></a>
       <span class="permalink">
@@ -883,7 +900,7 @@ PowerShell: Invoke-WebRequest -Method Get http:<span class="cmt">//localhost:808
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Throwable</dd></dl></div>
-    </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointError#statusCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointException2#statusCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="statusCode:akka.http.scaladsl.model.StatusCode"></a><a id="statusCode:StatusCode"></a>
       <span class="permalink">
       <a href="../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/UnknownLeaderboardIdentifierException.html#statusCode:akka.http.scaladsl.model.StatusCode" title="Permalink">
@@ -898,7 +915,7 @@ PowerShell: Invoke-WebRequest -Method Get http:<span class="cmt">//localhost:808
         <span class="name">statusCode</span><span class="result">: <span class="extype" name="akka.http.scaladsl.model.StatusCode">StatusCode</span></span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../EndpointError.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointError">EndpointError</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../EndpointException2.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointException2">EndpointException2</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
@@ -1038,10 +1055,10 @@ PowerShell: Invoke-WebRequest -Method Get http:<span class="cmt">//localhost:808
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointError">
-              <h3>Inherited from <a href="../EndpointError.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointError">EndpointError</a></h3>
-            </div><div class="parent" name="java.lang.Error">
-              <h3>Inherited from <span class="extype" name="java.lang.Error">Error</span></h3>
+        <div class="parent" name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointException2">
+              <h3>Inherited from <a href="../EndpointException2.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointException2">EndpointException2</a></h3>
+            </div><div class="parent" name="java.lang.Exception">
+              <h3>Inherited from <span class="extype" name="java.lang.Exception">Exception</span></h3>
             </div><div class="parent" name="java.lang.Throwable">
               <h3>Inherited from <span class="extype" name="java.lang.Throwable">Throwable</span></h3>
             </div><div class="parent" name="java.io.Serializable">

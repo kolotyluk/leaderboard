@@ -286,8 +286,8 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
                         <a href="UnknownLeaderboardException.html" title="">UnknownLeaderboardException</a>
                       </li><li class="current-entities indented6">
                         <span class="separator"></span>
-                        <a class="class" href="UnknownLeaderboardIdentifierException.html" title=""></a>
-                        <a href="UnknownLeaderboardIdentifierException.html" title="">UnknownLeaderboardIdentifierException</a>
+                        <a class="class" href="UnknownLeaderboardIdentifierException.html" title="When referring to a leaderboard, the leaderboard ID specified could not be found."></a>
+                        <a href="UnknownLeaderboardIdentifierException.html" title="When referring to a leaderboard, the leaderboard ID specified could not be found.">UnknownLeaderboardIdentifierException</a>
                       </li><li class="current-entities indented6">
                         <span class="separator"></span>
                         <a class="class" href="UnknownLeaderboardIdentifierException2.html" title=""></a>
@@ -658,9 +658,9 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
       
       
     </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.UnknownLeaderboardIdentifierException" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="UnknownLeaderboardIdentifierExceptionextendsEndpointError"></a><a id="UnknownLeaderboardIdentifierException:UnknownLeaderboardIdentifierException"></a>
+      <a id="UnknownLeaderboardIdentifierExceptionextendsEndpointException2"></a><a id="UnknownLeaderboardIdentifierException:UnknownLeaderboardIdentifierException"></a>
       <span class="permalink">
-      <a href="../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/index.html#UnknownLeaderboardIdentifierExceptionextendsEndpointError" title="Permalink">
+      <a href="../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/index.html#UnknownLeaderboardIdentifierExceptionextendsEndpointException2" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -669,11 +669,28 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a title="" href="UnknownLeaderboardIdentifierException.html"><span class="name">UnknownLeaderboardIdentifierException</span></a><span class="result"> extends <a href="../EndpointError.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointError">EndpointError</a></span>
+        <a title="When referring to a leaderboard, the leaderboard ID specified could not be found." href="UnknownLeaderboardIdentifierException.html"><span class="name">UnknownLeaderboardIdentifierException</span></a><span class="result"> extends <a href="../EndpointException2.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointException2">EndpointException2</a></span>
       </span>
       
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"><h3>Unknown Leaderboard Identifier</h3><h4>Explanation</h4><h4>Examples</h4><pre>unix shell: curl http:<span class="cmt">//localhost:8080/leaderboard/fiqkXE39T_WcUcCPtGcoaQ</span>
-PowerShell: Invoke-WebRequest -Method Get http:<span class="cmt">//localhost:8080/leaderboard/fiqkXE39T_WcUcCPtGcoaQ</span></pre></div></div>
+      <p class="shortcomment cmt">When referring to a leaderboard, the leaderboard ID specified could not be found.</p><div class="fullcomment"><div class="comment cmt"><h3>Unknown Leaderboard Identifier</h3><p>When referring to a leaderboard, the leaderboard ID specified could not be found.</p><ol class="decimal"><li>Leaderboards must first explicitly be created before they are referenced</li><li>If the leaderboard is deleted, so is its Identifier</li></ol><h4>Examples</h4><pre>unix shell: curl http:<span class="cmt">//localhost:8080/leaderboard/fiqkXE39T_WcUcCPtGcoaQ</span>
+PowerShell: Invoke-WebRequest -Method Get http:<span class="cmt">//localhost:8080/leaderboard/fiqkXE39T_WcUcCPtGcoaQ</span></pre><p>results in:</p><pre>StatusCode        : <span class="num">404</span>
+StatusDescription : Not Found
+Content           : {
+                      <span class="lit">"cause"</span>: <span class="lit">"The specified leaderboard cannot be found: urlId=IMvWdANITIWZxm7efUKVAg, uuid=20cbd674-0348-4c85-99c6-6ede7d429502"</span>,
+                      <span class="lit">"explanation"</span>: <span class="lit">"http://kolotyluk.github.io/projects/leaderboard/scaladocs/net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/UnknownLeaderboardIdentifierException.html"</span>,
+                      <span class="lit">"systemLogMessage"</span>: <span class="lit">"unknown leaderboard: urlId=IMvWdANITIWZxm7efUKVAg, uuid=20cbd674-0348-4c85-99c6-6ede7d429502"</span>
+                    }</pre><h5>Solutions</h5><p>First create a leaderboard</p><pre>unix shell: curl -d <span class="lit">""</span> http:<span class="cmt">//localhost:8080/leaderboard</span>
+PowerShell: Invoke-WebRequest -Method Post http:<span class="cmt">//localhost:8080/leaderboard</span></pre><p>You should see something like:</p><pre>StatusCode        : <span class="num">201</span>
+StatusDescription : Created
+Content           : {
+                      <span class="lit">"id"</span>: <span class="lit">"a3Kyn9UXQj6FiFJaPR9ZyA"</span>
+                    }</pre><p>Check your solution.</p><pre>unix shell: curl http:<span class="cmt">//localhost:8080/leaderboard/a3Kyn9UXQj6FiFJaPR9ZyA</span>
+PowerShell: Invoke-WebRequest -Method Get http:<span class="cmt">//localhost:8080/leaderboard/a3Kyn9UXQj6FiFJaPR9ZyA</span></pre><p>Yous should see something like:</p><pre>StatusCode        : <span class="num">200</span>
+StatusDescription : OK
+Content           : {
+                      <span class="lit">"id"</span>: <span class="lit">"a3Kyn9UXQj6FiFJaPR9ZyA"</span>,
+                      <span class="lit">"size"</span>: <span class="num">0</span>
+                    }</pre></div></div>
     </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.UnknownLeaderboardIdentifierException2" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="UnknownLeaderboardIdentifierException2extendsEndpointException"></a><a id="UnknownLeaderboardIdentifierException2:UnknownLeaderboardIdentifierException2"></a>
       <span class="permalink">
