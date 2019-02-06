@@ -332,7 +332,8 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
 PowerShell: Invoke-WebRequest -Method Get http:<span class="cmt">//localhost:8080/leaderboard/fiqkXE39T_WcUcCPtGcoaQ</span></pre><p>results in:</p><pre>StatusCode        : <span class="num">404</span>
 StatusDescription : Not Found
 Content           : {
-                      <span class="lit">"cause"</span>: <span class="lit">"The specified leaderboard cannot be found: urlId=IMvWdANITIWZxm7efUKVAg, uuid=20cbd674-0348-4c85-99c6-6ede7d429502"</span>,
+                      <span class="lit">"cause"</span>: <span class="lit">"The specified leaderboard cannot be found: urlId=IMvWdANITIWZxm7efUKVAg, uuid=20cbd674-0348-4c85-99c6-6ede7d429502."</span>,
+                      <span class="lit">"diagnosis"</span>: = <span class="lit">"Did you forget to create it?"</span>,
                       <span class="lit">"explanation"</span>: <span class="lit">"http://kolotyluk.github.io/projects/leaderboard/scaladocs/net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/UnknownLeaderboardIdentifierException.html"</span>,
                       <span class="lit">"systemLogMessage"</span>: <span class="lit">"unknown leaderboard: urlId=IMvWdANITIWZxm7efUKVAg, uuid=20cbd674-0348-4c85-99c6-6ede7d429502"</span>
                     }</pre><h5>Solutions</h5><p>First create a leaderboard</p><pre>unix shell: curl -d <span class="lit">""</span> http:<span class="cmt">//localhost:8080/leaderboard</span>
