@@ -153,8 +153,8 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
                         <a href="../../scala/extras/Configuration$ConfigurationError.html" title="Indicates and unrecoverable configuration problem was encountered.">ConfigurationError</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
-                        <a class="class" href="ConsecutiveLeaderboard.html" title=""></a>
-                        <a href="ConsecutiveLeaderboard.html" title="">ConsecutiveLeaderboard</a>
+                        <a class="class" href="ConsecutiveLeaderboard.html" title="Non-threadsafe leaderboard"></a>
+                        <a href="ConsecutiveLeaderboard.html" title="Non-threadsafe leaderboard">ConsecutiveLeaderboard</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
                         <a class="class" href="../../scala/extras/Configuration$ExtraConfiguration.html" title=""></a>
@@ -165,16 +165,24 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
                         <a href="package$$Increment$.html" title="">Increment</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
-                        <a class="class" href="package$$Info.html" title=""></a>
-                        <a href="package$$Info.html" title="">Info</a>
-                      </li><li class="current-entities indented4">
-                        <span class="separator"></span>
                         <a class="trait" href="Leaderboard.html" title=""></a>
                         <a href="Leaderboard.html" title="">Leaderboard</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
+                        <a class="trait" href="LeaderboardAsync.html" title=""></a>
+                        <a href="LeaderboardAsync.html" title="">LeaderboardAsync</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
+                        <a class="class" href="package$$LeaderboardInfo.html" title=""></a>
+                        <a href="package$$LeaderboardInfo.html" title="">LeaderboardInfo</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
                         <a class="trait" href="LeaderboardManager.html" title=""></a>
                         <a href="LeaderboardManager.html" title="">LeaderboardManager</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
+                        <a class="trait" href="LeaderboardSync.html" title=""></a>
+                        <a href="LeaderboardSync.html" title="">LeaderboardSync</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
                         <a class="class" href="../Configuration$LocalConfiguration.html" title=""></a>
@@ -205,6 +213,14 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
                         <a href="package$$Standing.html" title="Place in count on current leaderboard.">Standing</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
+                        <a class="class" href="SynchronizedConcurrentLeaderboard.html" title=""></a>
+                        <a href="SynchronizedConcurrentLeaderboard.html" title="">SynchronizedConcurrentLeaderboard</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
+                        <a class="class" href="SynchronizedLeaderboard.html" title=""></a>
+                        <a href="SynchronizedLeaderboard.html" title="">SynchronizedLeaderboard</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
                         <a class="trait" href="package$$UpdateMode.html" title=""></a>
                         <a href="package$$UpdateMode.html" title="">UpdateMode</a>
                       </li>
@@ -230,7 +246,7 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Placing</span><span class="params">(<span name="member">member: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="score">score: <span class="extype" name="scala.BigInt">BigInt</span></span>, <span name="place">place: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Placing</span><span class="params">(<span name="memberIdentifier">memberIdentifier: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>, <span name="score">score: <span class="extype" name="scala.BigInt">BigInt</span></span>, <span name="place">place: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -286,9 +302,9 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="net.kolotyluk.leaderboard.scorekeeping.Placing#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(member:String,score:BigInt,place:Long):net.kolotyluk.leaderboard.scorekeeping.package.Placing"></a><a id="&lt;init&gt;:Placing"></a>
+      <a id="&lt;init&gt;(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.package.MemberIdentifier,score:BigInt,place:Long):net.kolotyluk.leaderboard.scorekeeping.package.Placing"></a><a id="&lt;init&gt;:Placing"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/package$$Placing.html#&lt;init&gt;(member:String,score:BigInt,place:Long):net.kolotyluk.leaderboard.scorekeeping.package.Placing" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/package$$Placing.html#&lt;init&gt;(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.package.MemberIdentifier,score:BigInt,place:Long):net.kolotyluk.leaderboard.scorekeeping.package.Placing" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -297,7 +313,7 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Placing</span><span class="params">(<span name="member">member: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="score">score: <span class="extype" name="scala.BigInt">BigInt</span></span>, <span name="place">place: <span class="extype" name="scala.Long">Long</span></span>)</span>
+        <span class="name">Placing</span><span class="params">(<span name="memberIdentifier">memberIdentifier: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>, <span name="score">score: <span class="extype" name="scala.BigInt">BigInt</span></span>, <span name="place">place: <span class="extype" name="scala.Long">Long</span></span>)</span>
       </span>
       
       
@@ -454,10 +470,10 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="net.kolotyluk.leaderboard.scorekeeping.Placing#member" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="member:String"></a>
+    </li><li name="net.kolotyluk.leaderboard.scorekeeping.Placing#memberIdentifier" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.package.MemberIdentifier"></a><a id="memberIdentifier:MemberIdentifier"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/package$$Placing.html#member:String" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/package$$Placing.html#memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.package.MemberIdentifier" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -466,7 +482,7 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">member</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">memberIdentifier</span><span class="result">: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>
       </span>
       
       

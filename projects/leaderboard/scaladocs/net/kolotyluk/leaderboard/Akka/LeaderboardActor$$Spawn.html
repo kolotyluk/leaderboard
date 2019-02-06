@@ -165,8 +165,40 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="net.kolotyluk.leaderboard.Akka">Akka</a></dd></dl></div>
     </li><li class="current-entities indented5">
                         <span class="separator"></span>
-                        <a class="trait" href="LeaderboardActor$$Message.html" title=""></a>
-                        <a href="LeaderboardActor$$Message.html" title="">Message</a>
+                        <a class="class" href="LeaderboardActor$$Delete.html" title=""></a>
+                        <a href="LeaderboardActor$$Delete.html" title="">Delete</a>
+                      </li><li class="current-entities indented5">
+                        <span class="separator"></span>
+                        <a class="class" href="LeaderboardActor$$GetCount.html" title=""></a>
+                        <a href="LeaderboardActor$$GetCount.html" title="">GetCount</a>
+                      </li><li class="current-entities indented5">
+                        <span class="separator"></span>
+                        <a class="class" href="LeaderboardActor$$GetIdentifier.html" title=""></a>
+                        <a href="LeaderboardActor$$GetIdentifier.html" title="">GetIdentifier</a>
+                      </li><li class="current-entities indented5">
+                        <span class="separator"></span>
+                        <a class="class" href="LeaderboardActor$$GetInfo.html" title=""></a>
+                        <a href="LeaderboardActor$$GetInfo.html" title="">GetInfo</a>
+                      </li><li class="current-entities indented5">
+                        <span class="separator"></span>
+                        <a class="class" href="LeaderboardActor$$GetName.html" title=""></a>
+                        <a href="LeaderboardActor$$GetName.html" title="">GetName</a>
+                      </li><li class="current-entities indented5">
+                        <span class="separator"></span>
+                        <a class="class" href="LeaderboardActor$$GetRange.html" title=""></a>
+                        <a href="LeaderboardActor$$GetRange.html" title="">GetRange</a>
+                      </li><li class="current-entities indented5">
+                        <span class="separator"></span>
+                        <a class="class" href="LeaderboardActor$$GetScore.html" title=""></a>
+                        <a href="LeaderboardActor$$GetScore.html" title="">GetScore</a>
+                      </li><li class="current-entities indented5">
+                        <span class="separator"></span>
+                        <a class="class" href="LeaderboardActor$$GetStanding.html" title=""></a>
+                        <a href="LeaderboardActor$$GetStanding.html" title="">GetStanding</a>
+                      </li><li class="current-entities indented5">
+                        <span class="separator"></span>
+                        <a class="trait" href="LeaderboardActor$$Request.html" title=""></a>
+                        <a href="LeaderboardActor$$Request.html" title="">Request</a>
                       </li><li class="current-entities indented5">
                         <span class="separator"></span>
                         <a class="class" href="" title=""></a>
@@ -198,7 +230,7 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Spawn</span><span class="tparams">[<span name="M">M</span>]</span><span class="params">(<span name="behavior">behavior: <span class="extype" name="akka.actor.typed.Behavior">Behavior</span>[<span class="extype" name="net.kolotyluk.leaderboard.Akka.LeaderboardActor.Spawn.M">M</span>]</span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="LeaderboardActor$$Message.html" class="extype" name="net.kolotyluk.leaderboard.Akka.LeaderboardActor.Message">Message</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Spawn</span><span class="tparams">[<span name="M">M</span>]</span><span class="params">(<span name="behavior">behavior: <span class="extype" name="akka.actor.typed.Behavior">Behavior</span>[<span class="extype" name="net.kolotyluk.leaderboard.Akka.LeaderboardActor.Spawn.M">M</span>]</span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="LeaderboardActor$$Request.html" class="extype" name="net.kolotyluk.leaderboard.Akka.LeaderboardActor.Request">Request</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -207,7 +239,7 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="LeaderboardActor$$Message.html" class="extype" name="net.kolotyluk.leaderboard.Akka.LeaderboardActor.Message">Message</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="LeaderboardActor$$Request.html" class="extype" name="net.kolotyluk.leaderboard.Akka.LeaderboardActor.Request">Request</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -233,7 +265,7 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="net.kolotyluk.leaderboard.Akka.LeaderboardActor.Spawn"><span>Spawn</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="net.kolotyluk.leaderboard.Akka.LeaderboardActor.Message"><span>Message</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="net.kolotyluk.leaderboard.Akka.LeaderboardActor.Spawn"><span>Spawn</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="net.kolotyluk.leaderboard.Akka.LeaderboardActor.Request"><span>Request</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -643,8 +675,8 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
               <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
             </div><div class="parent" name="scala.Equals">
               <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
-            </div><div class="parent" name="net.kolotyluk.leaderboard.Akka.LeaderboardActor.Message">
-              <h3>Inherited from <a href="LeaderboardActor$$Message.html" class="extype" name="net.kolotyluk.leaderboard.Akka.LeaderboardActor.Message">Message</a></h3>
+            </div><div class="parent" name="net.kolotyluk.leaderboard.Akka.LeaderboardActor.Request">
+              <h3>Inherited from <a href="LeaderboardActor$$Request.html" class="extype" name="net.kolotyluk.leaderboard.Akka.LeaderboardActor.Request">Request</a></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">

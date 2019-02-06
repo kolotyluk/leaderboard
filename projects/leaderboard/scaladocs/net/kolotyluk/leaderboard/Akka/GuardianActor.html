@@ -147,6 +147,55 @@ a behavior is similar to the actor context in legacy Akka.</p><h3>Guardian</h3><
 has access to. Typically started with something like:</p><pre><span class="kw">val</span> systemName = <span class="lit">"Leaderboard"</span>
 <span class="kw">val</span> guardian = <span class="kw">new</span> Guardian() <span class="cmt">// top level of our actor hierarchy</span>
 <span class="kw">val</span> system = ActorSystem(guardian.behavior, systemName)</pre><p>where <a href="" class="extype" name="net.kolotyluk.leaderboard.Akka.GuardianActor">net.kolotyluk.leaderboard.Akka.GuardianActor</a> defines the behavior.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="net.kolotyluk.leaderboard">leaderboard</a></dd></dl></div>
+    </li><li name="net.kolotyluk.leaderboard.Akka.endpoint" visbl="pub" class="indented5 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="endpoint"></a><a id="endpoint:endpoint"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/Akka/index.html#endpoint" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="Note: creating members is optional, as they will be created implicitly, but it's the caller's responsibility to use properly formatted member ids." href="endpoint/index.html"><span class="name">endpoint</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Note: creating members is optional, as they will be created implicitly, but it's the caller's responsibility
+to use properly formatted member ids.</p><div class="fullcomment"><div class="comment cmt"><h3>Akka HTTP Endpoints</h3><h4>Examples</h4><h5>Ping</h5><pre>GET   /ping
+      pong</pre><h5>Create Leaderboard</h5><pre>POST   /leaderboard
+       {<span class="lit">"id"</span>:<span class="lit">"DQz92Qw_ShCB-TMXf-wiAQ"</span>}
+
+POST   /leaderboard?name=foo
+       {<span class="lit">"id"</span>:<span class="lit">"DQz92Qw_ShCB-TMXf-wiAQ"</span>,<span class="lit">"name"</span>:<span class="lit">"foo"</span>}
+
+POST   /leaderboard {<span class="lit">"kind"</span>:<span class="lit">"LeaderboardActor"</span>,<span class="lit">"name"</span>:<span class="lit">"foo"</span>}
+       {<span class="lit">"id"</span>:<span class="lit">"DQz92Qw_ShCB-TMXf-wiAQ"</span>,<span class="lit">"name"</span>:<span class="lit">"foo"</span>}</pre><h5>Create Leaderboard Member</h5><p>Note: creating members is optional, as they will be created implicitly, but it's the caller's responsibility
+to use properly formatted member ids.</p><pre>POST   /leaderboard/member
+       {<span class="lit">"id"</span>:<span class="lit">"cuWnCrtETqWtSC8rEYIiUA"</span>}
+
+POST   /leaderboard/member?name=joe
+       {<span class="lit">"id"</span>:<span class="lit">"cuWnCrtETqWtSC8rEYIiUA"</span>,<span class="lit">"name"</span>:<span class="lit">"joe"</span>}
+
+POST   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ
+       {<span class="lit">"id"</span>:<span class="lit">"cuWnCrtETqWtSC8rEYIiUA"</span>}
+
+POST   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ?name=joe
+       {<span class="lit">"id"</span>:<span class="lit">"cuWnCrtETqWtSC8rEYIiUA"</span>,<span class="lit">"name"</span>:<span class="lit">"joe"</span>}</pre><h5>Get Leaderboard Status</h5><pre>GET    /leaderboard
+       {[<span class="lit">"id"</span>:<span class="lit">"DQz92Qw_ShCB-TMXf-wiAQ"</span>]}
+
+GET    /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ
+       {<span class="lit">"id"</span>:<span class="lit">"DQz92Qw_ShCB-TMXf-wiAQ"</span>,<span class="lit">"name"</span>:<span class="lit">"foo"</span>}
+
+GET    /leaderboard?name=foo
+       {<span class="lit">"id"</span>:<span class="lit">"DQz92Qw_ShCB-TMXf-wiAQ"</span>,<span class="lit">"name"</span>:<span class="lit">"foo"</span>}</pre><pre>POST   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ
+       {<span class="lit">"id"</span>:<span class="lit">"DQz92Qw_ShCB-TMXf-wiAQ"</span>}
+POST   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ?name=foo
+       {<span class="lit">"id"</span>:<span class="lit">"DQz92Qw_ShCB-TMXf-wiAQ"</span>,<span class="lit">"name"</span>:<span class="lit">"foo"</span>}</pre><h5>Set Score</h5><pre>PUT   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA?score=<span class="num">1234</span></pre><h5>Increment Score</h5><pre>PATCH /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA?score=<span class="num">1234</span></pre><h5>Get Score</h5><pre>GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA
+      {<span class="lit">"score"</span>:<span class="lit">"2468"</span>}
+GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="lit">"score"</span>,<span class="lit">"standing"</span>}
+      {<span class="lit">"score"</span>:<span class="lit">"2468"</span>,<span class="lit">"standing"</span>:<span class="lit">"0"</span>}</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="net.kolotyluk.leaderboard.Akka">Akka</a></dd><dt>See also</dt><dd><span class="cmt"><p><a href="https://blog.mwaysolutions.com/2014/06/05/10-best-practices-for-better-restful-api" target="_blank">10 Best Practices for Better RESTful API</a></p></span></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.Akka.swagger" visbl="pub" class="indented5 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="swagger"></a><a id="swagger:swagger"></a>
       <span class="permalink">
@@ -164,10 +213,6 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="net.kolotyluk.leaderboard.Akka">Akka</a></dd></dl></div>
     </li><li class="current-entities indented4">
-                        <span class="separator"></span>
-                        <a class="class" href="FailEndpoint.html" title=""></a>
-                        <a href="FailEndpoint.html" title="">FailEndpoint</a>
-                      </li><li class="current-entities indented4">
                         <a class="object" href="GuardianActor$.html" title=""></a>
                         <a class="class" href="" title="Top level actor in Akka system, which spawns the next level of actors."></a>
                         <a href="" title="Top level actor in Akka system, which spawns the next level of actors.">GuardianActor</a>
@@ -176,17 +221,9 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
                         <a class="class" href="LeaderboardActor.html" title="Top level actor in Akka system, which spawns the next level of actors."></a>
                         <a href="LeaderboardActor.html" title="Top level actor in Akka system, which spawns the next level of actors.">LeaderboardActor</a>
                       </li><li class="current-entities indented4">
-                        <span class="separator"></span>
-                        <a class="class" href="LeaderboardEndpoint.html" title=""></a>
-                        <a href="LeaderboardEndpoint.html" title="">LeaderboardEndpoint</a>
-                      </li><li class="current-entities indented4">
                         <a class="object" href="LeaderboardManagerActor$.html" title=""></a>
                         <a class="class" href="LeaderboardManagerActor.html" title="Top level actor in Akka system, which spawns the next level of actors."></a>
                         <a href="LeaderboardManagerActor.html" title="Top level actor in Akka system, which spawns the next level of actors.">LeaderboardManagerActor</a>
-                      </li><li class="current-entities indented4">
-                        <span class="separator"></span>
-                        <a class="class" href="PingEndpoint.html" title=""></a>
-                        <a href="PingEndpoint.html" title="">PingEndpoint</a>
                       </li><li class="current-entities indented4">
                         <a class="object" href="RestActor$.html" title=""></a>
                         <a class="class" href="RestActor.html" title="Binds to one or more interfaces listening for HTTP Requests"></a>

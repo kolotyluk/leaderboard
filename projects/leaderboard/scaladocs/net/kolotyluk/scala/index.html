@@ -174,7 +174,10 @@ For example:</p><pre><span class="kw">object</span> Main
 
   <span class="cmt">// If logging is broken, hopefully there is enough output now for a diagnosis</span>
   logger.info(<span class="lit">"Logging started"</span>)
-}</pre></div></div>
+}</pre><h4>Base 64 URL Identifiers</h4><p>Sometimes it's nice to encode a 128-bit UUID as a 22-character Base 64 URL String, such as &quot;keAoZQECSwm0h7v6yw_3WQ&quot;.
+Normally a UUID is expressed as a 36-character string such as &quot;91e02865-0102-4b09-b487-bbfacb0ff759&quot;, so this is a
+simple way of saving 14 characters in URL encoding. For example</p><pre>curl http:<span class="cmt">//localhost/foo/keAoZQECSwm0h7v6yw_3WQ</span></pre><p>Would internally refer to a resource for &quot;foo/91e02865-0102-4b09-b487-bbfacb0ff759&quot;
+</p></div></div>
     </li>
               </ul>
             </div>

@@ -148,7 +148,10 @@ For example:</p><pre><span class="kw">object</span> Main
 
   <span class="cmt">// If logging is broken, hopefully there is enough output now for a diagnosis</span>
   logger.info(<span class="lit">"Logging started"</span>)
-}</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="net.kolotyluk.scala">scala</a></dd></dl></div>
+}</pre><h4>Base 64 URL Identifiers</h4><p>Sometimes it's nice to encode a 128-bit UUID as a 22-character Base 64 URL String, such as &quot;keAoZQECSwm0h7v6yw_3WQ&quot;.
+Normally a UUID is expressed as a 36-character string such as &quot;91e02865-0102-4b09-b487-bbfacb0ff759&quot;, so this is a
+simple way of saving 14 characters in URL encoding. For example</p><pre>curl http:<span class="cmt">//localhost/foo/keAoZQECSwm0h7v6yw_3WQ</span></pre><p>Would internally refer to a resource for &quot;foo/91e02865-0102-4b09-b487-bbfacb0ff759&quot;
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="net.kolotyluk.scala">scala</a></dd></dl></div>
     </li><li class="current-entities indented4">
                         <span class="separator"></span>
                         <a class="trait" href="" title="Extra features for Typesafe Config"></a>
@@ -161,6 +164,14 @@ For example:</p><pre><span class="kw">object</span> Main
                         <span class="separator"></span>
                         <a class="object" href="Identity$.html" title=""></a>
                         <a href="Identity$.html" title="">Identity</a>
+                      </li><li class="current-entities indented4">
+                        <a class="object" href="Internalized$.html" title="Behaves similar to java.lang.String#intern"></a>
+                        <a class="class" href="Internalized.html" title="Because there are no duplicates in this class, obj1 eq obj2 is sufficient"></a>
+                        <a href="Internalized.html" title="Because there are no duplicates in this class, obj1 eq obj2 is sufficient">Internalized</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
+                        <a class="class" href="InvalidBase64UrlToUuidException.html" title=""></a>
+                        <a href="InvalidBase64UrlToUuidException.html" title="">InvalidBase64UrlToUuidException</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
                         <a class="trait" href="Logging.html" title="It is recommended that you extend this trait in your app, in the same style, but for local configuration."></a>

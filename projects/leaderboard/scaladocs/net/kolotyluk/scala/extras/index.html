@@ -148,7 +148,10 @@ For example:</p><pre><span class="kw">object</span> Main
 
   <span class="cmt">// If logging is broken, hopefully there is enough output now for a diagnosis</span>
   logger.info(<span class="lit">"Logging started"</span>)
-}</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="net.kolotyluk.scala">scala</a></dd></dl></div>
+}</pre><h4>Base 64 URL Identifiers</h4><p>Sometimes it's nice to encode a 128-bit UUID as a 22-character Base 64 URL String, such as &quot;keAoZQECSwm0h7v6yw_3WQ&quot;.
+Normally a UUID is expressed as a 36-character string such as &quot;91e02865-0102-4b09-b487-bbfacb0ff759&quot;, so this is a
+simple way of saving 14 characters in URL encoding. For example</p><pre>curl http:<span class="cmt">//localhost/foo/keAoZQECSwm0h7v6yw_3WQ</span></pre><p>Would internally refer to a resource for &quot;foo/91e02865-0102-4b09-b487-bbfacb0ff759&quot;
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="net.kolotyluk.scala">scala</a></dd></dl></div>
     </li><li class="current-entities indented4">
                         <span class="separator"></span>
                         <a class="trait" href="Configuration.html" title="Extra features for Typesafe Config"></a>
@@ -161,6 +164,14 @@ For example:</p><pre><span class="kw">object</span> Main
                         <span class="separator"></span>
                         <a class="object" href="Identity$.html" title=""></a>
                         <a href="Identity$.html" title="">Identity</a>
+                      </li><li class="current-entities indented4">
+                        <a class="object" href="Internalized$.html" title="Behaves similar to java.lang.String#intern"></a>
+                        <a class="class" href="Internalized.html" title="Because there are no duplicates in this class, obj1 eq obj2 is sufficient"></a>
+                        <a href="Internalized.html" title="Because there are no duplicates in this class, obj1 eq obj2 is sufficient">Internalized</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
+                        <a class="class" href="InvalidBase64UrlToUuidException.html" title=""></a>
+                        <a href="InvalidBase64UrlToUuidException.html" title="">InvalidBase64UrlToUuidException</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
                         <a class="trait" href="Logging.html" title="It is recommended that you extend this trait in your app, in the same style, but for local configuration."></a>
@@ -209,7 +220,10 @@ For example:</p><pre><span class="kw">object</span> Main
 
   <span class="cmt">// If logging is broken, hopefully there is enough output now for a diagnosis</span>
   logger.info(<span class="lit">"Logging started"</span>)
-}</pre></div><div class="toggleContainer block">
+}</pre><h4>Base 64 URL Identifiers</h4><p>Sometimes it's nice to encode a 128-bit UUID as a 22-character Base 64 URL String, such as &quot;keAoZQECSwm0h7v6yw_3WQ&quot;.
+Normally a UUID is expressed as a 36-character string such as &quot;91e02865-0102-4b09-b487-bbfacb0ff759&quot;, so this is a
+simple way of saving 14 characters in URL encoding. For example</p><pre>curl http:<span class="cmt">//localhost/foo/keAoZQECSwm0h7v6yw_3WQ</span></pre><p>Would internally refer to a resource for &quot;foo/91e02865-0102-4b09-b487-bbfacb0ff759&quot;
+</p></div><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -312,6 +326,38 @@ main body of code you might use:</p><pre><span class="kw">val</span> akkaSystemN
       
       <p class="shortcomment cmt">Some extra utilities for accessing the local system <a href="https://en.wikipedia.org/wiki/Environment_variable" target="_blank">environment variables</a>.</p><div class="fullcomment"><div class="comment cmt"><h3>Scala Environment Extras</h3><p>Some extra utilities for accessing the local system <a href="https://en.wikipedia.org/wiki/Environment_variable" target="_blank">environment variables</a>.
 </p></div></div>
+    </li><li name="net.kolotyluk.scala.extras.Internalized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="Internalized[T]extendsAnyRef"></a><a id="Internalized[T]:Internalized[T]"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/scala/extras/index.html#Internalized[T]extendsAnyRef" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a title="Because there are no duplicates in this class, obj1 eq obj2 is sufficient" href="Internalized.html"><span class="name">Internalized</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Because there are no duplicates in this class, obj1 eq obj2 is sufficient</p><div class="fullcomment"><div class="comment cmt"><h3>Class of Internalized Objects</h3><p>Because there are no duplicates in this class, obj1 eq obj2 is sufficient</p><p>Behaves similar to <span class="extype" name="java.lang.String#intern">java.lang.String#intern</span></p></div></div>
+    </li><li name="net.kolotyluk.scala.extras.InvalidBase64UrlToUuidException" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="InvalidBase64UrlToUuidExceptionextendsException"></a><a id="InvalidBase64UrlToUuidException:InvalidBase64UrlToUuidException"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/scala/extras/index.html#InvalidBase64UrlToUuidExceptionextendsException" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="InvalidBase64UrlToUuidException.html"><span class="name">InvalidBase64UrlToUuidException</span></a><span class="result"> extends <span class="extype" name="scala.Exception">Exception</span></span>
+      </span>
+      
+      
     </li><li name="net.kolotyluk.scala.extras.Logging" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="LoggingextendsAnyRef"></a><a id="Logging:Logging"></a>
       <span class="permalink">
@@ -337,7 +383,39 @@ main body of code you might use:</p><pre><span class="kw">val</span> akkaSystemN
         <div class="values members">
               <h3>Value Members</h3>
               <ol>
-                <li name="net.kolotyluk.scala.extras.Identity" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+                <li name="net.kolotyluk.scala.extras#base64UrlIdToUuid" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="base64UrlIdToUuid(base64UrlId:String):java.util.UUID"></a><a id="base64UrlIdToUuid(String):UUID"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/scala/extras/index.html#base64UrlIdToUuid(base64UrlId:String):java.util.UUID" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">base64UrlIdToUuid</span><span class="params">(<span name="base64UrlId">base64UrlId: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="java.util.UUID">UUID</span></span>
+      </span>
+      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"><h3>Parse UUID from Base 64 URL String</h3></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>Unique Universal Identifier</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt"><p><a href="InvalidBase64UrlToUuidException.html" class="extype" name="net.kolotyluk.scala.extras.InvalidBase64UrlToUuidException"><code>InvalidBase64UrlToUuidException</code></a> when parsing fails</p></span></dd></dl></div>
+    </li><li name="net.kolotyluk.scala.extras#uuidToBase64UrlId" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="uuidToBase64UrlId(uuid:java.util.UUID):String"></a><a id="uuidToBase64UrlId(UUID):String"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/scala/extras/index.html#uuidToBase64UrlId(uuid:java.util.UUID):String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">uuidToBase64UrlId</span><span class="params">(<span name="uuid">uuid: <span class="extype" name="java.util.UUID">UUID</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"><h3>Generate Base 64 URL String from UUID</h3></div><dl class="paramcmts block"><dt class="param">uuid</dt><dd class="cmt"><p>Unique Universal Identifier</p></dd><dt>returns</dt><dd class="cmt"><p>Base 64 URL String</p></dd></dl></div>
+    </li><li name="net.kolotyluk.scala.extras.Identity" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="Identity"></a><a id="Identity:Identity"></a>
       <span class="permalink">
       <a href="../../../../net/kolotyluk/scala/extras/index.html#Identity" title="Permalink">
@@ -353,6 +431,32 @@ main body of code you might use:</p><pre><span class="kw">val</span> akkaSystemN
       </span>
       
       
+    </li><li name="net.kolotyluk.scala.extras.Internalized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="Internalized"></a><a id="Internalized:Internalized"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/scala/extras/index.html#Internalized" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="Behaves similar to java.lang.String#intern" href="Internalized$.html"><span class="name">Internalized</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Behaves similar to <span class="extype" name="java.lang.String#intern">java.lang.String#intern</span></p><div class="fullcomment"><div class="comment cmt"><h3>Maintain a Manifest of Objects</h3><p>Behaves similar to <span class="extype" name="java.lang.String#intern">java.lang.String#intern</span></p><p>This code is thread-safe</p><h4>Examples</h4><pre><span class="kw">val</span> id1 = UUID.fromString(<span class="lit">"02b9670c-afd4-4c39-b4d3-3c46ac4f1a9c"</span>)
+<span class="kw">val</span> id2 = UUID.fromString(<span class="lit">"02b9670c-afd4-4c39-b4d3-3c46ac4f1a9c"</span>)
+<span class="kw">val</span> id3 = UUID.fromString(<span class="lit">"02b9670c-afd4-4c39-b4d3-3c46ac4f1a9c"</span>)
+assert(id1 == id2)
+assert(! (id1 eq id2))
+assert(id1 == id3)
+assert(! (id1 eq id3))
+assert(id2 == id3)
+assert(! (id2 eq id3))
+assert(Internalized(id1) eq Internalized(id1))
+assert(Internalized(id2) eq Internalized(id3))</pre><h4>Uses</h4></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><span class="extype" name="net.kolotyluk.scala.extras.InternalizedSpec">net.kolotyluk.scala.extras.InternalizedSpec</span></p></span></dd></dl></div>
     </li>
               </ol>
             </div>

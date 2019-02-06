@@ -173,8 +173,8 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
                         <a href="../../scala/extras/Configuration$ConfigurationError.html" title="Indicates and unrecoverable configuration problem was encountered.">ConfigurationError</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
-                        <a class="class" href="ConsecutiveLeaderboard.html" title=""></a>
-                        <a href="ConsecutiveLeaderboard.html" title="">ConsecutiveLeaderboard</a>
+                        <a class="class" href="ConsecutiveLeaderboard.html" title="Non-threadsafe leaderboard"></a>
+                        <a href="ConsecutiveLeaderboard.html" title="Non-threadsafe leaderboard">ConsecutiveLeaderboard</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
                         <a class="class" href="../../scala/extras/Configuration$ExtraConfiguration.html" title=""></a>
@@ -185,16 +185,24 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
                         <a href="package$$Increment$.html" title="">Increment</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
-                        <a class="class" href="package$$Info.html" title=""></a>
-                        <a href="package$$Info.html" title="">Info</a>
-                      </li><li class="current-entities indented4">
-                        <span class="separator"></span>
                         <a class="trait" href="Leaderboard.html" title=""></a>
                         <a href="Leaderboard.html" title="">Leaderboard</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
+                        <a class="trait" href="LeaderboardAsync.html" title=""></a>
+                        <a href="LeaderboardAsync.html" title="">LeaderboardAsync</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
+                        <a class="class" href="package$$LeaderboardInfo.html" title=""></a>
+                        <a href="package$$LeaderboardInfo.html" title="">LeaderboardInfo</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
                         <a class="trait" href="LeaderboardManager.html" title=""></a>
                         <a href="LeaderboardManager.html" title="">LeaderboardManager</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
+                        <a class="trait" href="LeaderboardSync.html" title=""></a>
+                        <a href="LeaderboardSync.html" title="">LeaderboardSync</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
                         <a class="class" href="../Configuration$LocalConfiguration.html" title=""></a>
@@ -223,6 +231,14 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
                         <span class="separator"></span>
                         <a class="class" href="package$$Standing.html" title="Place in count on current leaderboard."></a>
                         <a href="package$$Standing.html" title="Place in count on current leaderboard.">Standing</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
+                        <a class="class" href="SynchronizedConcurrentLeaderboard.html" title=""></a>
+                        <a href="SynchronizedConcurrentLeaderboard.html" title="">SynchronizedConcurrentLeaderboard</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
+                        <a class="class" href="SynchronizedLeaderboard.html" title=""></a>
+                        <a href="SynchronizedLeaderboard.html" title="">SynchronizedLeaderboard</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
                         <a class="trait" href="package$$UpdateMode.html" title=""></a>
@@ -356,9 +372,9 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"><h3>Implicit Local Configuration</h3></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Configuration.html" class="extype" name="net.kolotyluk.leaderboard.Configuration">Configuration</a></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ConcurrentLeaderboardextendsLeaderboardwithConfigurationwithLogging"></a><a id="ConcurrentLeaderboard:ConcurrentLeaderboard"></a>
+      <a id="ConcurrentLeaderboardextendsLeaderboardSyncwithConfigurationwithLogging"></a><a id="ConcurrentLeaderboard:ConcurrentLeaderboard"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/index.html#ConcurrentLeaderboardextendsLeaderboardwithConfigurationwithLogging" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/index.html#ConcurrentLeaderboardextendsLeaderboardSyncwithConfigurationwithLogging" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -367,7 +383,7 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a title="Keep track of leaderboard scores." href="ConcurrentLeaderboard.html"><span class="name">ConcurrentLeaderboard</span></a><span class="result"> extends <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a> with <a href="../../scala/extras/Configuration.html" class="extype" name="net.kolotyluk.scala.extras.Configuration">scala.extras.Configuration</a> with <a href="../../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a></span>
+        <a title="Keep track of leaderboard scores." href="ConcurrentLeaderboard.html"><span class="name">ConcurrentLeaderboard</span></a><span class="result"> extends <a href="LeaderboardSync.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync">LeaderboardSync</a> with <a href="../../scala/extras/Configuration.html" class="extype" name="net.kolotyluk.scala.extras.Configuration">scala.extras.Configuration</a> with <a href="../../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a></span>
       </span>
       
       <p class="shortcomment cmt">Keep track of leaderboard scores.</p><div class="fullcomment"><div class="comment cmt"><h3>Leaderboard Score Keeping</h3><p>Keep track of leaderboard scores.</p><h4>Redis</h4><p>Many leaderboard implementations use Redis Sorted Sets for keeping track of scores. In general
@@ -385,10 +401,10 @@ so there is a 1 in 2<sup>64</sup> chance of a collision, and a failed tie breaki
 created by calling System.nanoTime each time a new random number is generated.</p><h3>Threadsafe</h3><p>This code is intended to be threadsafe, using concurrent non-blocking data structures, in order
 to offer better performance over serialization in a single actor.
 </p></div></div>
-    </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConsecutiveLeaderboard" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ConsecutiveLeaderboardextendsLeaderboardwithLogging"></a><a id="ConsecutiveLeaderboard:ConsecutiveLeaderboard"></a>
+    </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConsecutiveLeaderboard" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ConsecutiveLeaderboardextendsLeaderboardSyncwithLogging"></a><a id="ConsecutiveLeaderboard:ConsecutiveLeaderboard"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/index.html#ConsecutiveLeaderboardextendsLeaderboardwithLogging" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/index.html#ConsecutiveLeaderboardextendsLeaderboardSyncwithLogging" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -397,26 +413,11 @@ to offer better performance over serialization in a single actor.
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a title="" href="ConsecutiveLeaderboard.html"><span class="name">ConsecutiveLeaderboard</span></a><span class="result"> extends <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a> with <a href="../../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a></span>
+        <a title="Non-threadsafe leaderboard" href="ConsecutiveLeaderboard.html"><span class="name">ConsecutiveLeaderboard</span></a><span class="result"> extends <a href="LeaderboardSync.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync">LeaderboardSync</a> with <a href="../../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a></span>
       </span>
       
-      
-    </li><li name="net.kolotyluk.leaderboard.scorekeeping.Info" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="InfoextendsProductwithSerializable"></a><a id="Info:Info"></a>
-      <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/index.html#InfoextendsProductwithSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="package$$Info.html"><span class="name">Info</span></a><span class="params">(<span name="uuid">uuid: <span class="extype" name="java.util.UUID">UUID</span></span>, <span name="name">name: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="memberCount">memberCount: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      
-      
+      <p class="shortcomment cmt">Non-threadsafe leaderboard</p><div class="fullcomment"><div class="comment cmt"><h3>Fast Unsafe Leaderboard</h3><p>Non-threadsafe leaderboard</p><p>This leaderboard is not thread-safe, and intended to be uses inside an Akka Actor.
+</p></div></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="LeaderboardextendsAnyRef"></a><a id="Leaderboard:Leaderboard"></a>
       <span class="permalink">
@@ -430,6 +431,54 @@ to offer better performance over serialization in a single actor.
       </span>
       <span class="symbol">
         <a title="" href="Leaderboard.html"><span class="name">Leaderboard</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      
+      
+    </li><li name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardAsync" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="LeaderboardAsyncextendsLeaderboard"></a><a id="LeaderboardAsync:LeaderboardAsync"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/index.html#LeaderboardAsyncextendsLeaderboard" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="LeaderboardAsync.html"><span class="name">LeaderboardAsync</span></a><span class="result"> extends <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></span>
+      </span>
+      
+      
+    </li><li name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LeaderboardIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]"></a><a id="LeaderboardIdentifier:LeaderboardIdentifier"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/index.html#LeaderboardIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">LeaderboardIdentifier</span><span class="result alias"> = <a href="../../scala/extras/Internalized.html" class="extype" name="net.kolotyluk.scala.extras.Internalized">Internalized</a>[<span class="extype" name="java.util.UUID">UUID</span>]</span>
+      </span>
+      
+      
+    </li><li name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardInfo" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LeaderboardInfoextendsProductwithSerializable"></a><a id="LeaderboardInfo:LeaderboardInfo"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/index.html#LeaderboardInfoextendsProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="package$$LeaderboardInfo.html"><span class="name">LeaderboardInfo</span></a><span class="params">(<span name="leaderboardIdentifier">leaderboardIdentifier: <a href="#LeaderboardIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier">LeaderboardIdentifier</a></span>, <span name="name">name: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="memberCount">memberCount: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -449,6 +498,38 @@ to offer better performance over serialization in a single actor.
       </span>
       
       
+    </li><li name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="LeaderboardSyncextendsLeaderboard"></a><a id="LeaderboardSync:LeaderboardSync"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/index.html#LeaderboardSyncextendsLeaderboard" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="LeaderboardSync.html"><span class="name">LeaderboardSync</span></a><span class="result"> extends <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></span>
+      </span>
+      
+      
+    </li><li name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]"></a><a id="MemberIdentifier:MemberIdentifier"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">MemberIdentifier</span><span class="result alias"> = <a href="../../scala/extras/Internalized.html" class="extype" name="net.kolotyluk.scala.extras.Internalized">Internalized</a>[<span class="extype" name="java.util.UUID">UUID</span>]</span>
+      </span>
+      
+      
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.Placing" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="PlacingextendsProductwithSerializable"></a><a id="Placing:Placing"></a>
       <span class="permalink">
@@ -461,7 +542,7 @@ to offer better performance over serialization in a single actor.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="package$$Placing.html"><span class="name">Placing</span></a><span class="params">(<span name="member">member: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="score">score: <span class="extype" name="scala.BigInt">BigInt</span></span>, <span name="place">place: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="package$$Placing.html"><span class="name">Placing</span></a><span class="params">(<span name="memberIdentifier">memberIdentifier: <a href="#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>, <span name="score">score: <span class="extype" name="scala.BigInt">BigInt</span></span>, <span name="place">place: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -526,6 +607,38 @@ Similarly, GUIDs or UUIDs are not fairly distributed.
       
       <p class="shortcomment cmt">Place in count on current leaderboard.</p><div class="fullcomment"><div class="comment cmt"><h3>Standing Place in Count</h3><p>Place in count on current leaderboard.
 </p></div><dl class="paramcmts block"><dt class="param">place</dt><dd class="cmt"><p>in count</p></dd><dt class="param">count</dt><dd class="cmt"><p>of scores on leaderboard</p></dd></dl></div>
+    </li><li name="net.kolotyluk.leaderboard.scorekeeping.SynchronizedConcurrentLeaderboard" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SynchronizedConcurrentLeaderboardextendsLeaderboardSyncwithLogging"></a><a id="SynchronizedConcurrentLeaderboard:SynchronizedConcurrentLeaderboard"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/index.html#SynchronizedConcurrentLeaderboardextendsLeaderboardSyncwithLogging" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="SynchronizedConcurrentLeaderboard.html"><span class="name">SynchronizedConcurrentLeaderboard</span></a><span class="result"> extends <a href="LeaderboardSync.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync">LeaderboardSync</a> with <a href="../../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a></span>
+      </span>
+      
+      
+    </li><li name="net.kolotyluk.leaderboard.scorekeeping.SynchronizedLeaderboard" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SynchronizedLeaderboardextendsLeaderboardSyncwithLogging"></a><a id="SynchronizedLeaderboard:SynchronizedLeaderboard"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/index.html#SynchronizedLeaderboardextendsLeaderboardSyncwithLogging" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="SynchronizedLeaderboard.html"><span class="name">SynchronizedLeaderboard</span></a><span class="result"> extends <a href="LeaderboardSync.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync">LeaderboardSync</a> with <a href="../../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a></span>
+      </span>
+      
+      
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.UpdateMode" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="UpdateModeextendsAnyRef"></a><a id="UpdateMode:UpdateMode"></a>
       <span class="permalink">

@@ -147,6 +147,55 @@ a behavior is similar to the actor context in legacy Akka.</p><h3>Guardian</h3><
 has access to. Typically started with something like:</p><pre><span class="kw">val</span> systemName = <span class="lit">"Leaderboard"</span>
 <span class="kw">val</span> guardian = <span class="kw">new</span> Guardian() <span class="cmt">// top level of our actor hierarchy</span>
 <span class="kw">val</span> system = ActorSystem(guardian.behavior, systemName)</pre><p>where <a href="GuardianActor.html" class="extype" name="net.kolotyluk.leaderboard.Akka.GuardianActor">net.kolotyluk.leaderboard.Akka.GuardianActor</a> defines the behavior.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="net.kolotyluk.leaderboard">leaderboard</a></dd></dl></div>
+    </li><li name="net.kolotyluk.leaderboard.Akka.endpoint" visbl="pub" class="indented5 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="endpoint"></a><a id="endpoint:endpoint"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/Akka/index.html#endpoint" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="Note: creating members is optional, as they will be created implicitly, but it's the caller's responsibility to use properly formatted member ids." href="endpoint/index.html"><span class="name">endpoint</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Note: creating members is optional, as they will be created implicitly, but it's the caller's responsibility
+to use properly formatted member ids.</p><div class="fullcomment"><div class="comment cmt"><h3>Akka HTTP Endpoints</h3><h4>Examples</h4><h5>Ping</h5><pre>GET   /ping
+      pong</pre><h5>Create Leaderboard</h5><pre>POST   /leaderboard
+       {<span class="lit">"id"</span>:<span class="lit">"DQz92Qw_ShCB-TMXf-wiAQ"</span>}
+
+POST   /leaderboard?name=foo
+       {<span class="lit">"id"</span>:<span class="lit">"DQz92Qw_ShCB-TMXf-wiAQ"</span>,<span class="lit">"name"</span>:<span class="lit">"foo"</span>}
+
+POST   /leaderboard {<span class="lit">"kind"</span>:<span class="lit">"LeaderboardActor"</span>,<span class="lit">"name"</span>:<span class="lit">"foo"</span>}
+       {<span class="lit">"id"</span>:<span class="lit">"DQz92Qw_ShCB-TMXf-wiAQ"</span>,<span class="lit">"name"</span>:<span class="lit">"foo"</span>}</pre><h5>Create Leaderboard Member</h5><p>Note: creating members is optional, as they will be created implicitly, but it's the caller's responsibility
+to use properly formatted member ids.</p><pre>POST   /leaderboard/member
+       {<span class="lit">"id"</span>:<span class="lit">"cuWnCrtETqWtSC8rEYIiUA"</span>}
+
+POST   /leaderboard/member?name=joe
+       {<span class="lit">"id"</span>:<span class="lit">"cuWnCrtETqWtSC8rEYIiUA"</span>,<span class="lit">"name"</span>:<span class="lit">"joe"</span>}
+
+POST   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ
+       {<span class="lit">"id"</span>:<span class="lit">"cuWnCrtETqWtSC8rEYIiUA"</span>}
+
+POST   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ?name=joe
+       {<span class="lit">"id"</span>:<span class="lit">"cuWnCrtETqWtSC8rEYIiUA"</span>,<span class="lit">"name"</span>:<span class="lit">"joe"</span>}</pre><h5>Get Leaderboard Status</h5><pre>GET    /leaderboard
+       {[<span class="lit">"id"</span>:<span class="lit">"DQz92Qw_ShCB-TMXf-wiAQ"</span>]}
+
+GET    /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ
+       {<span class="lit">"id"</span>:<span class="lit">"DQz92Qw_ShCB-TMXf-wiAQ"</span>,<span class="lit">"name"</span>:<span class="lit">"foo"</span>}
+
+GET    /leaderboard?name=foo
+       {<span class="lit">"id"</span>:<span class="lit">"DQz92Qw_ShCB-TMXf-wiAQ"</span>,<span class="lit">"name"</span>:<span class="lit">"foo"</span>}</pre><pre>POST   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ
+       {<span class="lit">"id"</span>:<span class="lit">"DQz92Qw_ShCB-TMXf-wiAQ"</span>}
+POST   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ?name=foo
+       {<span class="lit">"id"</span>:<span class="lit">"DQz92Qw_ShCB-TMXf-wiAQ"</span>,<span class="lit">"name"</span>:<span class="lit">"foo"</span>}</pre><h5>Set Score</h5><pre>PUT   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA?score=<span class="num">1234</span></pre><h5>Increment Score</h5><pre>PATCH /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA?score=<span class="num">1234</span></pre><h5>Get Score</h5><pre>GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA
+      {<span class="lit">"score"</span>:<span class="lit">"2468"</span>}
+GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="lit">"score"</span>,<span class="lit">"standing"</span>}
+      {<span class="lit">"score"</span>:<span class="lit">"2468"</span>,<span class="lit">"standing"</span>:<span class="lit">"0"</span>}</pre></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="https://blog.mwaysolutions.com/2014/06/05/10-best-practices-for-better-restful-api" target="_blank">10 Best Practices for Better RESTful API</a></p></span></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.Akka.swagger" visbl="pub" class="indented5 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="swagger"></a><a id="swagger:swagger"></a>
       <span class="permalink">
@@ -164,10 +213,6 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
       
       
     </li><li class="current-entities indented4">
-                        <span class="separator"></span>
-                        <a class="class" href="FailEndpoint.html" title=""></a>
-                        <a href="FailEndpoint.html" title="">FailEndpoint</a>
-                      </li><li class="current-entities indented4">
                         <a class="object" href="GuardianActor$.html" title=""></a>
                         <a class="class" href="GuardianActor.html" title="Top level actor in Akka system, which spawns the next level of actors."></a>
                         <a href="GuardianActor.html" title="Top level actor in Akka system, which spawns the next level of actors.">GuardianActor</a>
@@ -176,17 +221,9 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
                         <a class="class" href="LeaderboardActor.html" title="Top level actor in Akka system, which spawns the next level of actors."></a>
                         <a href="LeaderboardActor.html" title="Top level actor in Akka system, which spawns the next level of actors.">LeaderboardActor</a>
                       </li><li class="current-entities indented4">
-                        <span class="separator"></span>
-                        <a class="class" href="LeaderboardEndpoint.html" title=""></a>
-                        <a href="LeaderboardEndpoint.html" title="">LeaderboardEndpoint</a>
-                      </li><li class="current-entities indented4">
                         <a class="object" href="LeaderboardManagerActor$.html" title=""></a>
                         <a class="class" href="LeaderboardManagerActor.html" title="Top level actor in Akka system, which spawns the next level of actors."></a>
                         <a href="LeaderboardManagerActor.html" title="Top level actor in Akka system, which spawns the next level of actors.">LeaderboardManagerActor</a>
-                      </li><li class="current-entities indented4">
-                        <span class="separator"></span>
-                        <a class="class" href="PingEndpoint.html" title=""></a>
-                        <a href="PingEndpoint.html" title="">PingEndpoint</a>
                       </li><li class="current-entities indented4">
                         <a class="object" href="RestActor$.html" title=""></a>
                         <a class="class" href="RestActor.html" title="Binds to one or more interfaces listening for HTTP Requests"></a>
@@ -323,28 +360,7 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="net.kolotyluk.leaderboard.Akka.FailEndpoint" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="FailEndpointextendsDirectives"></a><a id="FailEndpoint:FailEndpoint"></a>
-      <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/Akka/index.html#FailEndpointextendsDirectives" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="FailEndpoint.html"><span class="name">FailEndpoint</span></a><span class="result"> extends <span class="extype" name="akka.http.scaladsl.server.Directives">Directives</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
-                <span class="name">@Api</span><span class="args">()</span>
-              
-                <span class="name">@Path</span><span class="args">()</span>
-              
-        </dd></dl></div>
-    </li><li name="net.kolotyluk.leaderboard.Akka.GuardianActor" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+              <ol><li name="net.kolotyluk.leaderboard.Akka.GuardianActor" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="GuardianActorextendsRouteConcatenationwithConfigurationwithLogging"></a><a id="GuardianActor:GuardianActor"></a>
       <span class="permalink">
       <a href="../../../../net/kolotyluk/leaderboard/Akka/index.html#GuardianActorextendsRouteConcatenationwithConfigurationwithLogging" title="Permalink">
@@ -369,9 +385,9 @@ are also FATAL. However, configuration can happen at other times as well, such a
 change dynamically.
 </p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="https://doc.akka.io/docs/akka/2.5.18/typed/actors.html#introduction" target="_blank">Akka Typed Introduction</a></p></span><span class="cmt"><p><a href="https://doc.akka.io/docs/akka/2.5/typed/fault-tolerance.html#supervision" target="_blank">Akka Typed Supervision</a></p></span></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.Akka.LeaderboardActor" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="LeaderboardActorextendsConfigurationwithLogging"></a><a id="LeaderboardActor:LeaderboardActor"></a>
+      <a id="LeaderboardActorextendsLeaderboardAsyncwithConfigurationwithLogging"></a><a id="LeaderboardActor:LeaderboardActor"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/Akka/index.html#LeaderboardActorextendsConfigurationwithLogging" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/Akka/index.html#LeaderboardActorextendsLeaderboardAsyncwithConfigurationwithLogging" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -380,7 +396,7 @@ change dynamically.
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a title="Top level actor in Akka system, which spawns the next level of actors." href="LeaderboardActor.html"><span class="name">LeaderboardActor</span></a><span class="result"> extends <a href="../Configuration.html" class="extype" name="net.kolotyluk.leaderboard.Configuration">Configuration</a> with <a href="../../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a></span>
+        <a title="Top level actor in Akka system, which spawns the next level of actors." href="LeaderboardActor.html"><span class="name">LeaderboardActor</span></a><span class="result"> extends <a href="../scorekeeping/LeaderboardAsync.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardAsync">LeaderboardAsync</a> with <a href="../Configuration.html" class="extype" name="net.kolotyluk.leaderboard.Configuration">Configuration</a> with <a href="../../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a></span>
       </span>
       
       <p class="shortcomment cmt">Top level actor in Akka system, which spawns the next level of actors.</p><div class="fullcomment"><div class="comment cmt"><h3>Outermost Behavior of ActorSystem</h3><p>Top level actor in Akka system, which spawns the next level of actors.</p><h4>Supervision</h4><p>The main job of our Guardian Actor is to
@@ -392,27 +408,6 @@ shut down the system.</p><h5>Configuration</h5><p>While most configuration happe
 are also FATAL. However, configuration can happen at other times as well, such as when configuration can
 change dynamically.
 </p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="https://doc.akka.io/docs/akka/2.5.18/typed/actors.html#introduction" target="_blank">Akka Typed Introduction</a></p></span><span class="cmt"><p><a href="https://doc.akka.io/docs/akka/2.5/typed/fault-tolerance.html#supervision" target="_blank">Akka Typed Supervision</a></p></span></dd></dl></div>
-    </li><li name="net.kolotyluk.leaderboard.Akka.LeaderboardEndpoint" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="LeaderboardEndpointextendsDirectives"></a><a id="LeaderboardEndpoint:LeaderboardEndpoint"></a>
-      <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/Akka/index.html#LeaderboardEndpointextendsDirectives" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="LeaderboardEndpoint.html"><span class="name">LeaderboardEndpoint</span></a><span class="result"> extends <span class="extype" name="akka.http.scaladsl.server.Directives">Directives</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
-                <span class="name">@Api</span><span class="args">()</span>
-              
-                <span class="name">@Path</span><span class="args">()</span>
-              
-        </dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.Akka.LeaderboardManagerActor" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="LeaderboardManagerActorextendsConfigurationwithLogging"></a><a id="LeaderboardManagerActor:LeaderboardManagerActor"></a>
       <span class="permalink">
@@ -437,27 +432,6 @@ shut down the system.</p><h5>Configuration</h5><p>While most configuration happe
 are also FATAL. However, configuration can happen at other times as well, such as when configuration can
 change dynamically.
 </p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="https://doc.akka.io/docs/akka/2.5.18/typed/actors.html#introduction" target="_blank">Akka Typed Introduction</a></p></span><span class="cmt"><p><a href="https://doc.akka.io/docs/akka/2.5/typed/fault-tolerance.html#supervision" target="_blank">Akka Typed Supervision</a></p></span></dd></dl></div>
-    </li><li name="net.kolotyluk.leaderboard.Akka.PingEndpoint" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="PingEndpointextendsDirectives"></a><a id="PingEndpoint:PingEndpoint"></a>
-      <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/Akka/index.html#PingEndpointextendsDirectives" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="PingEndpoint.html"><span class="name">PingEndpoint</span></a><span class="result"> extends <span class="extype" name="akka.http.scaladsl.server.Directives">Directives</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
-                <span class="name">@Api</span><span class="args">()</span>
-              
-                <span class="name">@Path</span><span class="args">()</span>
-              
-        </dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.Akka.RestActor" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="RestActorextendsConfigurationwithLogging"></a><a id="RestActor:RestActor"></a>
       <span class="permalink">
@@ -516,22 +490,6 @@ which produces a Stream for each session. These are materialized as child actors
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>RouteConcatenation</dd></dl></div>
-    </li><li name="net.kolotyluk.leaderboard.Akka#failEndpoint" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="failEndpoint:net.kolotyluk.leaderboard.Akka.FailEndpoint"></a><a id="failEndpoint:FailEndpoint"></a>
-      <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/Akka/index.html#failEndpoint:net.kolotyluk.leaderboard.Akka.FailEndpoint" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">failEndpoint</span><span class="result">: <a href="FailEndpoint.html" class="extype" name="net.kolotyluk.leaderboard.Akka.FailEndpoint">FailEndpoint</a></span>
-      </span>
-      
-      
     </li><li name="net.kolotyluk.leaderboard.Akka#guardianActor" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="guardianActor:net.kolotyluk.leaderboard.Akka.GuardianActor"></a><a id="guardianActor:GuardianActor"></a>
       <span class="permalink">
@@ -545,22 +503,6 @@ which produces a Stream for each session. These are materialized as child actors
       </span>
       <span class="symbol">
         <span class="name">guardianActor</span><span class="result">: <a href="GuardianActor.html" class="extype" name="net.kolotyluk.leaderboard.Akka.GuardianActor">GuardianActor</a></span>
-      </span>
-      
-      
-    </li><li name="net.kolotyluk.leaderboard.Akka#leaderboardEndpoint" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="leaderboardEndpoint:net.kolotyluk.leaderboard.Akka.LeaderboardEndpoint"></a><a id="leaderboardEndpoint:LeaderboardEndpoint"></a>
-      <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/Akka/index.html#leaderboardEndpoint:net.kolotyluk.leaderboard.Akka.LeaderboardEndpoint" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">leaderboardEndpoint</span><span class="result">: <a href="LeaderboardEndpoint.html" class="extype" name="net.kolotyluk.leaderboard.Akka.LeaderboardEndpoint">LeaderboardEndpoint</a></span>
       </span>
       
       
@@ -580,22 +522,6 @@ which produces a Stream for each session. These are materialized as child actors
       </span>
       
       
-    </li><li name="net.kolotyluk.leaderboard.Akka#pingEndpoint" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="pingEndpoint:net.kolotyluk.leaderboard.Akka.PingEndpoint"></a><a id="pingEndpoint:PingEndpoint"></a>
-      <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/Akka/index.html#pingEndpoint:net.kolotyluk.leaderboard.Akka.PingEndpoint" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">pingEndpoint</span><span class="result">: <a href="PingEndpoint.html" class="extype" name="net.kolotyluk.leaderboard.Akka.PingEndpoint">PingEndpoint</a></span>
-      </span>
-      
-      
     </li><li name="net.kolotyluk.leaderboard.Akka#restActor" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="restActor:net.kolotyluk.leaderboard.Akka.RestActor"></a><a id="restActor:RestActor"></a>
       <span class="permalink">
@@ -609,22 +535,6 @@ which produces a Stream for each session. These are materialized as child actors
       </span>
       <span class="symbol">
         <span class="name">restActor</span><span class="result">: <a href="RestActor.html" class="extype" name="net.kolotyluk.leaderboard.Akka.RestActor">RestActor</a></span>
-      </span>
-      
-      
-    </li><li name="net.kolotyluk.leaderboard.Akka#routes" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="routes:akka.http.scaladsl.server.Route"></a><a id="routes:Route"></a>
-      <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/Akka/index.html#routes:akka.http.scaladsl.server.Route" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">routes</span><span class="result">: <span class="extype" name="akka.http.scaladsl.server.Route">Route</span></span>
       </span>
       
       

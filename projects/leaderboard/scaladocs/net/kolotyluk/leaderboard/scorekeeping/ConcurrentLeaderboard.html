@@ -153,8 +153,8 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
                         <a href="../../scala/extras/Configuration$ConfigurationError.html" title="Indicates and unrecoverable configuration problem was encountered.">ConfigurationError</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
-                        <a class="class" href="ConsecutiveLeaderboard.html" title=""></a>
-                        <a href="ConsecutiveLeaderboard.html" title="">ConsecutiveLeaderboard</a>
+                        <a class="class" href="ConsecutiveLeaderboard.html" title="Non-threadsafe leaderboard"></a>
+                        <a href="ConsecutiveLeaderboard.html" title="Non-threadsafe leaderboard">ConsecutiveLeaderboard</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
                         <a class="class" href="../../scala/extras/Configuration$ExtraConfiguration.html" title=""></a>
@@ -165,16 +165,24 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
                         <a href="package$$Increment$.html" title="">Increment</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
-                        <a class="class" href="package$$Info.html" title=""></a>
-                        <a href="package$$Info.html" title="">Info</a>
-                      </li><li class="current-entities indented4">
-                        <span class="separator"></span>
                         <a class="trait" href="Leaderboard.html" title=""></a>
                         <a href="Leaderboard.html" title="">Leaderboard</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
+                        <a class="trait" href="LeaderboardAsync.html" title=""></a>
+                        <a href="LeaderboardAsync.html" title="">LeaderboardAsync</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
+                        <a class="class" href="package$$LeaderboardInfo.html" title=""></a>
+                        <a href="package$$LeaderboardInfo.html" title="">LeaderboardInfo</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
                         <a class="trait" href="LeaderboardManager.html" title=""></a>
                         <a href="LeaderboardManager.html" title="">LeaderboardManager</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
+                        <a class="trait" href="LeaderboardSync.html" title=""></a>
+                        <a href="LeaderboardSync.html" title="">LeaderboardSync</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
                         <a class="class" href="../Configuration$LocalConfiguration.html" title=""></a>
@@ -205,6 +213,14 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
                         <a href="package$$Standing.html" title="Place in count on current leaderboard.">Standing</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
+                        <a class="class" href="SynchronizedConcurrentLeaderboard.html" title=""></a>
+                        <a href="SynchronizedConcurrentLeaderboard.html" title="">SynchronizedConcurrentLeaderboard</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
+                        <a class="class" href="SynchronizedLeaderboard.html" title=""></a>
+                        <a href="SynchronizedLeaderboard.html" title="">SynchronizedLeaderboard</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
                         <a class="trait" href="package$$UpdateMode.html" title=""></a>
                         <a href="package$$UpdateMode.html" title="">UpdateMode</a>
                       </li>
@@ -232,7 +248,7 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">ConcurrentLeaderboard</span><span class="result"> extends <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a> with <a href="../../scala/extras/Configuration.html" class="extype" name="net.kolotyluk.scala.extras.Configuration">scala.extras.Configuration</a> with <a href="../../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a></span>
+        <span class="name">ConcurrentLeaderboard</span><span class="result"> extends <a href="LeaderboardSync.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync">LeaderboardSync</a> with <a href="../../scala/extras/Configuration.html" class="extype" name="net.kolotyluk.scala.extras.Configuration">scala.extras.Configuration</a> with <a href="../../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a></span>
       </span>
       </h4>
 
@@ -255,7 +271,7 @@ to offer better performance over serialization in a single actor.
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="../../scala/extras/Configuration.html" class="extype" name="net.kolotyluk.scala.extras.Configuration">scala.extras.Configuration</a>, <a href="../../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a>, <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../../scala/extras/Configuration.html" class="extype" name="net.kolotyluk.scala.extras.Configuration">scala.extras.Configuration</a>, <a href="../../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a>, <a href="LeaderboardSync.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync">LeaderboardSync</a>, <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -281,7 +297,7 @@ to offer better performance over serialization in a single actor.
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard"><span>ConcurrentLeaderboard</span></li><li class="in" name="net.kolotyluk.scala.extras.Configuration"><span>Configuration</span></li><li class="in" name="net.kolotyluk.scala.extras.Logging"><span>Logging</span></li><li class="in" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard"><span>Leaderboard</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard"><span>ConcurrentLeaderboard</span></li><li class="in" name="net.kolotyluk.scala.extras.Configuration"><span>Configuration</span></li><li class="in" name="net.kolotyluk.scala.extras.Logging"><span>Logging</span></li><li class="in" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync"><span>LeaderboardSync</span></li><li class="in" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard"><span>Leaderboard</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -302,9 +318,9 @@ to offer better performance over serialization in a single actor.
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;():net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard"></a><a id="&lt;init&gt;:ConcurrentLeaderboard"></a>
+      <a id="&lt;init&gt;(leaderboardIdentifier:net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier,memberToScore:java.util.concurrent.ConcurrentMap[net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,Option[net.kolotyluk.leaderboard.scorekeeping.Score]],scoreToMember:java.util.concurrent.ConcurrentNavigableMap[net.kolotyluk.leaderboard.scorekeeping.Score,net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier]):net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard"></a><a id="&lt;init&gt;:ConcurrentLeaderboard"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#&lt;init&gt;():net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#&lt;init&gt;(leaderboardIdentifier:net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier,memberToScore:java.util.concurrent.ConcurrentMap[net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,Option[net.kolotyluk.leaderboard.scorekeeping.Score]],scoreToMember:java.util.concurrent.ConcurrentNavigableMap[net.kolotyluk.leaderboard.scorekeeping.Score,net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier]):net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -313,7 +329,7 @@ to offer better performance over serialization in a single actor.
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ConcurrentLeaderboard</span><span class="params">()</span>
+        <span class="name">ConcurrentLeaderboard</span><span class="params">(<span name="leaderboardIdentifier">leaderboardIdentifier: <a href="index.html#LeaderboardIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier">LeaderboardIdentifier</a></span>, <span name="memberToScore">memberToScore: <span class="extype" name="java.util.concurrent.ConcurrentMap">ConcurrentMap</span>[<a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a>, <span class="extype" name="scala.Option">Option</span>[<a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a>]]</span>, <span name="scoreToMember">scoreToMember: <span class="extype" name="java.util.concurrent.ConcurrentNavigableMap">ConcurrentNavigableMap</span>[<a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a>, <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a>]</span>)</span>
       </span>
       
       
@@ -322,7 +338,23 @@ to offer better performance over serialization in a single actor.
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="net.kolotyluk.scala.extras.Configuration.ConfigurationError" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+              <ol><li name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync.Response" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="Response[A]=A"></a><a id="Response[A]:Response[A]"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#Response[A]=A" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Response</span><span class="tparams">[<span name="A">A</span>]</span><span class="result alias"> = <span class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync.Response.A">A</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LeaderboardSync.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync">LeaderboardSync</a> → <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
+    </li><li name="net.kolotyluk.scala.extras.Configuration.ConfigurationError" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ConfigurationErrorextendsError"></a><a id="ConfigurationError:ConfigurationError"></a>
       <span class="permalink">
       <a href="../../../../net/kolotyluk/scala/extras/Configuration.html#ConfigurationErrorextendsError" title="Permalink">
@@ -474,9 +506,9 @@ can be remedied.
       <p class="shortcomment cmt">The basic Typesafe Config with extra implicit members defined on it.</p><div class="fullcomment"><div class="comment cmt"><h3>Enhanced Typesafe Config</h3><p>The basic Typesafe Config with extra implicit members defined on it.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../scala/extras/Configuration.html" class="extype" name="net.kolotyluk.scala.extras.Configuration">Configuration</a></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard#delete" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="delete(member:String):Boolean"></a><a id="delete(String):Boolean"></a>
+      <a id="delete(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):Boolean"></a><a id="delete(MemberIdentifier):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#delete(member:String):Boolean" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#delete(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -485,7 +517,7 @@ can be remedied.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">delete</span><span class="params">(<span name="member">member: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">delete</span><span class="params">(<span name="memberIdentifier">memberIdentifier: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"><h3>Delete Member
@@ -523,9 +555,9 @@ Delete member from leaderboard</h3></div><dl class="paramcmts block"><dt>returns
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard#get" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="get(member:String):Option[Option[net.kolotyluk.leaderboard.scorekeeping.Score]]"></a><a id="get(String):Option[Option[Score]]"></a>
+      <a id="get(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):Option[Option[net.kolotyluk.leaderboard.scorekeeping.Score]]"></a><a id="get(MemberIdentifier):Option[Option[Score]]"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#get(member:String):Option[Option[net.kolotyluk.leaderboard.scorekeeping.Score]]" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#get(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):Option[Option[net.kolotyluk.leaderboard.scorekeeping.Score]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -534,7 +566,7 @@ Delete member from leaderboard</h3></div><dl class="paramcmts block"><dt>returns
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">get</span><span class="params">(<span name="member">member: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Option">Option</span>[<a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a>]]</span>
+        <span class="name">get</span><span class="params">(<span name="memberIdentifier">memberIdentifier: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Option">Option</span>[<a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a>]]</span>
       </span>
       
       
@@ -575,10 +607,10 @@ Delete member from leaderboard</h3></div><dl class="paramcmts block"><dt>returns
       </span>
       
       <p class="shortcomment cmt">Get the total count of all members on the leaderboard</p><div class="fullcomment"><div class="comment cmt"><h3>Leaderboard Member Count</h3><p>Get the total count of all members on the leaderboard</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>count</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard">ConcurrentLeaderboard</a> → <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
-    </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard#getInfo" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getInfo:net.kolotyluk.leaderboard.scorekeeping.Info"></a><a id="getInfo:Info"></a>
+    </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard#getIdentifier" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getIdentifier:net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier"></a><a id="getIdentifier:LeaderboardIdentifier"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#getInfo:net.kolotyluk.leaderboard.scorekeeping.Info" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#getIdentifier:net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -587,14 +619,30 @@ Delete member from leaderboard</h3></div><dl class="paramcmts block"><dt>returns
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getInfo</span><span class="result">: <a href="package$$Info.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Info">Info</a></span>
+        <span class="name">getIdentifier</span><span class="result">: <a href="index.html#LeaderboardIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier">LeaderboardIdentifier</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard">ConcurrentLeaderboard</a> → <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
+    </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard#getInfo" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getInfo:net.kolotyluk.leaderboard.scorekeeping.LeaderboardInfo"></a><a id="getInfo:LeaderboardInfo"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#getInfo:net.kolotyluk.leaderboard.scorekeeping.LeaderboardInfo" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getInfo</span><span class="result">: <a href="package$$LeaderboardInfo.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardInfo">LeaderboardInfo</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard">ConcurrentLeaderboard</a> → <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard#getName" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getName:Option[String]"></a>
+      <a id="getName:Some[String]"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#getName:Option[String]" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#getName:Some[String]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -603,7 +651,7 @@ Delete member from leaderboard</h3></div><dl class="paramcmts block"><dt>returns
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getName</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">getName</span><span class="result">: <span class="extype" name="scala.Some">Some</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard">ConcurrentLeaderboard</a> → <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
@@ -624,9 +672,9 @@ Delete member from leaderboard</h3></div><dl class="paramcmts block"><dt>returns
       
       <p class="shortcomment cmt">Return a range of scores from start to stop</p><div class="fullcomment"><div class="comment cmt"><h3>Get Range of Scores</h3><p>Return a range of scores from start to stop</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard">ConcurrentLeaderboard</a> → <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd><dt>Exceptions thrown</dt><dd><span class="cmt"><p><span class="extype" name="IndexOutOfBoundsException"><code>IndexOutOfBoundsException</code></span> if more than Int.MaxValue scores in the result</p></span></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard#getScore" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getScore(member:String,spinCount:Long):Option[BigInt]"></a><a id="getScore(String,Long):Option[BigInt]"></a>
+      <a id="getScore(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,spinCount:Long):Option[BigInt]"></a><a id="getScore(MemberIdentifier,Long):Option[BigInt]"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#getScore(member:String,spinCount:Long):Option[BigInt]" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#getScore(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,spinCount:Long):Option[BigInt]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -635,7 +683,7 @@ Delete member from leaderboard</h3></div><dl class="paramcmts block"><dt>returns
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getScore</span><span class="params">(<span name="member">member: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="spinCount">spinCount: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.BigInt">BigInt</span>]</span>
+        <span class="name">getScore</span><span class="params">(<span name="memberIdentifier">memberIdentifier: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>, <span name="spinCount">spinCount: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.BigInt">BigInt</span>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
@@ -643,9 +691,9 @@ Delete member from leaderboard</h3></div><dl class="paramcmts block"><dt>returns
               
         </dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard#getScore" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getScore(member:String):Option[BigInt]"></a><a id="getScore(String):Option[BigInt]"></a>
+      <a id="getScore(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):Option[BigInt]"></a><a id="getScore(MemberIdentifier):Option[BigInt]"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#getScore(member:String):Option[BigInt]" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#getScore(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):Option[BigInt]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -654,16 +702,16 @@ Delete member from leaderboard</h3></div><dl class="paramcmts block"><dt>returns
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getScore</span><span class="params">(<span name="member">member: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.BigInt">BigInt</span>]</span>
+        <span class="name">getScore</span><span class="params">(<span name="memberIdentifier">memberIdentifier: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.BigInt">BigInt</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Get the member's score from the leaderboard
 </p><div class="fullcomment"><div class="comment cmt"><h3>Member's Score</h3><p>Get the member's score from the leaderboard
 </p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>score</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard">ConcurrentLeaderboard</a> → <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard#getStanding" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getStanding(member:String,spinCount:Long):Option[net.kolotyluk.leaderboard.scorekeeping.Standing]"></a><a id="getStanding(String,Long):Option[Standing]"></a>
+      <a id="getStanding(member:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,spinCount:Long):Option[net.kolotyluk.leaderboard.scorekeeping.Standing]"></a><a id="getStanding(MemberIdentifier,Long):Option[Standing]"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#getStanding(member:String,spinCount:Long):Option[net.kolotyluk.leaderboard.scorekeeping.Standing]" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#getStanding(member:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,spinCount:Long):Option[net.kolotyluk.leaderboard.scorekeeping.Standing]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -672,14 +720,14 @@ Delete member from leaderboard</h3></div><dl class="paramcmts block"><dt>returns
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getStanding</span><span class="params">(<span name="member">member: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="spinCount">spinCount: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="package$$Standing.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Standing">Standing</a>]</span>
+        <span class="name">getStanding</span><span class="params">(<span name="member">member: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>, <span name="spinCount">spinCount: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="package$$Standing.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Standing">Standing</a>]</span>
       </span>
       
       <p class="shortcomment cmt">Iterate through the map to compute member standing</p><div class="fullcomment"><div class="comment cmt"><h3>Compute Standing</h3><p>Iterate through the map to compute member standing</p><p><i>Warning:</i> Results may not be accurate if leaderboard is being updated while standing is being computed.</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>None if member not present, Some[Standing] otherwise</p></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard#getStanding" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getStanding(member:String):Option[net.kolotyluk.leaderboard.scorekeeping.Standing]"></a><a id="getStanding(String):Option[Standing]"></a>
+      <a id="getStanding(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):Option[net.kolotyluk.leaderboard.scorekeeping.Standing]"></a><a id="getStanding(MemberIdentifier):Option[Standing]"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#getStanding(member:String):Option[net.kolotyluk.leaderboard.scorekeeping.Standing]" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#getStanding(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):Option[net.kolotyluk.leaderboard.scorekeeping.Standing]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -688,59 +736,11 @@ Delete member from leaderboard</h3></div><dl class="paramcmts block"><dt>returns
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getStanding</span><span class="params">(<span name="member">member: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="package$$Standing.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Standing">Standing</a>]</span>
+        <span class="name">getStanding</span><span class="params">(<span name="memberIdentifier">memberIdentifier: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="package$$Standing.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Standing">Standing</a>]</span>
       </span>
       
       <p class="shortcomment cmt">Iterate through the map to compute member standing</p><div class="fullcomment"><div class="comment cmt"><h3>Compute Standing</h3><p>Iterate through the map to compute member standing</p><h4>Performance</h4><p>O(N) where N = count of members on leaderboard
 </p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>None if member not present, Some[Standing] otherwise</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard">ConcurrentLeaderboard</a> → <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
-    </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard#getUrlIdentifier" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getUrlIdentifier(uuid:java.util.UUID):String"></a><a id="getUrlIdentifier(UUID):String"></a>
-      <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#getUrlIdentifier(uuid:java.util.UUID):String" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">getUrlIdentifier</span><span class="params">(<span name="uuid">uuid: <span class="extype" name="java.util.UUID">UUID</span> = <span class="symbol">UUID.randomUUID()</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard">ConcurrentLeaderboard</a> → <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
-    </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard#getUrlIdentifier" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getUrlIdentifier(identifier:String):java.util.UUID"></a><a id="getUrlIdentifier(String):UUID"></a>
-      <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#getUrlIdentifier(identifier:String):java.util.UUID" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">getUrlIdentifier</span><span class="params">(<span name="identifier">identifier: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="java.util.UUID">UUID</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard">ConcurrentLeaderboard</a> → <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
-    </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard#getUuid" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getUuid:java.util.UUID"></a><a id="getUuid:UUID"></a>
-      <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#getUuid:java.util.UUID" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">getUuid</span><span class="result">: <span class="extype" name="java.util.UUID">UUID</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard">ConcurrentLeaderboard</a> → <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <span class="permalink">
@@ -778,6 +778,22 @@ Delete member from leaderboard</h3></div><dl class="paramcmts block"><dt>returns
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard#leaderboardIdentifier" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="leaderboardIdentifier:net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier"></a><a id="leaderboardIdentifier:LeaderboardIdentifier"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#leaderboardIdentifier:net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">leaderboardIdentifier</span><span class="result">: <a href="index.html#LeaderboardIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier">LeaderboardIdentifier</a></span>
+      </span>
+      
+      
     </li><li name="net.kolotyluk.scala.extras.Logging#logger" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="logger:grizzled.slf4j.Logger"></a><a id="logger:Logger"></a>
       <span class="permalink">
@@ -804,10 +820,10 @@ For example:</p><pre><span class="kw">val</span> foo = <span class="lit">"foo"</
 logger.debug(s<span class="lit">"@foo $bar"</span>)</pre><p>Where <code>s&quot;$foo $bar&quot;</code> is only evaluated if logging level is &quot;DEBUG&quot; or higher</p><p>This is lazy so that startup messaging can work without logging failures disrupting things. For example
 <a href="../../scala/extras/index.html" class="extype" name="net.kolotyluk.scala.extras">net.kolotyluk.scala.extras.</a>
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a></dd></dl></div>
-    </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard#memberToScore" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="memberToScore:java.util.concurrent.ConcurrentHashMap[String,Option[net.kolotyluk.leaderboard.scorekeeping.Score]]"></a><a id="memberToScore:ConcurrentHashMap[String,Option[Score]]"></a>
+    </li><li name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard#memberIdentifier" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier"></a><a id="memberIdentifier:MemberIdentifier"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#memberToScore:java.util.concurrent.ConcurrentHashMap[String,Option[net.kolotyluk.leaderboard.scorekeeping.Score]]" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -816,10 +832,10 @@ logger.debug(s<span class="lit">"@foo $bar"</span>)</pre><p>Where <code>s&quot;$
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">memberToScore</span><span class="result">: <span class="extype" name="java.util.concurrent.ConcurrentHashMap">ConcurrentHashMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Option">Option</span>[<a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a>]]</span>
+        <span class="name">memberIdentifier</span><span class="result">: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>
       </span>
       
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard#name" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="name:String"></a>
       <span class="permalink">
@@ -895,9 +911,9 @@ logger.debug(s<span class="lit">"@foo $bar"</span>)</pre><p>Where <code>s&quot;$
               
         </dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard#put" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="put(member:String,score:Option[net.kolotyluk.leaderboard.scorekeeping.Score]):Option[Option[net.kolotyluk.leaderboard.scorekeeping.Score]]"></a><a id="put(String,Option[Score]):Option[Option[Score]]"></a>
+      <a id="put(member:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,score:Option[net.kolotyluk.leaderboard.scorekeeping.Score]):Option[Option[net.kolotyluk.leaderboard.scorekeeping.Score]]"></a><a id="put(MemberIdentifier,Option[Score]):Option[Option[Score]]"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#put(member:String,score:Option[net.kolotyluk.leaderboard.scorekeeping.Score]):Option[Option[net.kolotyluk.leaderboard.scorekeeping.Score]]" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#put(member:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,score:Option[net.kolotyluk.leaderboard.scorekeeping.Score]):Option[Option[net.kolotyluk.leaderboard.scorekeeping.Score]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -906,26 +922,10 @@ logger.debug(s<span class="lit">"@foo $bar"</span>)</pre><p>Where <code>s&quot;$
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">put</span><span class="params">(<span name="member">member: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="score">score: <span class="extype" name="scala.Option">Option</span>[<a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Option">Option</span>[<a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a>]]</span>
+        <span class="name">put</span><span class="params">(<span name="member">member: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>, <span name="score">score: <span class="extype" name="scala.Option">Option</span>[<a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Option">Option</span>[<a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a>]]</span>
       </span>
       
       <p class="shortcomment cmt">Fancy way to put a member on the leaderboard to support spin-locks</p><div class="fullcomment"><div class="comment cmt"><h3>Fancy Put</h3><p>Fancy way to put a member on the leaderboard to support spin-locks</p></div></div>
-    </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard#scoreToMember" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="scoreToMember:java.util.concurrent.ConcurrentSkipListMap[net.kolotyluk.leaderboard.scorekeeping.Score,String]"></a><a id="scoreToMember:ConcurrentSkipListMap[Score,String]"></a>
-      <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#scoreToMember:java.util.concurrent.ConcurrentSkipListMap[net.kolotyluk.leaderboard.scorekeeping.Score,String]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">scoreToMember</span><span class="result">: <span class="extype" name="java.util.concurrent.ConcurrentSkipListMap">ConcurrentSkipListMap</span>[<a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a>, <span class="extype" name="scala.Predef.String">String</span>]</span>
-      </span>
-      
-      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
@@ -959,9 +959,9 @@ logger.debug(s<span class="lit">"@foo $bar"</span>)</pre><p>Where <code>s&quot;$
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard#update" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="update(mode:net.kolotyluk.leaderboard.scorekeeping.UpdateMode,member:String,newScore:net.kolotyluk.leaderboard.scorekeeping.Score):Unit"></a><a id="update(UpdateMode,String,Score):Unit"></a>
+      <a id="update(mode:net.kolotyluk.leaderboard.scorekeeping.UpdateMode,memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,newScore:net.kolotyluk.leaderboard.scorekeeping.Score):net.kolotyluk.leaderboard.scorekeeping.Score"></a><a id="update(UpdateMode,MemberIdentifier,Score):Score"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#update(mode:net.kolotyluk.leaderboard.scorekeeping.UpdateMode,member:String,newScore:net.kolotyluk.leaderboard.scorekeeping.Score):Unit" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#update(mode:net.kolotyluk.leaderboard.scorekeeping.UpdateMode,memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,newScore:net.kolotyluk.leaderboard.scorekeeping.Score):net.kolotyluk.leaderboard.scorekeeping.Score" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -970,15 +970,15 @@ logger.debug(s<span class="lit">"@foo $bar"</span>)</pre><p>Where <code>s&quot;$
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">update</span><span class="params">(<span name="mode">mode: <a href="package$$UpdateMode.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.UpdateMode">UpdateMode</a></span>, <span name="member">member: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="newScore">newScore: <a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">update</span><span class="params">(<span name="mode">mode: <a href="package$$UpdateMode.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.UpdateMode">UpdateMode</a></span>, <span name="memberIdentifier">memberIdentifier: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>, <span name="newScore">newScore: <a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a></span>)</span><span class="result">: <a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a></span>
       </span>
       
       <p class="shortcomment cmt">Update member's score on leaderboard</p><div class="fullcomment"><div class="comment cmt"><h3>Update Member Score</h3><p>Update member's score on leaderboard</p><p>This should only be called from another ScoreKeeper, running in a different Akka Cluster Node.</p><p>Performance is a little better for Replace than Increment, but for both cases, performance is O(log n).</p><h4>Performance</h4><p>O(log N) where N = count of members on the leaderboard
-</p></div><dl class="paramcmts block"><dt class="param">member</dt><dd class="cmt"><p>member ID</p></dd><dt class="param">newScore</dt><dd class="cmt"><p>existing score created by another ScoreKeeper</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard">ConcurrentLeaderboard</a> → <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
+</p></div><dl class="paramcmts block"><dt class="param">newScore</dt><dd class="cmt"><p>existing score created by another ScoreKeeper</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard">ConcurrentLeaderboard</a> → <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard#update" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="update(mode:net.kolotyluk.leaderboard.scorekeeping.UpdateMode,member:String,value:BigInt):Unit"></a><a id="update(UpdateMode,String,BigInt):Unit"></a>
+      <a id="update(mode:net.kolotyluk.leaderboard.scorekeeping.UpdateMode,memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,value:BigInt):net.kolotyluk.leaderboard.scorekeeping.Score"></a><a id="update(UpdateMode,MemberIdentifier,BigInt):Score"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#update(mode:net.kolotyluk.leaderboard.scorekeeping.UpdateMode,member:String,value:BigInt):Unit" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#update(mode:net.kolotyluk.leaderboard.scorekeeping.UpdateMode,memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,value:BigInt):net.kolotyluk.leaderboard.scorekeeping.Score" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -987,28 +987,12 @@ logger.debug(s<span class="lit">"@foo $bar"</span>)</pre><p>Where <code>s&quot;$
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">update</span><span class="params">(<span name="mode">mode: <a href="package$$UpdateMode.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.UpdateMode">UpdateMode</a></span>, <span name="member">member: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.BigInt">BigInt</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">update</span><span class="params">(<span name="mode">mode: <a href="package$$UpdateMode.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.UpdateMode">UpdateMode</a></span>, <span name="memberIdentifier">memberIdentifier: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>, <span name="value">value: <span class="extype" name="scala.BigInt">BigInt</span></span>)</span><span class="result">: <a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a></span>
       </span>
       
       <p class="shortcomment cmt">Update Leaderboard with New Score
 </p><div class="fullcomment"><div class="comment cmt"><p>Update Leaderboard with New Score
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard">ConcurrentLeaderboard</a> → <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
-    </li><li name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard#uuid" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="uuid:java.util.UUID"></a><a id="uuid:UUID"></a>
-      <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#uuid:java.util.UUID" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">uuid</span><span class="result">: <span class="extype" name="java.util.UUID">UUID</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
       <span class="permalink">
@@ -1136,6 +1120,8 @@ logger.debug(s<span class="lit">"@foo $bar"</span>)</pre><p>Where <code>s&quot;$
               <h3>Inherited from <a href="../../scala/extras/Configuration.html" class="extype" name="net.kolotyluk.scala.extras.Configuration">scala.extras.Configuration</a></h3>
             </div><div class="parent" name="net.kolotyluk.scala.extras.Logging">
               <h3>Inherited from <a href="../../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a></h3>
+            </div><div class="parent" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync">
+              <h3>Inherited from <a href="LeaderboardSync.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync">LeaderboardSync</a></h3>
             </div><div class="parent" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">
               <h3>Inherited from <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></h3>
             </div><div class="parent" name="scala.AnyRef">
