@@ -4,7 +4,6 @@ import java.nio.ByteBuffer
 import java.util.{Base64, UUID}
 
 import akka.http.scaladsl.server.Route
-import net.kolotyluk.akka.scala.extras.base64uuid
 import net.kolotyluk.leaderboard.Akka.swagger.SwaggerDocService
 import net.kolotyluk.leaderboard.InternalIdentifier
 import net.kolotyluk.scala.extras.Internalized
@@ -93,6 +92,7 @@ import net.kolotyluk.scala.extras.Internalized
   *       {"score":"2468","standing":"0"}
   * }}}
   *
+  * @see [[https://blog.mwaysolutions.com/2014/06/05/10-best-practices-for-better-restful-api 10 Best Practices for Better RESTful API]]
   */
 package object endpoint {
 
@@ -139,5 +139,21 @@ package object endpoint {
     val uuid = urlIdToUuid(urlId)
     Internalized(uuid)
   }
+
+}
+
+package endpoint {
+
+  /** =Diagnostic Information=
+    *
+    * @param cause or symptom
+    * @param diagnosis to remedy the issue
+    * @param explanation URL pointing to a full explanation of the issue
+    * @param systemLogMessage useful information when searching through system log files
+    * @see [[https://blog.mwaysolutions.com/2014/06/05/10-best-practices-for-better-restful-api 10 Best Practices for Better RESTful API]]
+    */
+  final case class ErrorPayload(cause: String, diagnosis: String, explanation: String, systemLogMessage: String)
+
+  final case class ErrorPayloads(errors: Seq[ErrorPayload])
 
 }

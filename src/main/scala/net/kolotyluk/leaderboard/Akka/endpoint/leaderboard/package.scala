@@ -3,15 +3,15 @@ package net.kolotyluk.leaderboard.Akka.endpoint
 import java.util.UUID
 
 import akka.http.scaladsl.model.HttpResponse
-import akka.http.scaladsl.model.StatusCodes.{BadRequest, InternalServerError, NotFound}
+import akka.http.scaladsl.model.StatusCodes.{BadRequest, NotFound}
+import akka.http.scaladsl.server.PathMatcher1
 import net.kolotyluk.akka.scala.extras.base64uuid
+import net.kolotyluk.leaderboard.Akka.endpoint
 import net.kolotyluk.leaderboard.InternalIdentifier
 import net.kolotyluk.leaderboard.scorekeeping.{Leaderboard, LeaderboardIdentifier}
 import net.kolotyluk.scala.extras.Internalized
 
 import scala.collection.concurrent.TrieMap
-import akka.http.scaladsl.server.PathMatcher1
-import net.kolotyluk.leaderboard.Akka.endpoint
 
 package object leaderboard {
 
@@ -29,7 +29,7 @@ package object leaderboard {
 package leaderboard {
 
   import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-  import spray.json.DefaultJsonProtocol
+  import spray.json.{DefaultJsonProtocol, PrettyPrinter}
 
   final case class LeaderboardGetResponse(name: String, state: String, members: Long)
 
@@ -59,6 +59,11 @@ package leaderboard {
     implicit val updateScoreRequestFormat = jsonFormat3(UpdateScoreRequest)
   }
 
+  trait PrettyJasonSupport extends SprayJsonSupport with DefaultJsonProtocol {
+    implicit val printer = PrettyPrinter
+    implicit val errorPayloadFormat = jsonFormat4(ErrorPayload)
+  }
+
   //case class LeaderboardRejection(response: HttpResponse) extends scala.AnyRef with Rejection {
   //}
 
@@ -69,9 +74,14 @@ package leaderboard {
   //  }
   //}
 
-  class DuplicateIDException(id: UUID)
-    extends EndpointException(HttpResponse(InternalServerError, entity = s"leaderboard id=$id already exists")) {
-  }
+  class DuplicateIDError(id: UUID)
+    //extends EndpointException(HttpResponse(InternalServerError, entity = s"leaderboard id=$id already exists")) {
+    extends EndpointError(BadRequest,
+      ErrorPayload(
+        cause = "Internal logic error",
+        diagnosis = "",
+        explanation = "http://kolotyluk.github.io/leaderboard/diagnostics",
+        systemLogMessage = s"leaderboard id=$id already exists"))
 
   class DuplicateNameException(name: String)
     extends EndpointException(HttpResponse(BadRequest, entity = s"leaderboard?name=$name already exists")) {
@@ -94,17 +104,19 @@ package leaderboard {
   }
 
   class UnknownLeaderboardException(leaderboardIdentifier: LeaderboardIdentifier)
-    extends EndpointException(HttpResponse(BadRequest,
+    extends EndpointException(HttpResponse(NotFound,
       entity = s"leaderboard uuid=${leaderboardIdentifier.value} urlId=${endpoint.internalIdentifierToUrlId(leaderboardIdentifier)} is unknown")) {
   }
 
-  class UnknownLeaderboardIdentifierException(urlId: String)
-    extends EndpointException(HttpResponse(BadRequest,
+  class UnknownLeaderboardIdentifierException2(urlId: String)
+    extends EndpointException(HttpResponse(NotFound,
       entity = s"leaderboard urlId=$urlId is unknown")) {
   }
 
+
+
   class UnknownLeaderboardNameException(name: String)
-    extends EndpointException(HttpResponse(BadRequest,
+    extends EndpointException(HttpResponse(NotFound,
       entity = s"leaderboard name=$name unknown")) {
   }
 }

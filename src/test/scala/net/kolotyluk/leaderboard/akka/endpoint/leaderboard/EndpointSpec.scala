@@ -2,7 +2,7 @@ package net.kolotyluk.leaderboard.akka.endpoint.leaderboard
 
 import java.util.UUID
 
-import akka.http.scaladsl.model.StatusCodes.{BadRequest,OK}
+import akka.http.scaladsl.model.StatusCodes.{BadRequest,NotFound,OK}
 import net.kolotyluk.leaderboard.Akka.endpoint.leaderboard._
 import net.kolotyluk.leaderboard.Akka.endpoint.urlIdToInternalIdentifier
 import unit.RoutingSpec
@@ -18,6 +18,15 @@ class EndpointSpec extends RoutingSpec with Behaviors with JsonSupport {
   val createBogusLeaderboard = LeaderboardPostRequest(Some("foo"), "BogusLeaderboard")
 
   behavior of "/leaderboard Endpoint"
+
+  it should "should return not found for unknown leaderboard" in {
+    Get("/leaderboard/IMvWdANITIWZxm7efUKVAg") ~> leaderboardEndpoint.routes  ~> check {
+      Given("GET /leaderboard/IMvWdANITIWZxm7efUKVAg")
+      status shouldBe NotFound
+      Then("status shouldBe NotFound")
+      When(s"response=${response.entity}")
+    }
+  }
 
   it should "return a correct response for minimal GET requests" in {
     Get("/leaderboard") ~> leaderboardEndpoint.routes  ~> check {

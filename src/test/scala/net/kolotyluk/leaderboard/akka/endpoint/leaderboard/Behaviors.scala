@@ -2,7 +2,7 @@ package net.kolotyluk.leaderboard.akka.endpoint.leaderboard
 
 import java.util.UUID
 
-import akka.http.scaladsl.model.StatusCodes.{BadRequest,OK}
+import akka.http.scaladsl.model.StatusCodes.{BadRequest, Created}
 import net.kolotyluk.leaderboard.Akka.endpoint.leaderboard._
 import net.kolotyluk.leaderboard.Akka.endpoint.urlIdToInternalIdentifier
 import net.kolotyluk.scala.extras.{Internalized, Logging}
@@ -10,16 +10,12 @@ import unit.RoutingSpec
 
 import scala.language.postfixOps
 
-/** =Leaderboard Unit Test Behaviors=
-  * Standard behaviors of the Leaderboard interface for all implementations
+/** =Leaderboard Endpoint Unit Test Behaviors=
+  * Standard behaviors of the Leaderboard HTTP Endpoint for all implementations
   * <p>
   * Example use:
   * {{{
-  * it must behave like handleInitialConditions(leaderboard)
-  * it must behave like handleTwoMembers(leaderboard)
-  * it must behave like handleHandleConcurrentUpdates(leaderboard)
-  * it must behave like handleHandleHighIntensityConcurrentUpdates(leaderboard)
-  * it must behave like handleHandleLargeNumberOfMembers(leaderboard)
+  * it must behave like verifyPostRequests(implementation)
   * }}}
   *
   * @param this test specification type
@@ -53,7 +49,7 @@ trait Behaviors extends JsonSupport with Logging { this: RoutingSpec =>
         Given(s"POST $endpoint $payload")
         accept match {
           case true =>
-            status shouldBe OK
+            status shouldBe Created
             When("status == OK")
             val response = responseAs[LeaderboardPostResponse]
             urlIdToInternalIdentifier(response.id).getValue[UUID] shouldBe a [UUID]
@@ -79,7 +75,5 @@ trait Behaviors extends JsonSupport with Logging { this: RoutingSpec =>
       handle(false, name, Some("conflict"))
     }
   }
-
-
 
 }

@@ -9,7 +9,7 @@ import akka.http.scaladsl.server._
 import io.swagger.annotations._
 import javax.ws.rs.Path
 import net.kolotyluk.leaderboard.Akka.endpoint
-import net.kolotyluk.leaderboard.Akka.endpoint.EndpointException
+import net.kolotyluk.leaderboard.Akka.endpoint.{EndpointError, EndpointException, EndpointException2}
 import net.kolotyluk.leaderboard.scorekeeping.{ConcurrentLeaderboard, Increment, LeaderboardIdentifier, MemberIdentifier, Replace, Score, UpdateMode}
 import net.kolotyluk.scala.extras.Logging
 
@@ -19,13 +19,19 @@ import scala.util.{Failure, Success}
 
 @Api(value = "/leaderboard", produces = "text/plain(UTF-8)")
 @Path("/leaderboard")
-class Endpoint extends Directives with JsonSupport with Logging {
+class Endpoint extends Directives with JsonSupport with PrettyJasonSupport with Logging {
 
   def exceptionHandler: ExceptionHandler =
     ExceptionHandler {
       case cause: EndpointException =>
         logger.warn(cause)
         complete(cause.response)
+      case cause: EndpointError =>
+        logger.error(cause.errorPayload.systemLogMessage, cause.getCause)
+        complete(cause.statusCode, cause.errorPayload)
+      case cause: EndpointException2 =>
+        logger.warn(cause.errorPayload.systemLogMessage)
+        complete(cause.statusCode, cause.errorPayload)
     }
 
   def routes: Route =
@@ -52,11 +58,11 @@ class Endpoint extends Directives with JsonSupport with Logging {
     * }}}
     * @return
     */
-    def leaderboardGet(): Route = {
+    def leaderboardGet1(): Route = {
       get {
         pathEnd {
           // unix shell: curl http://localhost:8080/leaderboard?name=foo
-          // PowerShell: Invoke-WebRequest -Method Get http://localhost:8080/leaderboard/name=foo
+          // PowerShell: Invoke-WebRequest -Method Get http://localhost:8080/leaderboard?name=foo
           parameter('name) { name =>
             nameToLeaderboardIdentifier.get(name) match {
               case None =>
@@ -101,7 +107,7 @@ class Endpoint extends Directives with JsonSupport with Logging {
       }
     }
 
-    def leaderboardGet2(): Route = {
+    def leaderboardGet(): Route = {
       get {
         pathPrefix(base64identifier) { leaderboardIdentifier =>
           pathPrefix(base64identifier) { memberIdentifier =>
@@ -171,6 +177,13 @@ class Endpoint extends Directives with JsonSupport with Logging {
     }
   }
 
+  /** =Score Update Route=
+    * Philosophical question: Do we really want to use two different HTTP Methods to update member scores on a
+    * leaderboard, or should we just overload PATCH?
+    *
+    * @param updateMode Increment or Replace
+    * @return
+    */
   def scoreUpdate(updateMode: UpdateMode): Route = {
     path(base64identifier / base64identifier ~ PathEnd) {(leaderboardIdentifier, memberIdentifier) =>
       parameter('score) { score =>
@@ -213,7 +226,7 @@ class Endpoint extends Directives with JsonSupport with Logging {
     val memberUrlId = endpoint.internalIdentifierToUrlId(memberIdentifier)
     identifierToLeaderboard.get(leaderboardIdentifier) match {
       case None =>
-        throw new UnknownLeaderboardIdentifierException(leaderboardUrlId)
+        throw new UnknownLeaderboardIdentifierException(leaderboardIdentifier)
       case Some(leaderboard) =>
         val newScore = leaderboard.update(updateMode, memberIdentifier, score)
         if (newScore.isInstanceOf[Score]) {
@@ -252,7 +265,7 @@ class Endpoint extends Directives with JsonSupport with Logging {
     logger.debug(s"getLeaderboardStatus: $leaderboardUrlId : ${leaderboardIdentifier.getValue}")
     identifierToLeaderboard.get(leaderboardIdentifier) match {
       case None =>
-        throw new UnknownLeaderboardIdentifierException(leaderboardUrlId)
+        throw new UnknownLeaderboardIdentifierException(leaderboardIdentifier)
       case Some(leaderboard) =>
         val count = leaderboard.getCount
         logger.debug(s"count = $count")
@@ -271,10 +284,10 @@ class Endpoint extends Directives with JsonSupport with Logging {
     val leaderboardUrlId = endpoint.internalIdentifierToUrlId(leaderboardIdentifier)
     identifierToLeaderboard.get(leaderboardIdentifier) match {
       case None =>
-        throw new UnknownLeaderboardIdentifierException(leaderboardUrlId)
+        throw new UnknownLeaderboardIdentifierException(leaderboardIdentifier)
       case Some(leaderboard) =>
         val result = leaderboard.getScore(memberIdentifier)
-        if (result.isInstanceOf[Option[scala.BigInt]]) {
+        if (result.isInstanceOf[Option[_]]) {
           result.asInstanceOf[Option[scala.BigInt]] match {
             case None =>
               Future.successful(MemberStatusResponse(None, None, ""))
@@ -338,7 +351,7 @@ class Endpoint extends Directives with JsonSupport with Logging {
   @Path("?name={name}")
   @ApiOperation(value = "Return info on named leaderboard", notes = "", nickname = "leaderboardPost", httpMethod = "POST")
   @ApiResponses(Array(
-    new ApiResponse(code = 200, message = "Return leaderboard created confirmation", response = classOf[String]),
+    new ApiResponse(code = 201, message = "Return leaderboard created confirmation", response = classOf[String]),
     new ApiResponse(code = 405, message = "Return leaderboard already exists", response = classOf[String])
   ))
   def leaderboardPost(): Route =
@@ -352,14 +365,14 @@ class Endpoint extends Directives with JsonSupport with Logging {
             // PowerShell: Invoke-WebRequest http://localhost:8080/leaderboard -Method Post -ContentType "application/json" -Body '{"name":"foo","kind":"ConcurrentLeaderboard"}'
             leaderboard.name match {
               case None =>
-                complete(leaderboardCreate(nameParameter, Some(leaderboard.kind)))
+                complete(Created, leaderboardCreate(nameParameter, Some(leaderboard.kind)))
               case Some(payloadName) =>
                 nameParameter match {
                   case None =>
-                    complete(leaderboardCreate(leaderboard.name, Some(leaderboard.kind)))
+                    complete(Created, leaderboardCreate(leaderboard.name, Some(leaderboard.kind)))
                   case Some(parameterName) =>
                     if (payloadName == parameterName)
-                      complete(leaderboardCreate(leaderboard.name, Some(leaderboard.kind)))
+                      complete(Created, leaderboardCreate(leaderboard.name, Some(leaderboard.kind)))
                     else
                       throw new InconsistentNameException(parameterName, payloadName)
                 }
