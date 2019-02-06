@@ -10,7 +10,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import net.kolotyluk.leaderboard.Akka.endpoint.PingEndpoint
-import net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.LeaderboardEndpoint
+import net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.Endpoint
 import net.kolotyluk.scala.extras.Logging
 
 class REST extends Logging {
@@ -36,7 +36,7 @@ class REST extends Logging {
           complete(HttpEntity(ContentTypes.`text/plain(UTF-8)`, "pong"))
         }
       } ~
-        (new LeaderboardEndpoint).routes ~
+        (new Endpoint).routes ~
       path("swagger") { getFromResource("swagger/index.html") } ~
       getFromResourceDirectory("swagger")
       //SwaggerDocService.routes
