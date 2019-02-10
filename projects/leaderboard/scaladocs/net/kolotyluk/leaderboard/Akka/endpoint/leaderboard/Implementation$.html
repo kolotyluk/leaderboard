@@ -159,11 +159,10 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="Note: creating members is optional, as they will be created implicitly, but it's the caller's responsibility to use properly formatted member ids." href="../index.html"><span class="name">endpoint</span></a>
+        <a title="TODO do we want to have a /member endpoint?" href="../index.html"><span class="name">endpoint</span></a>
       </span>
       
-      <p class="shortcomment cmt">Note: creating members is optional, as they will be created implicitly, but it's the caller's responsibility
-to use properly formatted member ids.</p><div class="fullcomment"><div class="comment cmt"><h3>Akka HTTP Endpoints</h3><h4>Examples</h4><h5>Ping</h5><pre>GET   /ping
+      <p class="shortcomment cmt">TODO do we want to have a /member endpoint?</p><div class="fullcomment"><div class="comment cmt"><h3>Akka HTTP Endpoints</h3><p>TODO do we want to have a /member endpoint?</p><h4>Examples</h4><h5>Ping</h5><pre>GET   /ping
       pong</pre><h5>Create Leaderboard</h5><pre>POST   /leaderboard
        {<span class="lit">"id"</span>:<span class="lit">"DQz92Qw_ShCB-TMXf-wiAQ"</span>}
 
@@ -212,11 +211,24 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint">endpoint</a></dd></dl></div>
+    </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure" visbl="pub" class="indented7 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="failure"></a><a id="failure:failure"></a>
+      <span class="permalink">
+      <a href="../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/index.html#failure" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="Errors and Exceptions to Endpoint Requests." href="failure/index.html"><span class="name">failure</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Errors and Exceptions to Endpoint Requests.</p><div class="fullcomment"><div class="comment cmt"><h3>Leaderboard Endpoint Failures</h3><p>Errors and Exceptions to Endpoint Requests. These classes are also the external API user documentation explaining
+failure responses, so the scaladoc needs to be well written.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard">leaderboard</a></dd></dl></div>
     </li><li class="current-entities indented6">
-                        <span class="separator"></span>
-                        <a class="class" href="DuplicateIDError.html" title=""></a>
-                        <a href="DuplicateIDError.html" title="">DuplicateIDError</a>
-                      </li><li class="current-entities indented6">
                         <span class="separator"></span>
                         <a class="class" href="DuplicateNameException.html" title=""></a>
                         <a href="DuplicateNameException.html" title="">DuplicateNameException</a>
@@ -230,8 +242,8 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
                         <a href="IdNotFoundException.html" title="">IdNotFoundException</a>
                       </li><li class="current-entities indented6">
                         <span class="separator"></span>
-                        <a class="object" href="" title="As a research project, there are a number of different implementations of the basic data structures so that we can compare and contrast performance characteristics."></a>
-                        <a href="" title="As a research project, there are a number of different implementations of the basic data structures so that we can compare and contrast performance characteristics.">Implementation</a>
+                        <a class="object" href="" title="Being a research project, there are a number of different implementations of the same API, using different data structures, so that we can compare and contrast performance characteristics and select the best solutions."></a>
+                        <a href="" title="Being a research project, there are a number of different implementations of the same API, using different data structures, so that we can compare and contrast performance characteristics and select the best solutions.">Implementation</a>
                       </li><li class="current-entities indented6">
                         <span class="separator"></span>
                         <a class="class" href="InconsistentNameException.html" title=""></a>
@@ -278,22 +290,6 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
                         <a href="PrettyJasonSupport.html" title="">PrettyJasonSupport</a>
                       </li><li class="current-entities indented6">
                         <span class="separator"></span>
-                        <a class="class" href="UnknownKindException.html" title=""></a>
-                        <a href="UnknownKindException.html" title="">UnknownKindException</a>
-                      </li><li class="current-entities indented6">
-                        <span class="separator"></span>
-                        <a class="class" href="UnknownLeaderboardException.html" title=""></a>
-                        <a href="UnknownLeaderboardException.html" title="">UnknownLeaderboardException</a>
-                      </li><li class="current-entities indented6">
-                        <span class="separator"></span>
-                        <a class="class" href="UnknownLeaderboardIdentifierException.html" title="When referring to a leaderboard, the leaderboard ID specified could not be found."></a>
-                        <a href="UnknownLeaderboardIdentifierException.html" title="When referring to a leaderboard, the leaderboard ID specified could not be found.">UnknownLeaderboardIdentifierException</a>
-                      </li><li class="current-entities indented6">
-                        <span class="separator"></span>
-                        <a class="class" href="UnknownLeaderboardIdentifierException2.html" title=""></a>
-                        <a href="UnknownLeaderboardIdentifierException2.html" title="">UnknownLeaderboardIdentifierException2</a>
-                      </li><li class="current-entities indented6">
-                        <span class="separator"></span>
                         <a class="class" href="UnknownLeaderboardNameException.html" title=""></a>
                         <a href="UnknownLeaderboardNameException.html" title="">UnknownLeaderboardNameException</a>
                       </li><li class="current-entities indented6">
@@ -323,18 +319,18 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">Implementation</span><span class="result"> extends <span class="extype" name="scala.Enumeration">Enumeration</span></span>
+        <span class="name">Implementation</span><span class="result"> extends <span class="extype" name="scala.Enumeration">Enumeration</span> with <a href="../../../../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a></span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><h3>Leaderboard Implementation Enumeration</h3><p>As a research project, there are a number of different implementations of the basic data structures so that we can
-compare and contrast performance characteristics.
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><h3>Leaderboard Implementation Enumeration</h3><p>Being a research project, there are a number of different implementations of the same API, using different
+data structures, so that we can compare and contrast performance characteristics and select the best solutions.
 </p></div><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Enumeration">Enumeration</span>, <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../../../../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a>, <span class="extype" name="scala.Enumeration">Enumeration</span>, <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -360,7 +356,7 @@ compare and contrast performance characteristics.
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.Implementation"><span>Implementation</span></li><li class="in" name="scala.Enumeration"><span>Enumeration</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.Implementation"><span>Implementation</span></li><li class="in" name="net.kolotyluk.scala.extras.Logging"><span>Logging</span></li><li class="in" name="scala.Enumeration"><span>Enumeration</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -765,6 +761,32 @@ compare and contrast performance characteristics.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="net.kolotyluk.scala.extras.Logging#logger" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logger:grizzled.slf4j.Logger"></a><a id="logger:Logger"></a>
+      <span class="permalink">
+      <a href="../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/Implementation$.html#logger:grizzled.slf4j.Logger" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logger</span><span class="result">: <span class="extype" name="grizzled.slf4j.Logger">Logger</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">The <a href="http://software.clapper.org/grizzled-slf4j/" target="_blank">Grizzled Logger</a>
+so that we can use lazy
+<a href="https://docs.scala-lang.org/overviews/core/string-interpolation.html" target="_blank">Scala String Interpolation</a>
+For example:</p><div class="fullcomment"><div class="comment cmt"><h3>Grizzled Logger</h3><p>The <a href="http://software.clapper.org/grizzled-slf4j/" target="_blank">Grizzled Logger</a>
+so that we can use lazy
+<a href="https://docs.scala-lang.org/overviews/core/string-interpolation.html" target="_blank">Scala String Interpolation</a>
+For example:</p><pre><span class="kw">val</span> foo = <span class="lit">"foo"</span>
+<span class="kw">val</span> bar = <span class="num">2</span>
+logger.debug(s<span class="lit">"@foo $bar"</span>)</pre><p>Where <code>s&quot;$foo $bar&quot;</code> is only evaluated if logging level is &quot;DEBUG&quot; or higher</p><p>This is lazy so that startup messaging can work without logging failures disrupting things. For example
+<a href="../../../../scala/extras/index.html" class="extype" name="net.kolotyluk.scala.extras">net.kolotyluk.scala.extras.</a>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a></dd></dl></div>
     </li><li name="scala.Enumeration#maxId" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="maxId:Int"></a>
       <span class="permalink">
@@ -1074,7 +1096,9 @@ compare and contrast performance characteristics.
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.Enumeration">
+        <div class="parent" name="net.kolotyluk.scala.extras.Logging">
+              <h3>Inherited from <a href="../../../../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a></h3>
+            </div><div class="parent" name="scala.Enumeration">
               <h3>Inherited from <span class="extype" name="scala.Enumeration">Enumeration</span></h3>
             </div><div class="parent" name="scala.Serializable">
               <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>

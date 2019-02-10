@@ -159,11 +159,10 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="Note: creating members is optional, as they will be created implicitly, but it's the caller's responsibility to use properly formatted member ids." href="../index.html"><span class="name">endpoint</span></a>
+        <a title="TODO do we want to have a /member endpoint?" href="../index.html"><span class="name">endpoint</span></a>
       </span>
       
-      <p class="shortcomment cmt">Note: creating members is optional, as they will be created implicitly, but it's the caller's responsibility
-to use properly formatted member ids.</p><div class="fullcomment"><div class="comment cmt"><h3>Akka HTTP Endpoints</h3><h4>Examples</h4><h5>Ping</h5><pre>GET   /ping
+      <p class="shortcomment cmt">TODO do we want to have a /member endpoint?</p><div class="fullcomment"><div class="comment cmt"><h3>Akka HTTP Endpoints</h3><p>TODO do we want to have a /member endpoint?</p><h4>Examples</h4><h5>Ping</h5><pre>GET   /ping
       pong</pre><h5>Create Leaderboard</h5><pre>POST   /leaderboard
        {<span class="lit">"id"</span>:<span class="lit">"DQz92Qw_ShCB-TMXf-wiAQ"</span>}
 
@@ -212,11 +211,24 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint">endpoint</a></dd></dl></div>
+    </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure" visbl="pub" class="indented7 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="failure"></a><a id="failure:failure"></a>
+      <span class="permalink">
+      <a href="../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/index.html#failure" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="Errors and Exceptions to Endpoint Requests." href="failure/index.html"><span class="name">failure</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Errors and Exceptions to Endpoint Requests.</p><div class="fullcomment"><div class="comment cmt"><h3>Leaderboard Endpoint Failures</h3><p>Errors and Exceptions to Endpoint Requests. These classes are also the external API user documentation explaining
+failure responses, so the scaladoc needs to be well written.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard">leaderboard</a></dd></dl></div>
     </li><li class="current-entities indented6">
-                        <span class="separator"></span>
-                        <a class="class" href="DuplicateIDError.html" title=""></a>
-                        <a href="DuplicateIDError.html" title="">DuplicateIDError</a>
-                      </li><li class="current-entities indented6">
                         <span class="separator"></span>
                         <a class="class" href="DuplicateNameException.html" title=""></a>
                         <a href="DuplicateNameException.html" title="">DuplicateNameException</a>
@@ -230,8 +242,8 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
                         <a href="IdNotFoundException.html" title="">IdNotFoundException</a>
                       </li><li class="current-entities indented6">
                         <span class="separator"></span>
-                        <a class="object" href="Implementation$.html" title="As a research project, there are a number of different implementations of the basic data structures so that we can compare and contrast performance characteristics."></a>
-                        <a href="Implementation$.html" title="As a research project, there are a number of different implementations of the basic data structures so that we can compare and contrast performance characteristics.">Implementation</a>
+                        <a class="object" href="Implementation$.html" title="Being a research project, there are a number of different implementations of the same API, using different data structures, so that we can compare and contrast performance characteristics and select the best solutions."></a>
+                        <a href="Implementation$.html" title="Being a research project, there are a number of different implementations of the same API, using different data structures, so that we can compare and contrast performance characteristics and select the best solutions.">Implementation</a>
                       </li><li class="current-entities indented6">
                         <span class="separator"></span>
                         <a class="class" href="InconsistentNameException.html" title=""></a>
@@ -276,22 +288,6 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
                         <span class="separator"></span>
                         <a class="trait" href="PrettyJasonSupport.html" title=""></a>
                         <a href="PrettyJasonSupport.html" title="">PrettyJasonSupport</a>
-                      </li><li class="current-entities indented6">
-                        <span class="separator"></span>
-                        <a class="class" href="UnknownKindException.html" title=""></a>
-                        <a href="UnknownKindException.html" title="">UnknownKindException</a>
-                      </li><li class="current-entities indented6">
-                        <span class="separator"></span>
-                        <a class="class" href="UnknownLeaderboardException.html" title=""></a>
-                        <a href="UnknownLeaderboardException.html" title="">UnknownLeaderboardException</a>
-                      </li><li class="current-entities indented6">
-                        <span class="separator"></span>
-                        <a class="class" href="UnknownLeaderboardIdentifierException.html" title="When referring to a leaderboard, the leaderboard ID specified could not be found."></a>
-                        <a href="UnknownLeaderboardIdentifierException.html" title="When referring to a leaderboard, the leaderboard ID specified could not be found.">UnknownLeaderboardIdentifierException</a>
-                      </li><li class="current-entities indented6">
-                        <span class="separator"></span>
-                        <a class="class" href="UnknownLeaderboardIdentifierException2.html" title=""></a>
-                        <a href="UnknownLeaderboardIdentifierException2.html" title="">UnknownLeaderboardIdentifierException2</a>
                       </li><li class="current-entities indented6">
                         <span class="separator"></span>
                         <a class="class" href="UnknownLeaderboardNameException.html" title=""></a>
@@ -3556,9 +3552,9 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AdditionalFormats</dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.Endpoint#leaderboardCreate" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="leaderboardCreate(nameOption:Option[String],kindOption:Option[String]):net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.LeaderboardPostResponse"></a><a id="leaderboardCreate(Option[String],Option[String]):LeaderboardPostResponse"></a>
+      <a id="leaderboardCreate(parameterNameOption:Option[String],payload:Option[net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.LeaderboardPostRequest]):net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.LeaderboardPostResponse"></a><a id="leaderboardCreate(Option[String],Option[LeaderboardPostRequest]):LeaderboardPostResponse"></a>
       <span class="permalink">
-      <a href="../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/Endpoint.html#leaderboardCreate(nameOption:Option[String],kindOption:Option[String]):net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.LeaderboardPostResponse" title="Permalink">
+      <a href="../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/Endpoint.html#leaderboardCreate(parameterNameOption:Option[String],payload:Option[net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.LeaderboardPostRequest]):net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.LeaderboardPostResponse" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -3567,7 +3563,7 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">leaderboardCreate</span><span class="params">(<span name="nameOption">nameOption: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="kindOption">kindOption: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <a href="LeaderboardPostResponse.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.LeaderboardPostResponse">LeaderboardPostResponse</a></span>
+        <span class="name">leaderboardCreate</span><span class="params">(<span name="parameterNameOption">parameterNameOption: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="payload">payload: <span class="extype" name="scala.Option">Option</span>[<a href="LeaderboardPostRequest.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.LeaderboardPostRequest">LeaderboardPostRequest</a>]</span>)</span><span class="result">: <a href="LeaderboardPostResponse.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.LeaderboardPostResponse">LeaderboardPostResponse</a></span>
       </span>
       
       

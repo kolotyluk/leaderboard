@@ -162,8 +162,7 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
         <span class="name">endpoint</span>
       </span>
       
-      <p class="shortcomment cmt">Note: creating members is optional, as they will be created implicitly, but it's the caller's responsibility
-to use properly formatted member ids.</p><div class="fullcomment"><div class="comment cmt"><h3>Akka HTTP Endpoints</h3><h4>Examples</h4><h5>Ping</h5><pre>GET   /ping
+      <p class="shortcomment cmt">TODO do we want to have a /member endpoint?</p><div class="fullcomment"><div class="comment cmt"><h3>Akka HTTP Endpoints</h3><p>TODO do we want to have a /member endpoint?</p><h4>Examples</h4><h5>Ping</h5><pre>GET   /ping
       pong</pre><h5>Create Leaderboard</h5><pre>POST   /leaderboard
        {<span class="lit">"id"</span>:<span class="lit">"DQz92Qw_ShCB-TMXf-wiAQ"</span>}
 
@@ -296,7 +295,7 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><h3>Akka HTTP Endpoints</h3><h4>Examples</h4><h5>Ping</h5><pre>GET   /ping
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><h3>Akka HTTP Endpoints</h3><p>TODO do we want to have a /member endpoint?</p><h4>Examples</h4><h5>Ping</h5><pre>GET   /ping
       pong</pre><h5>Create Leaderboard</h5><pre>POST   /leaderboard
        {<span class="lit">"id"</span>:<span class="lit">"DQz92Qw_ShCB-TMXf-wiAQ"</span>}
 
@@ -443,7 +442,7 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
         <a title="" href="ErrorPayload.html"><span class="name">ErrorPayload</span></a><span class="params">(<span name="cause">cause: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="diagnosis">diagnosis: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="explanation">explanation: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="systemLogMessage">systemLogMessage: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"><h3>Diagnostic Information</h3></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="https://blog.mwaysolutions.com/2014/06/05/10-best-practices-for-better-restful-api" target="_blank">10 Best Practices for Better RESTful API</a></p></span></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"><h3>Diagnostic Information</h3></div><dl class="paramcmts block"><dt class="param">cause</dt><dd class="cmt"><p>or symptom</p></dd><dt class="param">diagnosis</dt><dd class="cmt"><p>to remedy the issue</p></dd><dt class="param">explanation</dt><dd class="cmt"><p>URL pointing to a full explanation of the issue</p></dd><dt class="param">systemLogMessage</dt><dd class="cmt"><p>useful information when searching through system log files</p></dd></dl><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="https://blog.mwaysolutions.com/2014/06/05/10-best-practices-for-better-restful-api" target="_blank">10 Best Practices for Better RESTful API</a></p></span></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.ErrorPayloads" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ErrorPayloadsextendsProductwithSerializable"></a><a id="ErrorPayloads:ErrorPayloads"></a>
       <span class="permalink">

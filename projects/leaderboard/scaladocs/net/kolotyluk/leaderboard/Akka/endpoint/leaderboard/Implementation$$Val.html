@@ -159,11 +159,10 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="Note: creating members is optional, as they will be created implicitly, but it's the caller's responsibility to use properly formatted member ids." href="../index.html"><span class="name">endpoint</span></a>
+        <a title="TODO do we want to have a /member endpoint?" href="../index.html"><span class="name">endpoint</span></a>
       </span>
       
-      <p class="shortcomment cmt">Note: creating members is optional, as they will be created implicitly, but it's the caller's responsibility
-to use properly formatted member ids.</p><div class="fullcomment"><div class="comment cmt"><h3>Akka HTTP Endpoints</h3><h4>Examples</h4><h5>Ping</h5><pre>GET   /ping
+      <p class="shortcomment cmt">TODO do we want to have a /member endpoint?</p><div class="fullcomment"><div class="comment cmt"><h3>Akka HTTP Endpoints</h3><p>TODO do we want to have a /member endpoint?</p><h4>Examples</h4><h5>Ping</h5><pre>GET   /ping
       pong</pre><h5>Create Leaderboard</h5><pre>POST   /leaderboard
        {<span class="lit">"id"</span>:<span class="lit">"DQz92Qw_ShCB-TMXf-wiAQ"</span>}
 
@@ -224,12 +223,12 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="As a research project, there are a number of different implementations of the basic data structures so that we can compare and contrast performance characteristics." href="Implementation$.html"><span class="name">Implementation</span></a><span class="result"> extends <span class="extype" name="scala.Enumeration">Enumeration</span></span>
+        <a title="Being a research project, there are a number of different implementations of the same API, using different data structures, so that we can compare and contrast performance characteristics and select the best solutions." href="Implementation$.html"><span class="name">Implementation</span></a><span class="result"> extends <span class="extype" name="scala.Enumeration">Enumeration</span> with <a href="../../../../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a></span>
       </span>
       
-      <p class="shortcomment cmt">As a research project, there are a number of different implementations of the basic data structures so that we can
-compare and contrast performance characteristics.</p><div class="fullcomment"><div class="comment cmt"><h3>Leaderboard Implementation Enumeration</h3><p>As a research project, there are a number of different implementations of the basic data structures so that we can
-compare and contrast performance characteristics.
+      <p class="shortcomment cmt">Being a research project, there are a number of different implementations of the same API, using different
+data structures, so that we can compare and contrast performance characteristics and select the best solutions.</p><div class="fullcomment"><div class="comment cmt"><h3>Leaderboard Implementation Enumeration</h3><p>Being a research project, there are a number of different implementations of the same API, using different
+data structures, so that we can compare and contrast performance characteristics and select the best solutions.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard">leaderboard</a></dd></dl></div>
     </li><li class="current-entities indented7">
                         <span class="separator"></span>
