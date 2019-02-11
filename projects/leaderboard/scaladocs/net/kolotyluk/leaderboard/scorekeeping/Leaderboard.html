@@ -344,8 +344,7 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <span class="name">delete</span><span class="params">(<span name="memberIdentifier">memberIdentifier: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>)</span><span class="result">: <a href="#Response[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.Response">Response</a>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
       </span>
       
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"><h3>Delete Member
-Delete member from leaderboard</h3></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true, if member was on leaderboard</p></dd></dl></div>
+      <p class="shortcomment cmt">Delete member from leaderboard</p><div class="fullcomment"><div class="comment cmt"><h3>Delete Member</h3><p>Delete member from leaderboard</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true, if member was on leaderboard</p></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard#getCount" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="getCount:Leaderboard.this.Response[Int]"></a><a id="getCount:Response[Int]"></a>
       <span class="permalink">
@@ -425,7 +424,7 @@ Delete member from leaderboard</h3></div><dl class="paramcmts block"><dt>returns
         <span class="name">getRange</span><span class="params">(<span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="stop">stop: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="#Response[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.Response">Response</a>[<a href="package$$Range.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Range">Range</a>]</span>
       </span>
       
-      <p class="shortcomment cmt">Return a range of scores from start to stop</p><div class="fullcomment"><div class="comment cmt"><h3>Get Range of Scores</h3><p>Return a range of scores from start to stop</p></div><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt"><p><span class="extype" name="IndexOutOfBoundsException"><code>IndexOutOfBoundsException</code></span> if more than Int.MaxValue scores in the result</p></span></dd></dl></div>
+      <p class="shortcomment cmt">Return a range of scores from start to stop</p><div class="fullcomment"><div class="comment cmt"><h3>Get Range of Scores</h3><p>Return a range of scores from start to stop</p></div><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt"><p><span class="extype" name="[[https://docs.oracle.com/javase/10/docs/api/java/lang/IndexOutOfBoundsException.html"><code>[[https://docs.oracle.com/javase/10/docs/api/java/lang/IndexOutOfBoundsException.html</code></span> java.lang.IndexOutOfBoundsException]] if more than Int.MaxValue scores in the result</p></span></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard#getScore" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="getScore(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):Leaderboard.this.Response[Option[BigInt]]"></a><a id="getScore(MemberIdentifier):Response[Option[BigInt]]"></a>
       <span class="permalink">
