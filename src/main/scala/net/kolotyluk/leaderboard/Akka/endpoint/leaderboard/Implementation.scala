@@ -3,32 +3,35 @@ package net.kolotyluk.leaderboard.Akka.endpoint.leaderboard
 import java.util.concurrent.{ConcurrentHashMap, ConcurrentSkipListMap}
 import java.util.{HashMap, TreeMap, UUID}
 
+import net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.DupicateLeaderboardIdentifierError
 import net.kolotyluk.leaderboard.Akka.{LeaderboardActor, endpoint}
 import net.kolotyluk.leaderboard.scorekeeping.{ConcurrentLeaderboard, ConsecutiveLeaderboard, Leaderboard, LeaderboardIdentifier, MemberIdentifier, Score, SynchronizedConcurrentLeaderboard, SynchronizedLeaderboard}
-import net.kolotyluk.scala.extras.Internalized
+import net.kolotyluk.scala.extras.{Internalized, Logging}
 
 import scala.language.implicitConversions
 
 /** =Leaderboard Implementation Enumeration=
   *
-  * As a research project, there are a number of different implementations of the basic data structures so that we can
-  * compare and contrast performance characteristics.
+  * Being a research project, there are a number of different implementations of the same API, using different
+  * data structures, so that we can compare and contrast performance characteristics and select the best solutions.
   */
-object Implementation extends Enumeration {
+object Implementation extends Enumeration with Logging {
 
   protected case class Val(constructor: LeaderboardIdentifier => Leaderboard) extends super.Val {
     def create(nameOption: Option[String]): LeaderboardPostResponse = {
       val leaderboardIdentifier = Internalized[UUID](UUID.randomUUID)
       val leaderboardUrlIdentifier = endpoint.internalIdentifierToUrlId(leaderboardIdentifier)
-      val leaderboard = constructor(leaderboardIdentifier)
-      identifierToLeaderboard.put(leaderboardIdentifier,leaderboard) match {
+      nameOption match {
+        case None =>
+        case Some(leaderboardName) =>
+          nameToLeaderboardIdentifier.put(leaderboardName,leaderboardIdentifier )
+      }
+      identifierToLeaderboard.put(leaderboardIdentifier,constructor(leaderboardIdentifier)) match {
         case None =>
           LeaderboardPostResponse(nameOption, leaderboardUrlIdentifier)
-        case Some(item) =>
-          // TODO There should not be an existing leaderboard with this ID
-          throw new InternalError()
+        case Some(_) =>
+          throw new DupicateLeaderboardIdentifierError(leaderboardIdentifier)
       }
-      LeaderboardPostResponse(nameOption, leaderboardUrlIdentifier)
     }
   }
 

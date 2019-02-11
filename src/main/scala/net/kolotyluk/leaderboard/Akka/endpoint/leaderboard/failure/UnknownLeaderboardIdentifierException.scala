@@ -1,4 +1,4 @@
-package net.kolotyluk.leaderboard.Akka.endpoint.leaderboard
+package net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure
 
 import java.util.UUID
 
@@ -44,12 +44,12 @@ import net.kolotyluk.scala.extras.uuidToBase64UrlId
   *                       "id": "a3Kyn9UXQj6FiFJaPR9ZyA"
   *                     }
   * }}}
-  * Check your solution.
+  * Check your solution:
   * {{{
   * unix shell: curl http://localhost:8080/leaderboard/a3Kyn9UXQj6FiFJaPR9ZyA
   * PowerShell: Invoke-WebRequest -Method Get http://localhost:8080/leaderboard/a3Kyn9UXQj6FiFJaPR9ZyA
   * }}}
-  * Yous should see something like:
+  * You should see something like:
   * {{{
   * StatusCode        : 200
   * StatusDescription : OK
@@ -66,8 +66,8 @@ class UnknownLeaderboardIdentifierException(uuid: UUID, urlId: String)
   extends EndpointException2(NotFound,
     ErrorPayload(
       cause = s"The specified leaderboard cannot be found: urlId=$urlId, uuid=$uuid.",
-      diagnosis = "Did you forget to create it?",
-      explanation = "http://kolotyluk.github.io/projects/leaderboard/scaladocs/net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/UnknownLeaderboardIdentifierException.html",
+      diagnosis = "Did you forget to create it? Did you delete it?",
+      explanation = "http://kolotyluk.github.io/projects/leaderboard/scaladocs/net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/leaderboard/failure/UnknownLeaderboardIdentifierException.html",
       systemLogMessage = s"unknown leaderboard: urlId=$urlId, uuid=$uuid")
   ) {
 

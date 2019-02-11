@@ -6,7 +6,6 @@ import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.model.StatusCodes.{BadRequest, NotFound}
 import akka.http.scaladsl.server.PathMatcher1
 import net.kolotyluk.akka.scala.extras.base64uuid
-import net.kolotyluk.leaderboard.Akka.endpoint
 import net.kolotyluk.leaderboard.InternalIdentifier
 import net.kolotyluk.leaderboard.scorekeeping.{Leaderboard, LeaderboardIdentifier}
 import net.kolotyluk.scala.extras.Internalized
@@ -17,7 +16,6 @@ package object leaderboard {
 
   val nameToLeaderboardIdentifier = new TrieMap[String,LeaderboardIdentifier]
   val identifierToLeaderboard = new TrieMap[LeaderboardIdentifier,Leaderboard]
-
   val leaderboardEndpoint = new Endpoint
 
   // https://doc.akka.io/docs/akka-http/current/routing-dsl/path-matchers.html
@@ -33,7 +31,7 @@ package leaderboard {
 
   final case class LeaderboardGetResponse(name: String, state: String, members: Long)
 
-  final case class LeaderboardPostRequest(name: Option[String], kind: String)
+  final case class LeaderboardPostRequest(leaderboardName: Option[String], implementationName: String)
 
   final case class UpdateScoreRequest(leaderboardId: Option[String], memberId: Option[String], score: String)
 
@@ -74,15 +72,6 @@ package leaderboard {
   //  }
   //}
 
-  class DuplicateIDError(id: UUID)
-    //extends EndpointException(HttpResponse(InternalServerError, entity = s"leaderboard id=$id already exists")) {
-    extends EndpointError(BadRequest,
-      ErrorPayload(
-        cause = "Internal logic error",
-        diagnosis = "",
-        explanation = "http://kolotyluk.github.io/leaderboard/diagnostics",
-        systemLogMessage = s"leaderboard id=$id already exists"))
-
   class DuplicateNameException(name: String)
     extends EndpointException(HttpResponse(BadRequest, entity = s"leaderboard?name=$name already exists")) {
   }
@@ -97,23 +86,6 @@ package leaderboard {
   class NameNotFoundException(id: String)
     extends EndpointException(HttpResponse(NotFound, entity = s"leaderboard id=$id does not exist")) {
   }
-
-  class UnknownKindException(name: String, kind: String)
-    extends EndpointException(HttpResponse(BadRequest,
-      entity = s"In {'name' : '$name', 'kind' : '$kind'}, $kind is unknown! Specify one of: ${Implementation.values.mkString(", ")}")) {
-  }
-
-  class UnknownLeaderboardException(leaderboardIdentifier: LeaderboardIdentifier)
-    extends EndpointException(HttpResponse(NotFound,
-      entity = s"leaderboard uuid=${leaderboardIdentifier.value} urlId=${endpoint.internalIdentifierToUrlId(leaderboardIdentifier)} is unknown")) {
-  }
-
-  class UnknownLeaderboardIdentifierException2(urlId: String)
-    extends EndpointException(HttpResponse(NotFound,
-      entity = s"leaderboard urlId=$urlId is unknown")) {
-  }
-
-
 
   class UnknownLeaderboardNameException(name: String)
     extends EndpointException(HttpResponse(NotFound,

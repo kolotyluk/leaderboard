@@ -9,6 +9,7 @@ import net.kolotyluk.scala.extras.{Internalized, Logging}
 import unit.RoutingSpec
 
 import scala.language.postfixOps
+import scala.util.Random
 
 /** =Leaderboard Endpoint Unit Test Behaviors=
   * Standard behaviors of the Leaderboard HTTP Endpoint for all implementations
@@ -32,6 +33,7 @@ trait Behaviors extends JsonSupport with Logging { this: RoutingSpec =>
   def verifyPostRequests(implementation: => Implementation.Value ) {
 
     def handle(accept: Boolean, queryName: Option[String], payloadName: Option[String]) = {
+
       val endpoint = queryName match {
         case None => "/leaderboard"
         case Some(value) => s"/leaderboard?name=$value"
@@ -39,7 +41,7 @@ trait Behaviors extends JsonSupport with Logging { this: RoutingSpec =>
 
       val payload = LeaderboardPostRequest(payloadName, implementation.toString)
 
-      val name = queryName match {
+      val leaderboardName = queryName match {
         case None => payloadName
         case Some(_) => queryName
       }
@@ -54,8 +56,8 @@ trait Behaviors extends JsonSupport with Logging { this: RoutingSpec =>
             val response = responseAs[LeaderboardPostResponse]
             urlIdToInternalIdentifier(response.id).getValue[UUID] shouldBe a [UUID]
             Then("response.id parses to a UUID")
-            response.name shouldBe name
-            And(s"response.name == $name")
+            response.name shouldBe leaderboardName
+            And(s"response.name == $leaderboardName")
           case false =>
             Given(s"POST /leaderboard?name=contest $payload")
             status shouldBe BadRequest
@@ -67,12 +69,16 @@ trait Behaviors extends JsonSupport with Logging { this: RoutingSpec =>
     }
 
     it should s"return a correct response for POST requests to create ${implementation.toString}" in {
-      val name = Some("thing")
-      handle(true, None, None)
-      handle(true, None, name)
-      handle(true, name, name)
-      handle(true, name, None)
-      handle(false, name, Some("conflict"))
+      // We need to synthesize some unique names
+      val thing1 = Some("thing" + Random.nextLong())
+      val thing2 = Some("thing" + Random.nextLong())
+      val thing3 = Some("thing" + Random.nextLong())
+      val thing4 = Some("thing" + Random.nextLong())
+      handle(true,  None, None)
+      handle(true,  None, thing1)
+      handle(true,  thing2, thing2)
+      handle(true,  thing3, None)
+      handle(false, thing4, Some("conflict"))
     }
   }
 

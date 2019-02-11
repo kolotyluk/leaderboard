@@ -2,7 +2,7 @@ package net.kolotyluk.leaderboard.akka.endpoint.leaderboard
 
 import java.util.UUID
 
-import akka.http.scaladsl.model.StatusCodes.{BadRequest,NotFound,OK}
+import akka.http.scaladsl.model.StatusCodes.{BadRequest,Created,NotFound,OK}
 import net.kolotyluk.leaderboard.Akka.endpoint.leaderboard._
 import net.kolotyluk.leaderboard.Akka.endpoint.urlIdToInternalIdentifier
 import unit.RoutingSpec
@@ -41,7 +41,7 @@ class EndpointSpec extends RoutingSpec with Behaviors with JsonSupport {
   it should "return a correct response for minimal POST requests" in {
     Post("/leaderboard") ~> leaderboardEndpoint.routes  ~> check {
       Given("POST /leaderboard")
-      status shouldBe OK
+      status shouldBe Created
       When("status == OK")
       val response = responseAs[LeaderboardPostResponse]
       urlIdToInternalIdentifier(response.id).getValue[UUID] shouldBe a [UUID]
@@ -54,7 +54,7 @@ class EndpointSpec extends RoutingSpec with Behaviors with JsonSupport {
 
     Post(s"/leaderboard?name=$name") ~> leaderboardEndpoint.routes  ~> check {
       Given(s"POST /leaderboard?name=$name")
-      status shouldBe OK
+      status shouldBe Created
       When("status == OK")
       val response = responseAs[LeaderboardPostResponse]
       urlIdToInternalIdentifier(response.id).getValue[UUID] shouldBe a [UUID]

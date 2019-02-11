@@ -4,11 +4,12 @@ import java.util.NoSuchElementException
 
 import akka.event.Logging
 import akka.http.scaladsl.model.StatusCodes._
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpRequest, HttpResponse}
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse}
 import akka.http.scaladsl.server._
 import io.swagger.annotations._
 import javax.ws.rs.Path
 import net.kolotyluk.leaderboard.Akka.endpoint
+import net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.{UnknownImplementationException, UnknownLeaderboardIdentifierException}
 import net.kolotyluk.leaderboard.Akka.endpoint.{EndpointError, EndpointException, EndpointException2}
 import net.kolotyluk.leaderboard.scorekeeping.{ConcurrentLeaderboard, Increment, LeaderboardIdentifier, MemberIdentifier, Replace, Score, UpdateMode}
 import net.kolotyluk.scala.extras.Logging
@@ -359,62 +360,68 @@ class Endpoint extends Directives with JsonSupport with PrettyJasonSupport with 
       //logRequest("leaderboard", Logging.DebugLevel) {
       //  handleExceptions(routeExceptionHandler) {
       handleRejections(postRejectionHandler) {
-        parameter('name.?) { nameParameter =>
-          entity(as[LeaderboardPostRequest]) { leaderboard =>
-            // unix shell: curl -H "Content-Type: application/json" -d '{"name":"foo","kind":"ConcurrentLeaderboard"}' -X POST http://localhost:8080/leaderboard
-            // PowerShell: Invoke-WebRequest http://localhost:8080/leaderboard -Method Post -ContentType "application/json" -Body '{"name":"foo","kind":"ConcurrentLeaderboard"}'
-            leaderboard.name match {
-              case None =>
-                complete(Created, leaderboardCreate(nameParameter, Some(leaderboard.kind)))
-              case Some(payloadName) =>
-                nameParameter match {
-                  case None =>
-                    complete(Created, leaderboardCreate(leaderboard.name, Some(leaderboard.kind)))
-                  case Some(parameterName) =>
-                    if (payloadName == parameterName)
-                      complete(Created, leaderboardCreate(leaderboard.name, Some(leaderboard.kind)))
-                    else
-                      throw new InconsistentNameException(parameterName, payloadName)
-                }
-            }
-          } ~
-          entity(as[HttpRequest]) { httpRequest =>
-            if (httpRequest.entity.getContentLengthOption().getAsLong == 0)
-            // unix shell: curl -d "" http://localhost:8080/leaderboard?name=foo
-            // PowerShell: Invoke-WebRequest -Method Post http://localhost:8080/leaderboard?name=foo
-              complete(leaderboardCreate(nameParameter, None)) // default leaderboard
-            else
-              complete(HttpResponse(BadRequest, entity = "****  Something Wrong  ****")) // TODO this better
+        pathEnd {
+          parameter('name.?) { nameParameter =>
+            entity(as[LeaderboardPostRequest]) { leaderboard =>
+              // unix shell: curl -H "Content-Type: application/json" -d '{"name":"foo","kind":"ConcurrentLeaderboard"}' -X POST http://localhost:8080/leaderboard
+              // PowerShell: Invoke-WebRequest http://localhost:8080/leaderboard -Method Post -ContentType "application/json" -Body '{"name":"foo","kind":"ConcurrentLeaderboard"}'
+              complete(Created, leaderboardCreate(nameParameter, Some(leaderboard)))
+            } ~
+            complete(Created, leaderboardCreate(nameParameter, None)) // default leaderboard
+            //          entity(as[HttpRequest]) { httpRequest =>
+            //            // TODO do we really need this?
+            //            if (httpRequest.entity.getContentLengthOption().getAsLong == 0)
+            //            // unix shell: curl -d "" http://localhost:8080/leaderboard?name=foo
+            //            // PowerShell: Invoke-WebRequest -Method Post http://localhost:8080/leaderboard?name=foo
+            //              complete(leaderboardCreate(nameParameter, None)) // default leaderboard
+            //            else
+            //              complete(HttpResponse(BadRequest, entity = "****  Something Wrong  ****")) // TODO this better
+            //          }
           }
         }
       }
     }
 
-  def leaderboardCreate(nameOption: Option[String], kindOption: Option[String]): LeaderboardPostResponse = {
-    def create(): LeaderboardPostResponse = {
-      kindOption match {
-        case None =>
-          Implementation.LeaderboardActor.create(nameOption)
-        case Some(kind) =>
-          try {
-            Implementation.withName(kind).create(nameOption)
-          } catch {
-            case cause: NoSuchElementException =>
-              throw new UnknownKindException(nameOption.getOrElse(""), kind)
-          }
+  def leaderboardCreate(parameterNameOption: Option[String], payload: Option[LeaderboardPostRequest]): LeaderboardPostResponse = {
+
+    // Node: this code is complicated by the fact we are trying to support named leaderboards, and hand handle names in
+    // both the URL parameter and the payload, which might be in conflict. It might be better to reject the URL parameter
+    // if there is a payload. It might be better to avoid named leaderboards altogether. EK
+
+    def create(leaderboardNameOption: Option[String], leaderboardPostRequest: LeaderboardPostRequest): LeaderboardPostResponse = {
+      try {
+        Implementation.withName(leaderboardPostRequest.implementationName).create(leaderboardNameOption)
+      } catch {
+        case _: NoSuchElementException =>
+          throw new UnknownImplementationException(leaderboardPostRequest, leaderboardPostRequest.implementationName)
       }
     }
 
-    ///logger.warn(s"\n\n\n\n\n---------------------> nameOption = $nameOption\n\n\n\n\n")
+    def verifyAndCreate(leaderboardName: String,  leaderboardPostRequest: LeaderboardPostRequest): LeaderboardPostResponse = {
+      if (nameToLeaderboardIdentifier.contains(leaderboardName))
+        throw new DuplicateNameException(leaderboardName)
+      create(Some(leaderboardName), leaderboardPostRequest)
+    }
 
-    nameOption match {
+    payload match {
       case None =>
-        create()
-      case Some(name) =>
-        if (nameToLeaderboardIdentifier.contains(name)) {
-          throw new DuplicateNameException(name)
-        } else create()
+        // There is no payload, so no payload.leaderboardName to worry about
+        Implementation.LeaderboardActor.create(parameterNameOption) // Default implementation
+
+      case Some(leaderboardPostRequest) =>
+        parameterNameOption match {
+          case None =>
+            create(leaderboardPostRequest.leaderboardName, leaderboardPostRequest)
+          case Some(parameterName) =>
+            leaderboardPostRequest.leaderboardName match {
+              case None =>
+                verifyAndCreate(parameterName, leaderboardPostRequest)
+              case Some(payloadName) =>
+                if (parameterName != payloadName)
+                  throw new InconsistentNameException(parameterName, payloadName)
+                verifyAndCreate(payloadName, leaderboardPostRequest)
+            }
+        }
     }
   }
-
 }

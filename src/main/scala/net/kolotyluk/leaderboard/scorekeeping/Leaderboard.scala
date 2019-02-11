@@ -2,13 +2,37 @@ package net.kolotyluk.leaderboard.scorekeeping
 
 import scala.language.higherKinds
 
+
+/** =Leaderboard Interface=
+  *
+  * Fundamental API for all Leaderboard access.
+  *
+  *
+  */
 trait Leaderboard {
+
+  /** =Abstract Response Type=
+    * This API supports both asynchronous and synchronous responses.
+    * ==Examples==
+    * {{{
+    * val count = leaderboard.getCount
+    * if (count.isInstanceOf[Int]) {
+    *   Future.successful(LeaderboardStatusResponse(leaderboardUrlId, count.asInstanceOf[Int]))
+    * } else {
+    *   count.asInstanceOf[Future[Int]].map{ futureCount =>
+    *     LeaderboardStatusResponse(leaderboardUrlId, futureCount)
+    *   }
+    * }
+    * }}}
+    *
+    * @tparam A either Future[A] or A
+    */
   type Response[A]
 
   var memberIdentifier: MemberIdentifier = null
   var name: String = null
 
-  /** =Delete Member
+  /** =Delete Member=
     * Delete member from leaderboard
     * @param memberIdentifier
     * @return true, if member was on leaderboard
@@ -36,6 +60,8 @@ trait Leaderboard {
     * @param stop
     * @return
     * @throws IndexOutOfBoundsException if more than Int.MaxValue scores in the result
+    *
+    * @see [[https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IndexOutOfBoundsException.html java.lang.IndexOutOfBoundsException]]
     */
   def getRange(start: Long, stop: Long): Response[Range]
 

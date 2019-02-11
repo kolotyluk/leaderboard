@@ -10,6 +10,8 @@ import net.kolotyluk.scala.extras.Internalized
 
 /** =Akka HTTP Endpoints=
   *
+  * TODO do we want to have a /member endpoint?
+  *
   * ==Examples==
   *
   * ===Ping===
