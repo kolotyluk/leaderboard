@@ -165,8 +165,8 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
                         <a href="package$$Increment$.html" title="">Increment</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
-                        <a class="trait" href="Leaderboard.html" title=""></a>
-                        <a href="Leaderboard.html" title="">Leaderboard</a>
+                        <a class="trait" href="Leaderboard.html" title="Fundamental API for all Leaderboard access."></a>
+                        <a href="Leaderboard.html" title="Fundamental API for all Leaderboard access.">Leaderboard</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
                         <a class="trait" href="" title=""></a>
@@ -323,7 +323,14 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <span class="name">Response</span><span class="tparams">[<span name="A">A</span>]</span><span class="result alias"> = <span class="extype" name="scala.concurrent.Future">Future</span>[<span class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardAsync.Response.A">A</span>]</span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardAsync">LeaderboardAsync</a> → <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
+      <p class="shortcomment cmt">This API supports both asynchronous and synchronous responses.</p><div class="fullcomment"><div class="comment cmt"><h3>Abstract Response Type</h3><p>This API supports both asynchronous and synchronous responses.</p><h4>Examples</h4><pre><span class="kw">val</span> count = leaderboard.getCount
+<span class="kw">if</span> (count.isInstanceOf[<span class="std">Int</span>]) {
+  Future.successful(LeaderboardStatusResponse(leaderboardUrlId, count.asInstanceOf[<span class="std">Int</span>]))
+} <span class="kw">else</span> {
+  count.asInstanceOf[Future[<span class="std">Int</span>]].map{ futureCount <span class="kw">=&gt;</span>
+    LeaderboardStatusResponse(leaderboardUrlId, futureCount)
+  }
+}</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardAsync">LeaderboardAsync</a> → <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
     </li></ol>
             </div>
 
@@ -424,7 +431,7 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <span class="name">getRange</span><span class="params">(<span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="stop">stop: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="#Response[A]=scala.concurrent.Future[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardAsync.Response">Response</a>[<a href="package$$Range.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Range">Range</a>]</span>
       </span>
       
-      <p class="shortcomment cmt">Return a range of scores from start to stop</p><div class="fullcomment"><div class="comment cmt"><h3>Get Range of Scores</h3><p>Return a range of scores from start to stop</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd><dt>Exceptions thrown</dt><dd><span class="cmt"><p><span class="extype" name="[[https://docs.oracle.com/javase/10/docs/api/java/lang/IndexOutOfBoundsException.html"><code>[[https://docs.oracle.com/javase/10/docs/api/java/lang/IndexOutOfBoundsException.html</code></span> java.lang.IndexOutOfBoundsException]] if more than Int.MaxValue scores in the result</p></span></dd></dl></div>
+      <p class="shortcomment cmt">Return a range of scores from start to stop</p><div class="fullcomment"><div class="comment cmt"><h3>Get Range of Scores</h3><p>Return a range of scores from start to stop</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd><dt>Exceptions thrown</dt><dd><span class="cmt"><p><span class="extype" name="java.lang.IndexOutOfBoundsException"><code>java.lang.IndexOutOfBoundsException</code></span> if more than Int.MaxValue scores in the result</p></span></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard#getScore" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="getScore(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):Leaderboard.this.Response[Option[BigInt]]"></a><a id="getScore(MemberIdentifier):Response[Option[BigInt]]"></a>
       <span class="permalink">

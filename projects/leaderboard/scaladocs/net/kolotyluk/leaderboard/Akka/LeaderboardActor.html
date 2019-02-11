@@ -351,7 +351,14 @@ change dynamically.
         <span class="name">Response</span><span class="tparams">[<span name="A">A</span>]</span><span class="result alias"> = <span class="extype" name="scala.concurrent.Future">Future</span>[<span class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardAsync.Response.A">A</span>]</span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../scorekeeping/LeaderboardAsync.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardAsync">LeaderboardAsync</a> → <a href="../scorekeeping/Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
+      <p class="shortcomment cmt">This API supports both asynchronous and synchronous responses.</p><div class="fullcomment"><div class="comment cmt"><h3>Abstract Response Type</h3><p>This API supports both asynchronous and synchronous responses.</p><h4>Examples</h4><pre><span class="kw">val</span> count = leaderboard.getCount
+<span class="kw">if</span> (count.isInstanceOf[<span class="std">Int</span>]) {
+  Future.successful(LeaderboardStatusResponse(leaderboardUrlId, count.asInstanceOf[<span class="std">Int</span>]))
+} <span class="kw">else</span> {
+  count.asInstanceOf[Future[<span class="std">Int</span>]].map{ futureCount <span class="kw">=&gt;</span>
+    LeaderboardStatusResponse(leaderboardUrlId, futureCount)
+  }
+}</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../scorekeeping/LeaderboardAsync.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardAsync">LeaderboardAsync</a> → <a href="../scorekeeping/Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.Configuration.LocalConfiguration" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="LocalConfigurationextendsLogging"></a><a id="LocalConfiguration:LocalConfiguration"></a>
       <span class="permalink">
@@ -715,7 +722,7 @@ can be remedied.
         <span class="name">getRange</span><span class="params">(<span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="stop">stop: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.concurrent.Future">Future</span>[<a href="../scorekeeping/package$$Range.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Range">Range</a>]</span>
       </span>
       
-      <p class="shortcomment cmt">Return a range of scores from start to stop</p><div class="fullcomment"><div class="comment cmt"><h3>Get Range of Scores</h3><p>Return a range of scores from start to stop</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="net.kolotyluk.leaderboard.Akka.LeaderboardActor">LeaderboardActor</a> → <a href="../scorekeeping/Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd><dt>Exceptions thrown</dt><dd><span class="cmt"><p><span class="extype" name="[[https://docs.oracle.com/javase/10/docs/api/java/lang/IndexOutOfBoundsException.html"><code>[[https://docs.oracle.com/javase/10/docs/api/java/lang/IndexOutOfBoundsException.html</code></span> java.lang.IndexOutOfBoundsException]] if more than Int.MaxValue scores in the result</p></span></dd></dl></div>
+      <p class="shortcomment cmt">Return a range of scores from start to stop</p><div class="fullcomment"><div class="comment cmt"><h3>Get Range of Scores</h3><p>Return a range of scores from start to stop</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="net.kolotyluk.leaderboard.Akka.LeaderboardActor">LeaderboardActor</a> → <a href="../scorekeeping/Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd><dt>Exceptions thrown</dt><dd><span class="cmt"><p><span class="extype" name="java.lang.IndexOutOfBoundsException"><code>java.lang.IndexOutOfBoundsException</code></span> if more than Int.MaxValue scores in the result</p></span></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.Akka.LeaderboardActor#getScore" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getScore(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):scala.concurrent.Future[Option[BigInt]]"></a><a id="getScore(MemberIdentifier):Future[Option[BigInt]]"></a>
       <span class="permalink">
