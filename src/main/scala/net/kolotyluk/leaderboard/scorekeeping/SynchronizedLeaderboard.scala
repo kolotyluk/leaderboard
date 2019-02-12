@@ -9,7 +9,7 @@ import net.kolotyluk.scala.extras.{Identity, Logging}
 import scala.collection.mutable.ArrayBuffer
 
 class SynchronizedLeaderboard(
-    leaderboardIdentifier: LeaderboardIdentifier,
+    override val leaderboardIdentifier: LeaderboardIdentifier,
     memberToScore: Map[MemberIdentifier,Option[Score]],
     scoreToMember: util.NavigableMap[Score,MemberIdentifier]
   ) extends LeaderboardSync with Logging {

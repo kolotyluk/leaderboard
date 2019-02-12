@@ -122,9 +122,15 @@ class Endpoint extends Directives with JsonSupport with PrettyJasonSupport with 
             // unix shell: curl http://localhost:8080/leaderboard/fiqkXE39T_WcUcCPtGcoaQ
             // PowerShell: Invoke-WebRequest -Method Get http://localhost:8080/leaderboard/fiqkXE39T_WcUcCPtGcoaQ
             onComplete(getLeaderboardStatus(leaderboardIdentifier)) {
-              case Success(value) => complete(value)
-              case Failure(cause: EndpointException) => complete(cause.response)
-              case Failure(cause) => complete("") // TODO
+              case Success(value) =>
+                logger.debug(s"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+                complete(value)
+              case Failure(cause: EndpointException) =>
+                logger.error("//////////////////////////////////////////////////")
+                complete(cause.response)
+              case Failure(cause) =>
+                logger.error("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+                complete("") // TODO
             }
           }
         } ~
@@ -269,13 +275,14 @@ class Endpoint extends Directives with JsonSupport with PrettyJasonSupport with 
         throw new UnknownLeaderboardIdentifierException(leaderboardIdentifier)
       case Some(leaderboard) =>
         val count = leaderboard.getCount
-        logger.debug(s"count = $count")
-        if (count.isInstanceOf[Int]) {
-          Future.successful(LeaderboardStatusResponse(leaderboardUrlId, count.asInstanceOf[Int]))
-        } else {
+        if (count == null) logger.error("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ count = null")
+        if (count.isInstanceOf[Future[Any]]) {
           count.asInstanceOf[Future[Int]].map{ futureCount =>
             LeaderboardStatusResponse(leaderboardUrlId, futureCount)
           }
+        } else {
+          logger.debug(s"count = $count")
+          Future.successful(LeaderboardStatusResponse(leaderboardUrlId, count.asInstanceOf[Int]))
         }
     }
   }

@@ -1,14 +1,18 @@
 package net.kolotyluk.leaderboard.Akka.endpoint.leaderboard
-
 import java.util.concurrent.{ConcurrentHashMap, ConcurrentSkipListMap}
 import java.util.{HashMap, TreeMap, UUID}
 
+import net.kolotyluk.leaderboard.Akka.endpoint
 import net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.DupicateLeaderboardIdentifierError
-import net.kolotyluk.leaderboard.Akka.{LeaderboardActor, endpoint}
-import net.kolotyluk.leaderboard.scorekeeping.{ConcurrentLeaderboard, ConsecutiveLeaderboard, Leaderboard, LeaderboardIdentifier, MemberIdentifier, Score, SynchronizedConcurrentLeaderboard, SynchronizedLeaderboard}
+import net.kolotyluk.leaderboard.scorekeeping.{ConcurrentLeaderboard, Leaderboard, LeaderboardIdentifier, MemberIdentifier, Score, SynchronizedConcurrentLeaderboard, SynchronizedLeaderboard}
 import net.kolotyluk.scala.extras.{Internalized, Logging}
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
 import scala.language.implicitConversions
+
+import scala.language.postfixOps
+
 
 /** =Leaderboard Implementation Enumeration=
   *
@@ -47,10 +51,11 @@ object Implementation extends Enumeration with Logging {
 
   val LeaderboardActor = Val(
     leaderboardIdentifier => {
-      val memberToScore = new HashMap[MemberIdentifier,Option[Score]]
-      val scoreToMember = new TreeMap[Score,MemberIdentifier]
-      val leaderboard = new ConsecutiveLeaderboard(leaderboardIdentifier, memberToScore, scoreToMember)
-      new LeaderboardActor(leaderboardIdentifier, leaderboard)
+      //val memberToScore = new HashMap[MemberIdentifier,Option[Score]]
+      //val scoreToMember = new TreeMap[Score,MemberIdentifier]
+      //val leaderboard = new ConsecutiveLeaderboard(leaderboardIdentifier, memberToScore, scoreToMember)
+      val leaderboardFuture = net.kolotyluk.leaderboard.Akka.leaderboardManagerActor.create(leaderboardIdentifier)
+      Await.result(leaderboardFuture, 10 seconds)
     }
   )
 

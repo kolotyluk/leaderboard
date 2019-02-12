@@ -29,7 +29,7 @@ trait Leaderboard {
     */
   type Response[A]
 
-  var memberIdentifier: MemberIdentifier = null
+  val leaderboardIdentifier: LeaderboardIdentifier = null
   var name: String = null
 
   /** =Delete Member=

@@ -12,7 +12,7 @@ import scala.collection.mutable.ArrayBuffer
   * This leaderboard is not thread-safe, and intended to be uses inside an Akka Actor.
   */
 class ConsecutiveLeaderboard(
-    leaderboardIdentifier: LeaderboardIdentifier,
+    override val leaderboardIdentifier: LeaderboardIdentifier,
     memberToScore: Map[MemberIdentifier,Option[Score]],
     scoreToMember: util.NavigableMap[Score,MemberIdentifier]
   ) extends LeaderboardSync with Logging {

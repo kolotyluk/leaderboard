@@ -53,7 +53,7 @@ object LeaderboardActor {
   * @see [[https://doc.akka.io/docs/akka/2.5.18/typed/actors.html#introduction Akka Typed Introduction]]
   * @see [[https://doc.akka.io/docs/akka/2.5/typed/fault-tolerance.html#supervision Akka Typed Supervision]]
   */
-class LeaderboardActor(leaderboardIdentifier: LeaderboardIdentifier, leaderboard: LeaderboardSync) extends LeaderboardAsync with Configuration with Logging {
+class LeaderboardActor(override val leaderboardIdentifier: LeaderboardIdentifier, leaderboard: LeaderboardSync) extends LeaderboardAsync with Configuration with Logging {
 //  uuid = initialUUID
 //  name = initialName
 
@@ -65,7 +65,6 @@ class LeaderboardActor(leaderboardIdentifier: LeaderboardIdentifier, leaderboard
   implicit val timeout: Timeout = 3 seconds
   implicit var scheduler: Scheduler = null
   implicit var executionContext: ExecutionContext = null
-
 
 //  val memberToScore = new util.HashMap[String,Option[Score]]
 //  val scoreToMember = new ConcurrentSkipListMap[Score,String]
@@ -91,6 +90,19 @@ class LeaderboardActor(leaderboardIdentifier: LeaderboardIdentifier, leaderboard
           replyTo ! leaderboard.delete(memberIdentifier)
           Behaviors.same
         case GetCount(replyTo: ActorRef[Int]) ⇒
+          logger.info(".....................................................")
+//          try {
+//            val count = leaderboard.getCount
+//            if (count.isInstanceOf[Int]) {
+//              val result = count.asInstanceOf[Int]
+//              logger.info(".....................................................")
+//              replyTo ! result
+//            } else logger.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! LeaderboardActor: leaderboard.getCount is not Int")
+//          } catch {
+//            case cause: NullPointerException =>
+//              logger.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! LeaderboardActor: leaderboard.getCount = null", cause)
+//              replyTo ! 0
+//          }
           replyTo ! leaderboard.getCount
           Behaviors.same
         case GetIdentifier(replyTo: ActorRef[LeaderboardIdentifier]) ⇒
@@ -167,8 +179,15 @@ class LeaderboardActor(leaderboardIdentifier: LeaderboardIdentifier, leaderboard
   override def delete(memberIdentifier: MemberIdentifier) =
     selfActorReference ? (actorRef ⇒ Delete(memberIdentifier, actorRef))
 
-  override def getCount=
-    selfActorReference ? (actorRef ⇒ GetCount(actorRef))
+  override def getCount= {
+    logger.info("getCount =======================================================")
+    if (selfActorReference != null)
+      selfActorReference ? (actorRef ⇒ GetCount(actorRef))
+    else {
+      logger.error("selfActorReference = null =======================================================")
+      Future.successful(0)
+    }
+  }
 
   override def getIdentifier =
     selfActorReference ? (actorRef ⇒ GetIdentifier(actorRef))

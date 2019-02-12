@@ -113,7 +113,7 @@ object ConcurrentLeaderboard extends LeaderboardManager {
   *
   * @author eric@kolotyluk.net
   */
-class ConcurrentLeaderboard(val leaderboardIdentifier: LeaderboardIdentifier, memberToScore: ConcurrentMap[MemberIdentifier,Option[Score]], scoreToMember:  ConcurrentNavigableMap[Score,MemberIdentifier])
+class ConcurrentLeaderboard(override val leaderboardIdentifier: LeaderboardIdentifier, memberToScore: ConcurrentMap[MemberIdentifier,Option[Score]], scoreToMember:  ConcurrentNavigableMap[Score,MemberIdentifier])
   extends LeaderboardSync
     with Configuration
     with Logging {

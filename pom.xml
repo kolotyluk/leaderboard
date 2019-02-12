@@ -94,6 +94,7 @@
     <properties>
         <akka.http.version>10.1.7</akka.http.version>
         <akka.version>2.5.19</akka.version>
+        <downloadSources>true</downloadSources>
         <github.global.server>github</github.global.server>
         <jackson.version>2.9.7</jackson.version>
         <maven.compiler.source>1.7</maven.compiler.source>

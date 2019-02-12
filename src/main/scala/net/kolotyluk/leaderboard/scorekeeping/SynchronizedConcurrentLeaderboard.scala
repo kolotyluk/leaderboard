@@ -6,7 +6,7 @@ import java.util.concurrent.{ConcurrentMap, ConcurrentNavigableMap}
 import net.kolotyluk.scala.extras.{Identity, Logging}
 
 class SynchronizedConcurrentLeaderboard(
-    leaderboardIdentifier: LeaderboardIdentifier,
+    override val leaderboardIdentifier: LeaderboardIdentifier,
     memberToScore: ConcurrentMap[MemberIdentifier,Option[Score]],
     scoreToMember: ConcurrentNavigableMap[Score,MemberIdentifier]
   ) extends LeaderboardSync with Logging {

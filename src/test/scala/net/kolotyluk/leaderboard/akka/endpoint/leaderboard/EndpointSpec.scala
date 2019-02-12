@@ -2,7 +2,7 @@ package net.kolotyluk.leaderboard.akka.endpoint.leaderboard
 
 import java.util.UUID
 
-import akka.http.scaladsl.model.StatusCodes.{BadRequest,Created,NotFound,OK}
+import akka.http.scaladsl.model.StatusCodes.{BadRequest, Created, NotFound, OK}
 import net.kolotyluk.leaderboard.Akka.endpoint.leaderboard._
 import net.kolotyluk.leaderboard.Akka.endpoint.urlIdToInternalIdentifier
 import unit.RoutingSpec
@@ -64,10 +64,6 @@ class EndpointSpec extends RoutingSpec with Behaviors with JsonSupport {
     }
   }
 
-  Implementation.values.foreach{implementation =>
-    it must behave like verifyPostRequests(implementation)
-  }
-
   it should "return a BadRequest response for requests to create a BogusLeaderboard" in {
     Post("/leaderboard", createBogusLeaderboard) ~> leaderboardEndpoint.routes  ~> check {
       Given(createBogusLeaderboard.toString)
@@ -75,4 +71,21 @@ class EndpointSpec extends RoutingSpec with Behaviors with JsonSupport {
       When("status == BadRequest")
     }
   }
+
+  Implementation.values.foreach{implementation =>
+
+    it must behave like verifyPostRequests(implementation)
+
+    // it must behave like verifyScoreRequest(implementation)
+
+  }
+
+  Implementation.values.foreach{implementation =>
+
+    // it must behave like verifyPostRequests(implementation)
+
+    it must behave like verifyScoreRequest(implementation)
+
+  }
+
 }

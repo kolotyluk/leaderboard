@@ -41,7 +41,7 @@ object GuardianActor {
 class GuardianActor(leaderboardManagerActor: LeaderboardManagerActor, restActor: RestActor) extends RouteConcatenation with Configuration with Logging {
   logger.info("constructing...")
 
-  var leaderboardManagerActorRef : ActorRef[LeaderboardManagerActor.Message] = null
+  var leaderboardManagerActorRef : ActorRef[LeaderboardManagerActor.Request] = null
   var restActorRef : ActorRef[RestActor.Message] = null
 
   val behavior: Behavior[GuardianActor.Message] = Behaviors.setup { actorContext ⇒
