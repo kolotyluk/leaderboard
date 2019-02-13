@@ -90,19 +90,6 @@ class LeaderboardActor(override val leaderboardIdentifier: LeaderboardIdentifier
           replyTo ! leaderboard.delete(memberIdentifier)
           Behaviors.same
         case GetCount(replyTo: ActorRef[Int]) ⇒
-          logger.info(".....................................................")
-//          try {
-//            val count = leaderboard.getCount
-//            if (count.isInstanceOf[Int]) {
-//              val result = count.asInstanceOf[Int]
-//              logger.info(".....................................................")
-//              replyTo ! result
-//            } else logger.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! LeaderboardActor: leaderboard.getCount is not Int")
-//          } catch {
-//            case cause: NullPointerException =>
-//              logger.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! LeaderboardActor: leaderboard.getCount = null", cause)
-//              replyTo ! 0
-//          }
           replyTo ! leaderboard.getCount
           Behaviors.same
         case GetIdentifier(replyTo: ActorRef[LeaderboardIdentifier]) ⇒
@@ -179,15 +166,8 @@ class LeaderboardActor(override val leaderboardIdentifier: LeaderboardIdentifier
   override def delete(memberIdentifier: MemberIdentifier) =
     selfActorReference ? (actorRef ⇒ Delete(memberIdentifier, actorRef))
 
-  override def getCount= {
-    logger.info("getCount =======================================================")
-    if (selfActorReference != null)
+  override def getCount=
       selfActorReference ? (actorRef ⇒ GetCount(actorRef))
-    else {
-      logger.error("selfActorReference = null =======================================================")
-      Future.successful(0)
-    }
-  }
 
   override def getIdentifier =
     selfActorReference ? (actorRef ⇒ GetIdentifier(actorRef))
@@ -207,7 +187,8 @@ class LeaderboardActor(override val leaderboardIdentifier: LeaderboardIdentifier
   override def getStanding(memberIdentifier: MemberIdentifier) =
     selfActorReference ? (actorRef ⇒ GetStanding(memberIdentifier, actorRef))
 
-  override def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, value: BigInt) = update(mode, memberIdentifier, Score(value))
+  override def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, value: BigInt) =
+    update(mode, memberIdentifier, Score(value))
 
   override def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, newScore: Score) =
     selfActorReference ? (actorRef ⇒ Update(memberIdentifier, mode, newScore, actorRef))

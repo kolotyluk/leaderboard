@@ -26,7 +26,7 @@ import net.kolotyluk.scala.extras.uuidToBase64UrlId
   * Content           : {
   *                       "cause": "The specified leaderboard cannot be found: urlId=IMvWdANITIWZxm7efUKVAg, uuid=20cbd674-0348-4c85-99c6-6ede7d429502.",
   *                       "diagnosis": = "Did you forget to create it?",
-  *                       "explanation": "http://kolotyluk.github.io/projects/leaderboard/scaladocs/net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/UnknownLeaderboardIdentifierException.html",
+  *                       "explanation": "http://kolotyluk.github.io/projects/leaderboard/scaladocs/net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnknownLeaderboardIdentifierException.html",
   *                       "systemLogMessage": "unknown leaderboard: urlId=IMvWdANITIWZxm7efUKVAg, uuid=20cbd674-0348-4c85-99c6-6ede7d429502"
   *                     }
   * }}}
@@ -67,7 +67,7 @@ class UnknownLeaderboardIdentifierException(uuid: UUID, urlId: String)
     ErrorPayload(
       cause = s"The specified leaderboard cannot be found: urlId=$urlId, uuid=$uuid.",
       diagnosis = "Did you forget to create it? Did you delete it?",
-      explanation = "http://kolotyluk.github.io/projects/leaderboard/scaladocs/net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/leaderboard/failure/UnknownLeaderboardIdentifierException.html",
+      explanation = "http://kolotyluk.github.io/projects/leaderboard/scaladocs/net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnknownLeaderboardIdentifierException.html",
       systemLogMessage = s"unknown leaderboard: urlId=$urlId, uuid=$uuid")
   ) {
 

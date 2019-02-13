@@ -274,22 +274,19 @@ class Endpoint extends Directives with JsonSupport with PrettyJasonSupport with 
       case None =>
         throw new UnknownLeaderboardIdentifierException(leaderboardIdentifier)
       case Some(leaderboard) =>
-        val count = leaderboard.getCount
-        if (count == null) logger.error("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ count = null")
-        if (count.isInstanceOf[Future[Any]]) {
-          count.asInstanceOf[Future[Int]].map{ futureCount =>
-            LeaderboardStatusResponse(leaderboardUrlId, futureCount)
-          }
-        } else {
-          logger.debug(s"count = $count")
-          Future.successful(LeaderboardStatusResponse(leaderboardUrlId, count.asInstanceOf[Int]))
+        leaderboard.getCount match {
+          case future: Future[Int] =>
+            future.map{ count =>
+              LeaderboardStatusResponse(leaderboardUrlId, count)
+            }
+          case count: Int =>
+            Future.successful(LeaderboardStatusResponse(leaderboardUrlId, count))
         }
     }
   }
 
   def getLeaderboardStatus(leaderboardIdentifier: LeaderboardIdentifier, memberIdentifier: MemberIdentifier): Future[MemberStatusResponse] = {
     logger.debug(s"getLeaderboardStatus: leaderboardIdentifier=$leaderboardIdentifier memberIdentifier=$memberIdentifier")
-    val leaderboardUrlId = endpoint.internalIdentifierToUrlId(leaderboardIdentifier)
     identifierToLeaderboard.get(leaderboardIdentifier) match {
       case None =>
         throw new UnknownLeaderboardIdentifierException(leaderboardIdentifier)

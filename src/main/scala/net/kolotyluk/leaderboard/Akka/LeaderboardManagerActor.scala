@@ -67,9 +67,9 @@ class LeaderboardManagerActor() extends Configuration with Logging {
 
     logger.info("initializing...")
 
+    executionContext = actorContext.executionContext
     scheduler = actorContext.system.scheduler
     selfActorReference =  actorContext.self
-    executionContext = actorContext.executionContext
 
     // TODO remove this for production, used for testing
     //val cancelable = actorContext.schedule(200 seconds, actorContext.self, Done("timed out"))

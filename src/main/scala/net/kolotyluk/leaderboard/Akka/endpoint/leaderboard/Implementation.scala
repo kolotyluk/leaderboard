@@ -51,9 +51,9 @@ object Implementation extends Enumeration with Logging {
 
   val LeaderboardActor = Val(
     leaderboardIdentifier => {
-      //val memberToScore = new HashMap[MemberIdentifier,Option[Score]]
-      //val scoreToMember = new TreeMap[Score,MemberIdentifier]
-      //val leaderboard = new ConsecutiveLeaderboard(leaderboardIdentifier, memberToScore, scoreToMember)
+      // val memberToScore = new HashMap[MemberIdentifier,Option[Score]]
+      // val scoreToMember = new TreeMap[Score,MemberIdentifier]
+      // val leaderboard = new ConsecutiveLeaderboard(leaderboardIdentifier, memberToScore, scoreToMember)
       val leaderboardFuture = net.kolotyluk.leaderboard.Akka.leaderboardManagerActor.create(leaderboardIdentifier)
       Await.result(leaderboardFuture, 10 seconds)
     }

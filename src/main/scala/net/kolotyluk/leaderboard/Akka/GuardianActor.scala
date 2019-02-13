@@ -48,6 +48,13 @@ class GuardianActor(leaderboardManagerActor: LeaderboardManagerActor, restActor:
 
     logger.info("initializing...")
 
+    leaderboardManagerActorRef = actorContext.spawn(leaderboardManagerActor.behavior, "leaderboard-manager")
+    assert (leaderboardManagerActorRef != null)
+    Behaviors.supervise(leaderboardManagerActor.behavior)
+      .onFailure[ConfigurationError](SupervisorStrategy.stop)
+      .orElse(Behavior.same)
+    actorContext.watch(leaderboardManagerActorRef)
+
     // TODO remove this for production, used for testing
     //val cancelable = actorContext.schedule(200 seconds, actorContext.self, Done("timed out"))
 
@@ -62,13 +69,6 @@ class GuardianActor(leaderboardManagerActor: LeaderboardManagerActor, restActor:
               .onFailure[ConfigurationError](SupervisorStrategy.stop)
               .orElse(Behavior.same)
             actorCell.watch(restActorRef)
-
-            leaderboardManagerActorRef = actorCell.spawn(leaderboardManagerActor.behavior, "leaderboard-manager")
-            assert (leaderboardManagerActorRef != null)
-            Behaviors.supervise(leaderboardManagerActor.behavior)
-              .onFailure[ConfigurationError](SupervisorStrategy.stop)
-              .orElse(Behavior.same)
-            actorCell.watch(leaderboardManagerActorRef)
 
             Behaviors.same
           } catch {

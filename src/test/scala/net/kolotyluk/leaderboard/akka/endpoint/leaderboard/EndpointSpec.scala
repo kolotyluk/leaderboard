@@ -2,35 +2,49 @@ package net.kolotyluk.leaderboard.akka.endpoint.leaderboard
 
 import java.util.UUID
 
+import akka.actor.testkit.typed.scaladsl.ActorTestKit
 import akka.http.scaladsl.model.StatusCodes.{BadRequest, Created, NotFound, OK}
 import net.kolotyluk.leaderboard.Akka.endpoint.leaderboard._
 import net.kolotyluk.leaderboard.Akka.endpoint.urlIdToInternalIdentifier
+import net.kolotyluk.leaderboard.Akka.guardianActor
 import unit.RoutingSpec
 
 import scala.language.postfixOps
 
+/** =Leaderboard Endpoint Unit Test Specification=
+  *
+  */
 class EndpointSpec extends RoutingSpec with Behaviors with JsonSupport {
 
-  val createConcurrentLeaderboard = LeaderboardPostRequest(Some("foo"), "ConcurrentLeaderboard")
-  val createLeaderboardActor = LeaderboardPostRequest(Some("foo"), "LeaderboardActor")
-  val createSynchronizedConcurrentLeaderboard = LeaderboardPostRequest(Some("foo"), "SynchronizedConcurrentLeaderboard")
-  val createSynchronizedLeaderboard = LeaderboardPostRequest(Some("foo"), "SynchronizedLeaderboard")
-  val createBogusLeaderboard = LeaderboardPostRequest(Some("foo"), "BogusLeaderboard")
+  // For this test suite we start a full actor system. Unlike the main service, however, we do not bind to
+  // a socket listening for incoming HTTP sessions, as the endpoints are tested via the test harness.
+  val testKit = ActorTestKit()
+
+  override def afterAll(): Unit = {
+    testKit.shutdownTestKit()
+  }
+
+  val guardianActorRef = testKit.spawn(guardianActor.behavior)
+  // Normally we would send a Bind message to the guardian, but we're only unit testing, not integration testing
 
   behavior of "/leaderboard Endpoint"
 
-  it should "should return not found for unknown leaderboard" in {
-    Get("/leaderboard/IMvWdANITIWZxm7efUKVAg") ~> leaderboardEndpoint.routes  ~> check {
-      Given("GET /leaderboard/IMvWdANITIWZxm7efUKVAg")
+  it should "return NotFound for unknown leaderboard" in {
+    val uri = "/leaderboard/IMvWdANITIWZxm7efUKVAg"
+    Get(uri) ~> leaderboardEndpoint.routes  ~> check {
+      Given(s"GET $uri")
       status shouldBe NotFound
       Then("status shouldBe NotFound")
       When(s"response=${response.entity}")
+      // TODO check that response.explanation URI exists
+      // TODO check system log that response.systemLogMessage exists
     }
   }
 
   it should "return a correct response for minimal GET requests" in {
-    Get("/leaderboard") ~> leaderboardEndpoint.routes  ~> check {
-      Given("GET /leaderboard")
+    val uri = "/leaderboard"
+    Get(uri) ~> leaderboardEndpoint.routes  ~> check {
+      Given(s"GET $uri")
       status shouldBe OK
       When("status == OK")
       responseAs[LeaderboardStatusResponses].leaderboards.size shouldEqual 0
@@ -39,8 +53,9 @@ class EndpointSpec extends RoutingSpec with Behaviors with JsonSupport {
   }
 
   it should "return a correct response for minimal POST requests" in {
-    Post("/leaderboard") ~> leaderboardEndpoint.routes  ~> check {
-      Given("POST /leaderboard")
+    val uri = "/leaderboard"
+    Post(uri) ~> leaderboardEndpoint.routes  ~> check {
+      Given(s"POST $uri")
       status shouldBe Created
       When("status == OK")
       val response = responseAs[LeaderboardPostResponse]
@@ -52,8 +67,9 @@ class EndpointSpec extends RoutingSpec with Behaviors with JsonSupport {
 
     val name = "foo"
 
-    Post(s"/leaderboard?name=$name") ~> leaderboardEndpoint.routes  ~> check {
-      Given(s"POST /leaderboard?name=$name")
+    val nameUri = s"/leaderboard?name=$name"
+    Post(nameUri) ~> leaderboardEndpoint.routes  ~> check {
+      Given(s"POST $nameUri")
       status shouldBe Created
       When("status == OK")
       val response = responseAs[LeaderboardPostResponse]
@@ -65,10 +81,15 @@ class EndpointSpec extends RoutingSpec with Behaviors with JsonSupport {
   }
 
   it should "return a BadRequest response for requests to create a BogusLeaderboard" in {
-    Post("/leaderboard", createBogusLeaderboard) ~> leaderboardEndpoint.routes  ~> check {
-      Given(createBogusLeaderboard.toString)
+    val uri = "/leaderboard"
+    val createBogusLeaderboard = LeaderboardPostRequest(Some("foo"), "BogusLeaderboard")
+    Post(uri, createBogusLeaderboard) ~> leaderboardEndpoint.routes  ~> check {
+      Given(s"POST $uri ${createBogusLeaderboard.toString}")
       status shouldBe BadRequest
       When("status == BadRequest")
+      When(s"response=${response.entity}")
+      // TODO check that response.explanation URI exists
+      // TODO check system log that response.systemLogMessage exists
     }
   }
 
@@ -76,13 +97,9 @@ class EndpointSpec extends RoutingSpec with Behaviors with JsonSupport {
 
     it must behave like verifyPostRequests(implementation)
 
-    // it must behave like verifyScoreRequest(implementation)
-
   }
 
   Implementation.values.foreach{implementation =>
-
-    // it must behave like verifyPostRequests(implementation)
 
     it must behave like verifyScoreRequest(implementation)
 
