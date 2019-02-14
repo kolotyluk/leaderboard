@@ -2,18 +2,20 @@ package it
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import scala.concurrent.duration._
+import net.kolotyluk.scala.extras.Configuration
 
 /** =Basic Gatling Simulation=
   * Ping the leaderboard service
   * <p>
   * usage: `mvn gatling:test`
   */
-class GatlingPingSimulationIT extends Simulation {
+class GatlingPingSimulationIT extends Simulation with Configuration {
+
+  val testHost = config.getString("gatling.test.host")
 
   val httpProtocol = http
     //.baseUrl("http://localhost:8080") // Here is the root for all relative URLs
-    .baseUrl("http://192.168.0.19:8080") // Here is the root for all relative URLs
+    .baseUrl(s"http://$testHost") // Here is the root for all relative URLs
     .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8") // Here are the common headers
     .acceptEncodingHeader("gzip, deflate")
     .acceptLanguageHeader("en-US,en;q=0.5")

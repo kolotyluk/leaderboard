@@ -1,10 +1,13 @@
 package net.kolotyluk.leaderboard.scorekeeping
 
-import java.util.concurrent.{ConcurrentHashMap, ConcurrentSkipListMap}
+import java.util
+import java.util.UUID
 
 import akka.actor.testkit.typed.scaladsl.ActorTestKit
 import net.kolotyluk.leaderboard.Akka.LeaderboardActor
+import net.kolotyluk.scala.extras.Internalized
 import org.scalatest.BeforeAndAfterAll
+import unit.UnitSpec
 
 import scala.language.postfixOps
 
@@ -16,14 +19,12 @@ class LeaderboardActorSpec extends UnitSpec with LeaderboardBehaviors with Befor
 
   behavior of "Leaderboard Actor"
 
-//  val memberToScore = new util.HashMap[String,Option[Score]]
-//  val scoreToMember = new util.TreeMap[Score,String]
+  val leaderboardIdentifier = Internalized(UUID.randomUUID())
+  val memberToScore = new util.HashMap[MemberIdentifier,Option[Score]]
+  val scoreToMember = new util.TreeMap[Score,MemberIdentifier]
 
-  val memberToScore = new ConcurrentHashMap[String,Option[Score]]
-  val scoreToMember = new ConcurrentSkipListMap[Score,String]
-
-  val leaderboard = new ConsecutiveLeaderboard(memberToScore, scoreToMember)
-  val leaderboardActor = new LeaderboardActor(leaderboard)
+  val leaderboard = new ConsecutiveLeaderboard(leaderboardIdentifier, memberToScore, scoreToMember)
+  val leaderboardActor = new LeaderboardActor(leaderboardIdentifier, leaderboard)
 
   val actor = testKit.spawn(leaderboardActor.behavior, "leaderboard")
 

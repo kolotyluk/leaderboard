@@ -1,4 +1,4 @@
-package net.kolotyluk.leaderboard.Akka
+package net.kolotyluk.leaderboard.Akka.endpoint
 
 import akka.http.scaladsl.model.StatusCodes.MethodNotAllowed
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse}

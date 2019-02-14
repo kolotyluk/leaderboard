@@ -7,26 +7,16 @@ import net.kolotyluk.scala.extras.Logging
 import _root_.scala.util.Random
 import scala.collection.mutable.ArrayBuffer
 
+/** =ScoreKeeping=
+  *
+  */
 package object scorekeeping extends Configuration with Logging {
 
-  case class Info(uuid: UUID, name: Option[String], memberCount: Int)
+  type LeaderboardIdentifier = InternalIdentifier[UUID]
+  type MemberIdentifier = InternalIdentifier[UUID]
 
   // TODO think about this to make sure collisions are unlikely, and how to detect them
   def randomLong: Long = Random.nextLong
-
-  case class Placing(member: String, score: BigInt, place: Long)
-
-  /** =getRange Result=
-    *
-    * [[ConcurrentLeaderboard.getRange()]] is a paged API, where the caller can iterate through the leaderboard
-    * standings, one page at a time.
-    *
-    * @param placings   of members between start and stop of [[ConcurrentLeaderboard.getRange()]] call, where the size of
-    *                   placings may be less than stop - start.
-    * @param totalCount of members on the leaderboard
-    */
-  case class Range(placings: ArrayBuffer[Placing], totalCount: Long)
-
 
   /** =Leaderboard Score=
     * <p>
@@ -44,7 +34,7 @@ package object scorekeeping extends Configuration with Logging {
     * @param value
     * @param random
     */
-  case class Score(value: BigInt, random: Long = randomLong) extends Comparable[Score] {
+  final case class Score(val value: BigInt, val random: Long = randomLong) extends Comparable[Score] {
 
     override def compareTo(that: Score): Int = {
       if (this.value < that.value) -1
@@ -60,6 +50,25 @@ package object scorekeeping extends Configuration with Logging {
     }
   }
 
+  sealed trait UpdateMode
+  case object Increment extends UpdateMode
+  case object Replace extends UpdateMode
+
+  case class LeaderboardInfo(leaderboardIdentifier: LeaderboardIdentifier, name: Option[String], memberCount: Int)
+
+  case class Placing(memberIdentifier: MemberIdentifier, score: BigInt, place: Long)
+
+  /** =getRange Result=
+    *
+    * [[ConcurrentLeaderboard.getRange()]] is a paged API, where the caller can iterate through the leaderboard
+    * standings, one page at a time.
+    *
+    * @param placings   of members between start and stop of [[ConcurrentLeaderboard.getRange()]] call, where the size of
+    *                   placings may be less than stop - start.
+    * @param totalCount of members on the leaderboard
+    */
+  case class Range(placings: ArrayBuffer[Placing], totalCount: Long)
+
   /** =Standing Place in Count=
     * Place in count on current leaderboard.
     *
@@ -67,11 +76,7 @@ package object scorekeeping extends Configuration with Logging {
     * @param count of scores on leaderboard
     */
   case class Standing(place: Int, count: Int)
-
-  sealed trait UpdateMode
-  case object Increment extends UpdateMode
-  case object Replace extends UpdateMode
-
 }
+
 
 

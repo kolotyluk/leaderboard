@@ -1,15 +1,15 @@
 # leaderboard
-Leaderboard Microservice which implements standalone leaderboard service
-inspeire by
+Leaderboard Micro-Service which implements standalone leaderboard service
+inspired by
 [Redis Sorted Sets](https://redis.io/topics/data-types).
 
 Many leaderboard implementation make use of the general Sorted Set operations
 in [Redis](https://redis.io/) such as [ZADD](https://redis.io/commands/zadd),
 [ZRANK](https://redis.io/commands/zrank), [ZRANGE](https://redis.io/commands/zrange),
-etc. This project is an academic excercise which attempts to improve on some
+etc. This project is an academic exercise which attempts to improve on some
 of the restrictions of Redis, while maintaining the robustness of it.
-Academically, it is also an exercercise in designing and implementing a
-microservice, and experimenting with modern cloud principles.
+Academically, it is also an exercise in designing and implementing a
+micro-service, and experimenting with modern cloud principles.
 
 See also [Diary](DIARY.md), [Benchmarks](BENCHMARKS.md)
 
@@ -29,6 +29,36 @@ See also [Diary](DIARY.md), [Benchmarks](BENCHMARKS.md)
 
     mvn test
 
+### Load / Performance Tests
+
+Edit pom.xml and set `gatling.test.host`
+
+    <plugin>
+        <groupId>io.gatling</groupId>
+        <artifactId>gatling-maven-plugin</artifactId>
+        <version>3.0.1</version>
+        <configuration>
+            <jvmArgs>
+                <jvmArg>-Dgatling.test.host=localhost:8080</jvmArg>
+            </jvmArgs>
+            <simulationClass>it.GatlingPingSimulationIT</simulationClass>
+        </configuration>
+        <executions>
+            <execution>
+                <id>Ping</id>
+                <phase>integration-test</phase>
+                <goals>
+                    <goal>test</goal>
+                </goals>
+            </execution>
+        </executions>
+    </plugin>
+
+
+then run
+
+    mvn gatling:test
+
 ### Documenation
 
     mvn scala:doc
@@ -41,22 +71,21 @@ Look in `target/site/scaladocs/index.html`
 
 64-bit [floating point](https://en.wikipedia.org/wiki/Floating-point_arithmetic)
 numbers are used to represent scores in sorted sets. However, the mantissa
-is only 52 bits, so integers requiring clost to or more than 52 bits
-cannot be represented precicely, so it becomes impossible to compare
+is only 52 bits, so integers requiring close to or more than 52 bits
+cannot be represented precisely, so it becomes impossible to compare
 scores correctly.
 
-This implementqation uses Big Integers where is this no practical upper
+This implementation uses Big Integers where is this no practical upper
 bound on the number of bits needed to represent an Integer.
 
 Integers are used as they are simpler, and it's hard to make an argument
 where fractional scores are need.
 
-
 ## Tie Breaking
 
 In Redis sorted sets, tie breaking is based on the lexical ordering of
 the member keys. This is not exactly fair as members with some lexical
-orderings will alway wing over other members in a tie.
+orderings will always win over other members in a tie.
 
 Some leaderboard implementations (sometimes based in Redis) also track
 of the time the score was set/incremented. The tie favors either early
@@ -64,7 +93,7 @@ or late scores. When scaling out a leaderboard across multiple nodes,
 the clocks will not be perfectly in sync. Other techniques, such as
 GUID/UUID suffer similar fairness issues.
 
-This implimentation is based on random numbers, which are generally
+This implementation is based on random numbers, which are generally
 fair across multiple nodes.
 
 # Architecture
@@ -76,8 +105,8 @@ Akka is used as it's a fairly effective way to implement
 
 ## Akka Cluster
 
-Akka Cluster is used for the implementation, where the microservice may
-comprise one or more nodes. In a multinode deployment, each node
+Akka Cluster is used for the implementation, where the micro-service may
+comprise one or more nodes. In a multi-node deployment, each node
 represents the same data, with eventual consistency.
 
 ## Akka Typed

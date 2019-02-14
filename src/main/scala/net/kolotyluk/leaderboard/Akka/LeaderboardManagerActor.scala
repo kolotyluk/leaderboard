@@ -3,21 +3,26 @@ package net.kolotyluk.leaderboard.Akka
 import java.util
 import java.util.UUID
 
-import akka.actor.ActorInitializationException
+import akka.actor.Scheduler
+import akka.actor.typed.scaladsl.AskPattern._
 import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.{ActorRef, Behavior, SupervisorStrategy, Terminated}
+import akka.actor.typed.{ActorContext, ActorRef, Behavior, SupervisorStrategy, Terminated}
+import akka.util.Timeout
 import net.kolotyluk.leaderboard.Akka.LeaderboardManagerActor.{Create, Spawn, Update}
 import net.kolotyluk.leaderboard.Configuration
-import net.kolotyluk.leaderboard.scorekeeping.{ConsecutiveLeaderboard, Score, UpdateMode}
+import net.kolotyluk.leaderboard.scorekeeping.{ConsecutiveLeaderboard, Leaderboard, LeaderboardIdentifier, MemberIdentifier, Score, UpdateMode}
 import net.kolotyluk.scala.extras.Logging
 
 import scala.collection.mutable
+import scala.concurrent.duration._
+import scala.concurrent.{ExecutionContext, Future}
+import scala.language.postfixOps
 
 object LeaderboardManagerActor {
-  sealed trait Message
-  case class Create(name: String) extends Message
-  case class Update(leaderboard: UUID, member: String, updateMode: UpdateMode, score: Score) extends Message
-  case class Spawn[M](behavior: Behavior[M], name:String) extends Message
+  sealed trait Request
+  case class Create(leaderboardIdentifier: LeaderboardIdentifier, replyTo: ActorRef[Leaderboard]) extends Request
+  case class Update(leaderboard: UUID, member: String, updateMode: UpdateMode, score: Score) extends Request
+  case class Spawn[M](behavior: Behavior[M], name:String) extends Request
 }
 
 /** =Outermost Behavior of ActorSystem=
@@ -47,35 +52,48 @@ object LeaderboardManagerActor {
 class LeaderboardManagerActor() extends Configuration with Logging {
   logger.info("constructing...")
 
-  val uuidToLeaderboard = new mutable.HashMap[UUID,LeaderboardActor]
+  var actorContext:  ActorContext[LeaderboardManagerActor.Request] = null
+  var selfActorReference:  ActorRef[LeaderboardManagerActor.Request] = null
+
+  implicit val timeout: Timeout = 3 seconds
+  implicit var scheduler: Scheduler = null
+  implicit var executionContext: ExecutionContext = null
+
+  val leaderboardIdentifierToLeaderboard = new mutable.HashMap[LeaderboardIdentifier,LeaderboardActor]
 
   var restActorRef : ActorRef[RestActor.Message] = null
 
-  val behavior: Behavior[LeaderboardManagerActor.Message] = Behaviors.setup { actorContext ⇒
+  val behavior: Behavior[LeaderboardManagerActor.Request] = Behaviors.setup { actorContext ⇒
 
     logger.info("initializing...")
+
+    executionContext = actorContext.executionContext
+    scheduler = actorContext.system.scheduler
+    selfActorReference =  actorContext.self
 
     // TODO remove this for production, used for testing
     //val cancelable = actorContext.schedule(200 seconds, actorContext.self, Done("timed out"))
 
-    Behaviors.receive[LeaderboardManagerActor.Message] { (actorCell, message) ⇒
+    Behaviors.receive[LeaderboardManagerActor.Request] { (actorCell, message) ⇒
       logger.debug(s"received $message")
       message match {
-        case Create(name: String) ⇒
+        case Create(leaderboardIdentifier: LeaderboardIdentifier, replyTo: ActorRef[Leaderboard]) ⇒
           try {
-            val uuid = UUID.randomUUID()
-            val memberToScore = new util.HashMap[String,Option[Score]]
-            val scoreToMember = new util.TreeMap[Score,String]
-            val leaderboard = new ConsecutiveLeaderboard(memberToScore, scoreToMember)
-            val leaderboardActor = new LeaderboardActor(leaderboard)
-            val leaderboardActorRef = actorCell.spawn(leaderboardActor.behavior, s"leaderboard-$name")
+            //val leaderboardIdentifier = Internalized(UUID.randomUUID())
+            val memberToScore = new util.HashMap[MemberIdentifier,Option[Score]]
+            val scoreToMember = new util.TreeMap[Score,MemberIdentifier]
+            val leaderboard = new ConsecutiveLeaderboard(leaderboardIdentifier, memberToScore, scoreToMember)
+            val leaderboardActor = new LeaderboardActor(leaderboardIdentifier, leaderboard)
+            val leaderboardActorRef = actorCell.spawn(leaderboardActor.behavior, s"leaderboard-${leaderboardIdentifier.value}")
             assert(leaderboardActorRef != null)
             Behaviors.supervise(leaderboardActor.behavior)
               .onFailure[ConfigurationError](SupervisorStrategy.stop)
               .orElse(Behavior.same)
             actorCell.watch(leaderboardActorRef)
 
-            uuidToLeaderboard.put(uuid,leaderboardActor)
+            leaderboardIdentifierToLeaderboard.put(leaderboardIdentifier,leaderboardActor)
+
+            replyTo ! leaderboardActor
 
             Behaviors.same
           } catch {
@@ -98,33 +116,34 @@ class LeaderboardManagerActor() extends Configuration with Logging {
         logger.warn(s"received signal with event = $event with actorContext = $actorContext")
         event match {
           case terminated@Terminated(actorRef) ⇒
-            val failure = terminated.failure
-            logger.warn(s"actorRef = $actorRef, failure = $failure")
-            failure match {
-              case None ⇒
-                logger.error(s"FATAL stopping service because of unknown failure")
-                Behaviors.stopped
-              case Some(cause) ⇒
-                if (cause.isInstanceOf[ActorInitializationException]) {
-                  if (cause.getCause.isInstanceOf[ConfigurationError]) {
-                    // Constructing a ConfigurationError logs it's own diagnostics
-                    // Terminate things so that configuration problems can be resolved first
-                    logger.error(s"FATAL - stopping service because of ConfigurationError during Actor Initialization")
-                    Behaviors.stopped
-                  } else {
-                    // Any problem during Actor Initialization is probably transient and serious enough that it is
-                    // unwise to continue with the system. TODO: reconsider this
-                    logger.error(s"FATAL - stopping service because of ActorInitializationException", cause)
-                    Behaviors.stopped
-                  }
-                } else {
-                  logger.warn(s"unknown cause = $cause, continuing...")
-                  Behaviors.same
-                }
-              case _ ⇒
-                logger.warn(s"unknown failure = $failure, continuing...")
-                Behaviors.same
-            }
+            Behaviors.same
+//            val failure = terminated.failure
+//            logger.warn(s"actorRef = $actorRef, failure = $failure")
+//            failure match {
+//              case None ⇒
+//                logger.error(s"FATAL stopping service because of unknown failure")
+//                Behaviors.stopped
+//              case Some(cause) ⇒
+//                if (cause.isInstanceOf[ActorInitializationException]) {
+//                  if (cause.getCause.isInstanceOf[ConfigurationError]) {
+//                    // Constructing a ConfigurationError logs it's own diagnostics
+//                    // Terminate things so that configuration problems can be resolved first
+//                    logger.error(s"FATAL - stopping service because of ConfigurationError during Actor Initialization")
+//                    Behaviors.stopped
+//                  } else {
+//                    // Any problem during Actor Initialization is probably transient and serious enough that it is
+//                    // unwise to continue with the system. TODO: reconsider this
+//                    logger.error(s"FATAL - stopping service because of ActorInitializationException", cause)
+//                    Behaviors.stopped
+//                  }
+//                } else {
+//                  logger.warn(s"unknown cause = $cause, continuing...")
+//                  Behaviors.same
+//                }
+//              case _ ⇒
+//                logger.warn(s"unknown failure = $failure, continuing...")
+//                Behaviors.same
+//            }
           case _ ⇒
             logger.warn(s"unknown event = $event, continuing...")
             Behaviors.same
@@ -133,5 +152,9 @@ class LeaderboardManagerActor() extends Configuration with Logging {
         logger.warn(s"unknown signal = $signal, continuing...")
         Behaviors.same
     }
+  }
+
+  def create(leaderboardIdentifier: LeaderboardIdentifier): Future[Leaderboard] = {
+    selfActorReference ? (actorRef ⇒ Create(leaderboardIdentifier, actorRef))
   }
 }

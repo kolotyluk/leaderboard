@@ -1,10 +1,11 @@
-package net.kolotyluk.leaderboard.Akka
+package net.kolotyluk.leaderboard.Akka.endpoint
 
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives
 import io.swagger.annotations._
 import javax.ws.rs.Path
 import net.kolotyluk.leaderboard.Akka.RestActor.Fail
+import net.kolotyluk.leaderboard.Akka.restActor
 
 @Api(value = "/fail", produces = "text/plain(UTF-8)")
 @Path("/fail")

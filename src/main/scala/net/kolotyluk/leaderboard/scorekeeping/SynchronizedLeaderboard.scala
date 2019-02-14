@@ -9,19 +9,22 @@ import net.kolotyluk.scala.extras.{Identity, Logging}
 import scala.collection.mutable.ArrayBuffer
 
 class SynchronizedLeaderboard(
-    memberToScore: Map[String,Option[Score]],
-    scoreToMember: util.NavigableMap[Score,String]
+    override val leaderboardIdentifier: LeaderboardIdentifier,
+    memberToScore: Map[MemberIdentifier,Option[Score]],
+    scoreToMember: util.NavigableMap[Score,MemberIdentifier]
   ) extends LeaderboardSync with Logging {
 
-  val consecutiveLeaderboard = new ConsecutiveLeaderboard(memberToScore, scoreToMember)
+  val consecutiveLeaderboard = new ConsecutiveLeaderboard(leaderboardIdentifier, memberToScore, scoreToMember)
 
-  override def delete(member: String) = {
+  override def delete(memberIdentifier: MemberIdentifier) = {
     memberToScore.synchronized {
-      consecutiveLeaderboard.delete(member)
+      consecutiveLeaderboard.delete(memberIdentifier)
     }
   }
 
   override def getCount = consecutiveLeaderboard.getCount
+
+  override def getIdentifier = leaderboardIdentifier
 
   override def getInfo = consecutiveLeaderboard.getInfo
 
@@ -33,32 +36,26 @@ class SynchronizedLeaderboard(
     }
   }
 
-  override def getScore(member: String) = {
+  override def getScore(memberIdentifier: MemberIdentifier) = {
     memberToScore.synchronized {
-      consecutiveLeaderboard.getScore(member)
+      consecutiveLeaderboard.getScore(memberIdentifier)
     }
   }
 
-  override def getStanding(member: String) = {
+  override def getStanding(memberIdentifier: MemberIdentifier) = {
     memberToScore.synchronized {
-      consecutiveLeaderboard.getStanding(member)
+      consecutiveLeaderboard.getStanding(memberIdentifier)
     }
   }
 
-  override def getUuid = consecutiveLeaderboard.getUuid
-
-  override def getUrlIdentifier(identifier: String) = consecutiveLeaderboard.getUrlIdentifier(identifier)
-
-  override def getUrlIdentifier(uuid: UUID = UUID.randomUUID()) = Identity.getUrlIdentifier(uuid)
-
-  override def update(mode: UpdateMode, member: String, value: BigInt) = {
+  override def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, value: BigInt) = {
     val score = Score(value, randomLong)
-    update(mode, member, score)
+    update(mode, memberIdentifier, score)
   }
 
-  override def update(mode: UpdateMode, member: String, newScore: Score) = {
+  override def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, newScore: Score) = {
     memberToScore.synchronized {
-      consecutiveLeaderboard.update(mode, member, newScore)
+      consecutiveLeaderboard.update(mode, memberIdentifier, newScore)
     }
   }
 }

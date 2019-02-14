@@ -1,9 +1,11 @@
 package net.kolotyluk.leaderboard.scorekeeping
 
+import java.util.UUID
 import java.util.concurrent.ConcurrentLinkedQueue
 
 import net.kolotyluk.leaderboard.telemetry.Metrics
-import net.kolotyluk.scala.extras.Logging
+import net.kolotyluk.scala.extras.{Internalized, Logging}
+import unit.UnitSpec
 
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -27,6 +29,9 @@ import scala.util.Random
   * @param this test specification type
   */
 trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
+
+  val joeBlow = Internalized(UUID.fromString("02b9670c-afd4-4c39-b4d3-3c46ac4f1a9c"))
+  val janeBlow = Internalized(UUID.fromString("02b9670c-afd4-4c39-b4d3-3c46ac4f1a9d"))
 
   sealed trait API
   case class Async() extends API
@@ -69,11 +74,14 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
 
     it must "handle initial conditions correctly" in {
 
-      val joeBlow = "Joe Blow"
+      //val joeBlow = Internalized(UUID.fromString("02b9670c-afd4-4c39-b4d3-3c46ac4f1a9c"))
 
       Given("a new ScoreKeeper")
+      And(s"joeBlow = $joeBlow")
       finalResult[Int](leaderboard.getCount) should be (0)
-      finalResult[Option[Score]](leaderboard.getScore(joeBlow)) should be (None)
+      val score = finalResult[Option[Score]](leaderboard.getScore(joeBlow))
+      And(s"scpre=$score")
+      score should be (None)
       finalResult[Option[Standing]](leaderboard.getStanding(joeBlow)) should be (None)
       Then("there should be no scores or standings")
 
@@ -105,7 +113,7 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
       Then("the score should be 1")
       finalResult[Int](leaderboard.getCount) should be (1)
       And("there should be only 1 score")
-      finalResult[Option[Score]](leaderboard.getScore(joeBlow)) should be (Some(1))
+      finalResult[Option[Score]](leaderboard.getScore(joeBlow)).get.value should be (1)
       And("the score should be 1")
       finalResult[Option[Standing]](leaderboard.getStanding(joeBlow)) should be (Some(Standing(1,1)))
       And("the standing should be 1 of 1")
@@ -115,27 +123,27 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
       range.placings.size should be (1)
 
       val placing = range.placings.head
-      placing.member should be (joeBlow)
+      placing.memberIdentifier should be (joeBlow)
       placing.score should be (1)
       And("they should contain the member and their score")
 
       // This next test is highly paranoid because Scala has better string handling than Java,
       // with respect to string comparison, but better to be paranoid, than have incorrect code.
 
-      val joeBlow2 = new String(joeBlow)
-      Given("same member with a different string")
+      //val joeBlow2 = Internalized(UUID.randomUUID())
+      //Given("same member with a different string")
 
       // https://www.slideshare.net/knoldus/object-equality-inscala (5 of 33)
-      assert(joeBlow ne joeBlow2)
-      Then("the strings should have different object identifiers")
+      //assert(joeBlow ne joeBlow2)
+      //Then("the strings should have different object identifiers")
 
-      finalResult[Option[Standing]](leaderboard.getStanding("Joe " + "Blow")) should be (Some(Standing(1,1)))
-      And("the standing should still be 1 of 1")
+//      finalResult[Option[Standing]](leaderboard.getStanding("Joe " + "Blow")) should be (Some(Standing(1,1)))
+//      And("the standing should still be 1 of 1")
 
       finalResult[Score](leaderboard.update(Increment, joeBlow, Score(BigInt(1)))).value should be (2)
       When("the score is incremented")
 
-      finalResult[Option[BigInt]](leaderboard.getScore(joeBlow)) should be (Some(2))
+      finalResult[Option[Score]](leaderboard.getScore(joeBlow)).get.value should be (2)
       Then("it should be incremented correctly")
 
       finalResult[Option[Standing]](leaderboard.getStanding(joeBlow)) should be (Some(Standing(1,1)))
@@ -162,8 +170,8 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
 
     it must "handle 2 members correctly" in {
 
-      val joeBlow = "Joe Blow"
-      val janeBlow = "Jane Blow"
+      //val joeBlow = Internalized(UUID.randomUUID())
+      //val janeBlow = Internalized(UUID.randomUUID())
 
       Given(s"two members: $joeBlow and $janeBlow")
       When("2 members score")
@@ -176,13 +184,13 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
       range.totalCount should be (2)
       val placings = range.placings
       placings.size should be (2)
-      if (placings.head.member == joeBlow) {
+      if (placings.head.memberIdentifier == joeBlow) {
         When(s"one member is $joeBlow")
-        placings.tail.head.member should be (janeBlow)
+        placings.tail.head.memberIdentifier should be (janeBlow)
         Then(s"the other member is $janeBlow")
       } else {
         When(s"one member is $janeBlow")
-        placings.tail.head.member should be (joeBlow)
+        placings.tail.head.memberIdentifier should be (joeBlow)
         Then(s"the other member is $joeBlow")
       }
 
@@ -197,7 +205,7 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
         finalResult[Score](leaderboard.update(Replace, janeBlow, 1))
         range = finalResult[Range](leaderboard.getRange(0, 1))
         // println(s"range = $range")
-        if (range.placings.head.member === joeBlow) joeWins += 1 else janeWins += 1
+        if (range.placings.head.memberIdentifier === joeBlow) joeWins += 1 else janeWins += 1
       }
 
       Given(s"each member with $scores equal scores")
@@ -216,8 +224,8 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
 
       Given(s"a JVM with ${ Runtime.getRuntime().availableProcessors()} available processors")
 
-      val joeBlow = "Joe Blow"
-      val janeBlow = "Jane Blow"
+      //val joeBlow = Internalized(UUID.randomUUID())
+      //val janeBlow = Internalized(UUID.randomUUID())
 
       // reset results of prior testing
       finalResult[Score](leaderboard.update(Replace, joeBlow,  0))
@@ -274,12 +282,12 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
         result.size should be (scores * 2)
       }
 
-      range =finalResult[Range](leaderboard.getRange(0, 1))
+      range = finalResult[Range](leaderboard.getRange(0, 1))
       logger.debug(s"handleHandleConcurrentUpdates: range = $range")
 
       range.totalCount should be (2)
       range.placings.foreach {  placing =>
-        Given(s"member = ${placing.member} score = ${placing.score} place = ${placing.place}")
+        Given(s"member = ${placing.memberIdentifier} score = ${placing.score} place = ${placing.place}")
         placing.score should be (scores)
       }
 
@@ -299,7 +307,7 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
       Metrics.resetTotalSpinCount;    info(s"TotalSpinCount  = ${Metrics.getTotalSpinCount}")
       Metrics.resetTotalSpinTime;     info(s"TotalSpinTime  = ${Metrics.getTotalSpinTime}")
 
-      val joeBlow = "Joe Blow"
+      //val joeBlow = Internalized(UUID.randomUUID())
       // reset results of prior testing
       leaderboard.update(Replace, joeBlow, 0)
 
@@ -334,7 +342,7 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
 
       val expectedScore = availableProcessors * iterations
       Then(s"$joeBlow's score should be $expectedScore")
-      finalResult[Option[Score]](leaderboard.getScore(joeBlow)).get should be (expectedScore)
+      finalResult[Option[Score]](leaderboard.getScore(joeBlow)).get.value should be (expectedScore)
     }
   }
 
@@ -364,9 +372,10 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
       for (processor <- 1 to availableProcessors) {
         futures.append(Future{
           for (update <- 1 to iterations) {
-            val member = s"member ${Math.abs(random.nextInt(iterations * availableProcessors))}"
+            // val member = s"member ${Math.abs(random.nextInt(iterations * availableProcessors))}"
+            val memberIdentifier = Internalized(UUID.randomUUID())
             // info(s"updating $member")
-            leaderboard.update(Increment, member, 1)
+            leaderboard.update(Increment, memberIdentifier, 1)
           }
         })
       }
@@ -393,7 +402,7 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
 
     it must "handle initial conditions correctly" in {
 
-      val joeBlow = "Joe Blow"
+      //val joeBlow = Internalized(UUID.randomUUID())
 
       Given("a new leaderboard")
 
@@ -428,22 +437,22 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
       range.totalCount should be (1)
       range.placings.size should be (1)
       val placing = range.placings.head
-      placing.member should be (joeBlow)
+      placing.memberIdentifier should be (joeBlow)
       placing.score should be (1)
       Then("they should contain the member and their score")
 
       // This next test is highly paranoid because Scala has better string handling than Java,
       // with respect to string comparison, but better to be paranoid, than have incorrect code.
 
-      val joeBlow2 = new String(joeBlow)
+      val joeBlow2 = Internalized(UUID.randomUUID())
       Given("same member with a different string")
 
-      // https://www.slideshare.net/knoldus/object-equality-inscala (5 of 33)
-      assert(joeBlow ne joeBlow2)
-      Then("the strings should have different object identifiers")
-
-      leaderboard.getStanding("Joe " + "Blow") should be (Some(Standing(1,1)))
-      Then("the standing should still be 1 of 1")
+//      // https://www.slideshare.net/knoldus/object-equality-inscala (5 of 33)
+//      assert(joeBlow ne joeBlow2)
+//      Then("the strings should have different object identifiers")
+//
+//      leaderboard.getStanding("Joe " + "Blow") should be (Some(Standing(1,1)))
+//      Then("the standing should still be 1 of 1")
 
       leaderboard.update(Increment, joeBlow, Score(BigInt(1)))
       When("the score is incremented")
@@ -476,8 +485,8 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
 
       Given("a new ScoreKeeper")
 
-      val joeBlow = "Joe Blow"
-      val janeBlow = "Jane Blow"
+      //val joeBlow = Internalized(UUID.randomUUID())
+      //val janeBlow = Internalized(UUID.randomUUID())
 
       leaderboard.update(Replace, joeBlow, Score(BigInt(1)))
       leaderboard.update(Replace, janeBlow, Score(BigInt(1)))
@@ -489,13 +498,13 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
       range.totalCount should be (2)
       val placings = range.placings
       placings.size should be (2)
-      if (placings.head.member == joeBlow) {
+      if (placings.head.memberIdentifier == joeBlow) {
         When(s"one member is $joeBlow")
-        placings.tail.head.member should be (janeBlow)
+        placings.tail.head.memberIdentifier should be (janeBlow)
         Then(s"the other member is $janeBlow")
       } else {
         When(s"one member is $janeBlow")
-        placings.tail.head.member should be (joeBlow)
+        placings.tail.head.memberIdentifier should be (joeBlow)
         Then(s"the other member is $joeBlow")
       }
 
@@ -509,7 +518,7 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
         leaderboard.update(Increment, janeBlow, 1)
         range = leaderboard.getRange(0, 1)
         // println(s"range = $range")
-        if (range.placings.head.member === joeBlow) joeWins += 1 else janeWins += 1
+        if (range.placings.head.memberIdentifier === joeBlow) joeWins += 1 else janeWins += 1
       }
 
       Given(s"each member with $scores equal scores")
@@ -528,8 +537,8 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
 
       Given(s"a JVM with ${ Runtime.getRuntime().availableProcessors()} available processors")
 
-      val joeBlow = "Joe Blow"
-      val janeBlow = "Jane Blow"
+      //val joeBlow = Internalized(UUID.randomUUID())
+      //val janeBlow = Internalized(UUID.randomUUID())
 
       // reset results of prior testing
       leaderboard.update(Replace, joeBlow, 0)
@@ -576,7 +585,7 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
 
       range.totalCount should be (2)
       range.placings.foreach {  placing =>
-        Given(s"member = ${placing.member} score = ${placing.score} place = ${placing.place}")
+        Given(s"member = ${placing.memberIdentifier} score = ${placing.score} place = ${placing.place}")
         placing.score should be (scores)
       }
 
@@ -596,7 +605,8 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
       Metrics.resetTotalSpinCount;    info(s"TotalSpinCount  = ${Metrics.getTotalSpinCount}")
       Metrics.resetTotalSpinTime;     info(s"TotalSpinTime  = ${Metrics.getTotalSpinTime}")
 
-      val joeBlow = "Joe Blow"
+      //val joeBlow = Internalized(UUID.randomUUID())
+
       // reset results of prior testing
       leaderboard.update(Replace, joeBlow, 0)
 
@@ -661,9 +671,10 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
       for (processor <- 1 to availableProcessors) {
         futures.append(Future{
           for (update <- 1 to iterations) {
-            val member = s"member ${Math.abs(random.nextInt(iterations * availableProcessors))}"
+            //val member = s"member ${Math.abs(random.nextInt(iterations * availableProcessors))}"
+            val memberIdentifier = Internalized(UUID.randomUUID())
             // info(s"updating $member")
-            leaderboard.update(Increment, member, 1)
+            leaderboard.update(Increment, memberIdentifier, 1)
           }
         })
       }
@@ -687,44 +698,4 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
     }
 
   }
-
-    //  def nonEmptyStack(newStack: => Stack[Int], lastItemAdded: Int) {
-//
-//    it should "be non-empty" in {
-//      assert(!newStack.empty)
-//    }
-//
-//    it should "return the top item on peek" in {
-//      assert(newStack.peek === lastItemAdded)
-//    }
-//
-//    it should "not remove the top item on peek" in {
-//      val stack = newStack
-//      val size = stack.size
-//      assert(stack.peek === lastItemAdded)
-//      assert(stack.size === size)
-//    }
-//
-//    it should "remove the top item on pop" in {
-//      val stack = newStack
-//      val size = stack.size
-//      assert(stack.pop === lastItemAdded)
-//      assert(stack.size === size - 1)
-//    }
-//  }
-//
-//  def nonFullStack(newStack: => Stack[Int]) {
-//
-//    it should "not be full" in {
-//      assert(!newStack.full)
-//    }
-//
-//    it should "add to the top on push" in {
-//      val stack = newStack
-//      val size = stack.size
-//      stack.push(7)
-//      assert(stack.size === size + 1)
-//      assert(stack.peek === 7)
-//    }
-//  }
 }

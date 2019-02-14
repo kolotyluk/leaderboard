@@ -6,20 +6,23 @@ import java.util.concurrent.{ConcurrentMap, ConcurrentNavigableMap}
 import net.kolotyluk.scala.extras.{Identity, Logging}
 
 class SynchronizedConcurrentLeaderboard(
-    memberToScore: ConcurrentMap[String,Option[Score]],
-    scoreToMember: ConcurrentNavigableMap[Score,String]
+    override val leaderboardIdentifier: LeaderboardIdentifier,
+    memberToScore: ConcurrentMap[MemberIdentifier,Option[Score]],
+    scoreToMember: ConcurrentNavigableMap[Score,MemberIdentifier]
   ) extends LeaderboardSync with Logging {
 
-  val consecutiveLeaderboard = new ConsecutiveLeaderboard(memberToScore, scoreToMember)
+  val consecutiveLeaderboard = new ConsecutiveLeaderboard(leaderboardIdentifier, memberToScore, scoreToMember)
 
-  override def delete(member: String) = {
+  override def delete(memberIdentifier: MemberIdentifier) = {
 
-    member.intern().synchronized {
-      consecutiveLeaderboard.delete(member)
+    memberIdentifier.synchronized {
+      consecutiveLeaderboard.delete(memberIdentifier)
     }
   }
 
   override def getCount = consecutiveLeaderboard.getCount
+
+  override def getIdentifier = leaderboardIdentifier
 
   override def getInfo = consecutiveLeaderboard.getInfo
 
@@ -31,32 +34,26 @@ class SynchronizedConcurrentLeaderboard(
     //}
   }
 
-  override def getScore(member: String) = {
-    member.intern().synchronized {
-      consecutiveLeaderboard.getScore(member)
+  override def getScore(memberIdentifier: MemberIdentifier) = {
+    memberIdentifier.synchronized {
+      consecutiveLeaderboard.getScore(memberIdentifier)
     }
   }
 
-  override def getStanding(member: String) = {
-    member.intern().synchronized {
-      consecutiveLeaderboard.getStanding(member)
+  override def getStanding(memberIdentifier: MemberIdentifier) = {
+    memberIdentifier.synchronized {
+      consecutiveLeaderboard.getStanding(memberIdentifier)
     }
   }
 
-  override def getUuid = consecutiveLeaderboard.getUuid
-
-  override def getUrlIdentifier(identifier: String) = consecutiveLeaderboard.getUrlIdentifier(identifier)
-
-  override def getUrlIdentifier(uuid: UUID = UUID.randomUUID()) = Identity.getUrlIdentifier(uuid)
-
-  override def update(mode: UpdateMode, member: String, value: BigInt) = {
+  override def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, value: BigInt) = {
     val score = Score(value, randomLong)
-    update(mode, member, score)
+    update(mode, memberIdentifier, score)
   }
 
-  override def update(mode: UpdateMode, member: String, newScore: Score) = {
-    member.intern().synchronized {
-      consecutiveLeaderboard.update(mode, member, newScore)
+  override def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, newScore: Score) = {
+    memberIdentifier.synchronized {
+      consecutiveLeaderboard.update(mode, memberIdentifier, newScore)
     }
   }
 }

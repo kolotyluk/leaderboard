@@ -1,7 +1,6 @@
 package net.kolotyluk.leaderboard
 
-import akka.http.scaladsl.server.{Route, RouteConcatenation}
-import net.kolotyluk.leaderboard.Akka.swagger.SwaggerDocService
+import akka.http.scaladsl.server.RouteConcatenation
 
 /** =Akka Actors=
   * ==Overview==
@@ -21,19 +20,8 @@ import net.kolotyluk.leaderboard.Akka.swagger.SwaggerDocService
   *
   */
 package object Akka extends RouteConcatenation {
-
-  val failEndpoint = new FailEndpoint
-  val pingEndpoint = new PingEndpoint
-  val leaderboardEndpoint = new LeaderboardEndpoint
-
-  val routes: Route =
-    failEndpoint.route ~
-    pingEndpoint.route ~
-    leaderboardEndpoint.routes ~
-    SwaggerDocService.routes
-
   val leaderboardManagerActor = new LeaderboardManagerActor()
-
-  val restActor = new RestActor(routes)
+  val restActor = new RestActor(endpoint.routes)
   val guardianActor = new GuardianActor(leaderboardManagerActor, restActor) // top level of our actor hierarchy
 }
+

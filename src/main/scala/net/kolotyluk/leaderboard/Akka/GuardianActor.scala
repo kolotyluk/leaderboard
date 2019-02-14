@@ -1,11 +1,10 @@
 package net.kolotyluk.leaderboard.Akka
 
-import akka.actor.ActorInitializationException
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior, SupervisorStrategy, Terminated}
 import akka.http.scaladsl.server.RouteConcatenation
-import net.kolotyluk.leaderboard.Configuration
 import net.kolotyluk.leaderboard.Akka.GuardianActor.{Bind, Done, Spawn}
+import net.kolotyluk.leaderboard.Configuration
 import net.kolotyluk.scala.extras.Logging
 
 object GuardianActor {
@@ -42,12 +41,19 @@ object GuardianActor {
 class GuardianActor(leaderboardManagerActor: LeaderboardManagerActor, restActor: RestActor) extends RouteConcatenation with Configuration with Logging {
   logger.info("constructing...")
 
-  var leaderboardManagerActorRef : ActorRef[LeaderboardManagerActor.Message] = null
+  var leaderboardManagerActorRef : ActorRef[LeaderboardManagerActor.Request] = null
   var restActorRef : ActorRef[RestActor.Message] = null
 
   val behavior: Behavior[GuardianActor.Message] = Behaviors.setup { actorContext ⇒
 
     logger.info("initializing...")
+
+    leaderboardManagerActorRef = actorContext.spawn(leaderboardManagerActor.behavior, "leaderboard-manager")
+    assert (leaderboardManagerActorRef != null)
+    Behaviors.supervise(leaderboardManagerActor.behavior)
+      .onFailure[ConfigurationError](SupervisorStrategy.stop)
+      .orElse(Behavior.same)
+    actorContext.watch(leaderboardManagerActorRef)
 
     // TODO remove this for production, used for testing
     //val cancelable = actorContext.schedule(200 seconds, actorContext.self, Done("timed out"))
@@ -63,13 +69,6 @@ class GuardianActor(leaderboardManagerActor: LeaderboardManagerActor, restActor:
               .onFailure[ConfigurationError](SupervisorStrategy.stop)
               .orElse(Behavior.same)
             actorCell.watch(restActorRef)
-
-            leaderboardManagerActorRef = actorCell.spawn(leaderboardManagerActor.behavior, "leaderboard-manager")
-            assert (leaderboardManagerActorRef != null)
-            Behaviors.supervise(leaderboardManagerActor.behavior)
-              .onFailure[ConfigurationError](SupervisorStrategy.stop)
-              .orElse(Behavior.same)
-            actorCell.watch(leaderboardManagerActorRef)
 
             Behaviors.same
           } catch {
@@ -93,33 +92,34 @@ class GuardianActor(leaderboardManagerActor: LeaderboardManagerActor, restActor:
         logger.warn(s"received signal with event = $event with actorContext = $actorContext")
         event match {
           case terminated@Terminated(actorRef) ⇒
-            val failure = terminated.failure
-            logger.warn(s"actorRef = $actorRef, failure = $failure")
-            failure match {
-              case None ⇒
-                logger.error(s"FATAL stopping service because of unknown failure")
-                Behaviors.stopped
-              case Some(cause) ⇒
-                if (cause.isInstanceOf[ActorInitializationException]) {
-                  if (cause.getCause.isInstanceOf[ConfigurationError]) {
-                    // Constructing a ConfigurationError logs it's own diagnostics
-                    // Terminate things so that configuration problems can be resolved first
-                    logger.error(s"FATAL - stopping service because of ConfigurationError during Actor Initialization")
-                    Behaviors.stopped
-                  } else {
-                    // Any problem during Actor Initialization is probably transient and serious enough that it is
-                    // unwise to continue with the system. TODO: reconsider this
-                    logger.error(s"FATAL - stopping service because of ActorInitializationException", cause)
-                    Behaviors.stopped
-                  }
-                } else {
-                  logger.warn(s"unknown cause = $cause, continuing...")
-                  Behaviors.same
-                }
-              case _ ⇒
-                logger.warn(s"unknown failure = $failure, continuing...")
-                Behaviors.same
-            }
+            Behaviors.same
+//            val failure = terminated.failure
+//            logger.warn(s"actorRef = $actorRef, failure = $failure")
+//            failure match {
+//              case None ⇒
+//                logger.error(s"FATAL stopping service because of unknown failure")
+//                Behaviors.stopped
+//              case Some(cause) ⇒
+//                if (cause.isInstanceOf[ActorInitializationException]) {
+//                  if (cause.getCause.isInstanceOf[ConfigurationError]) {
+//                    // Constructing a ConfigurationError logs it's own diagnostics
+//                    // Terminate things so that configuration problems can be resolved first
+//                    logger.error(s"FATAL - stopping service because of ConfigurationError during Actor Initialization")
+//                    Behaviors.stopped
+//                  } else {
+//                    // Any problem during Actor Initialization is probably transient and serious enough that it is
+//                    // unwise to continue with the system. TODO: reconsider this
+//                    logger.error(s"FATAL - stopping service because of ActorInitializationException", cause)
+//                    Behaviors.stopped
+//                  }
+//                } else {
+//                  logger.warn(s"unknown cause = $cause, continuing...")
+//                  Behaviors.same
+//                }
+//              case _ ⇒
+//                logger.warn(s"unknown failure = $failure, continuing...")
+//                Behaviors.same
+//            }
           case _ ⇒
             logger.warn(s"unknown event = $event, continuing...")
             Behaviors.same

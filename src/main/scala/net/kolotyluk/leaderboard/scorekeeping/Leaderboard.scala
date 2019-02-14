@@ -1,21 +1,43 @@
 package net.kolotyluk.leaderboard.scorekeeping
 
-import java.util.UUID
-
 import scala.language.higherKinds
 
+
+/** =Leaderboard Interface=
+  *
+  * Fundamental API for all Leaderboard access.
+  *
+  *
+  */
 trait Leaderboard {
+
+  /** =Abstract Response Type=
+    * This API supports both asynchronous and synchronous responses.
+    * ==Examples==
+    * {{{
+    * val count = leaderboard.getCount
+    * if (count.isInstanceOf[Int]) {
+    *   Future.successful(LeaderboardStatusResponse(leaderboardUrlId, count.asInstanceOf[Int]))
+    * } else {
+    *   count.asInstanceOf[Future[Int]].map{ futureCount =>
+    *     LeaderboardStatusResponse(leaderboardUrlId, futureCount)
+    *   }
+    * }
+    * }}}
+    *
+    * @tparam A either Future[A] or A
+    */
   type Response[A]
 
-  var uuid: UUID = null
+  val leaderboardIdentifier: LeaderboardIdentifier = null
   var name: String = null
 
-  /** =Delete Member
+  /** =Delete Member=
     * Delete member from leaderboard
-    * @param member
+    * @param memberIdentifier
     * @return true, if member was on leaderboard
     */
-  def delete(member: String): Response[Boolean]
+  def delete(memberIdentifier: MemberIdentifier): Response[Boolean]
 
   /** =Leaderboard Member Count=
     * Get the total count of all members on the leaderboard
@@ -23,7 +45,9 @@ trait Leaderboard {
     */
   def getCount: Response[Int]
 
-  def getInfo: Response[Info]
+  def getIdentifier: Response[LeaderboardIdentifier]
+
+  def getInfo: Response[LeaderboardInfo]
 
   def getName: Response[Option[String]]
 
@@ -36,16 +60,18 @@ trait Leaderboard {
     * @param stop
     * @return
     * @throws IndexOutOfBoundsException if more than Int.MaxValue scores in the result
+    *
+    * @see [[https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IndexOutOfBoundsException.html java.lang.IndexOutOfBoundsException]]
     */
   def getRange(start: Long, stop: Long): Response[Range]
 
   /** =Member's Score=
     * Get the member's score from the leaderboard
     *
-    * @param member
+    * @param memberIdentifier
     * @return score
     */
-  def getScore(member: String): Response[Option[BigInt]]
+  def getScore(memberIdentifier: MemberIdentifier): Response[Option[Score]]
 
   /** =Compute Standing=
     * <p>
@@ -54,21 +80,12 @@ trait Leaderboard {
     * ==Performance==
     * O(N) where N = count of members on leaderboard
     *
-    * @param member
+    * @param memberIdentifier
     * @return None if member not present, Some[Standing] otherwise
     */
-  def getStanding(member: String): Response[Option[Standing]]
+  def getStanding(memberIdentifier: MemberIdentifier): Response[Option[Standing]]
 
-  def getUrlIdentifier(identifier: String): Response[UUID]
-
-  def getUrlIdentifier(uuid: UUID = UUID.randomUUID()): Response[String]
-
-  def getUuid: Response[UUID]
-
-  /** =Update Member Score=
-    * Update member's score on leaderboard
-    */
-  def update(mode: UpdateMode, member: String, value: BigInt): Response[Score]
+  def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, value: BigInt): Response[Score]
 
   /** =Update Member Score=
     * Update member's score on leaderboard
@@ -80,9 +97,9 @@ trait Leaderboard {
     * ==Performance==
     * O(log N) where N = count of members on the leaderboard
     *
-    * @param member   member ID
+    * @param memberIdentfier   member ID
     * @param newScore existing score created by another ScoreKeeper
     */
-  def update(mode: UpdateMode, member: String, newScore: Score): Response[Score]
+  def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, newScore: Score): Response[Score]
 
 }

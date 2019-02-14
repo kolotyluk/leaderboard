@@ -101,13 +101,13 @@ import scala.collection.JavaConverters._
       }
     }
 
-    /**
+    /** =Get Default Int=
       *
       * @param path
       * @param default
       * @param interval
       * @return
-      * @throws IllegalArgumentException
+      * @throws java.lang.IllegalArgumentException
       */
     def getDefaultInt(path: String, default: Option[Int], range: Range ): Int = {
       default match {

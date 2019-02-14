@@ -1,32 +1,32 @@
 package net.kolotyluk.leaderboard.Akka
 
-import java.util.UUID
-
+import akka.actor.Scheduler
 import akka.actor.typed.scaladsl.AskPattern._
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorContext, ActorRef, Behavior, Terminated}
-import akka.actor.{ActorInitializationException, Scheduler}
 import akka.util.Timeout
 import net.kolotyluk.leaderboard.Akka.LeaderboardActor._
-import net.kolotyluk.leaderboard.scorekeeping.{LeaderboardAsync, LeaderboardSync, Score, Standing, UpdateMode}
+import net.kolotyluk.leaderboard.scorekeeping.{LeaderboardAsync, LeaderboardIdentifier, LeaderboardSync, MemberIdentifier, Score, Standing, UpdateMode}
 import net.kolotyluk.leaderboard.{Configuration, scorekeeping}
-import net.kolotyluk.scala.extras.{Identity, Logging}
+import net.kolotyluk.scala.extras.Logging
 
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
+import scala.util.Random
 
 object LeaderboardActor {
   sealed trait Request
-  case class Delete(member: String, replyTo: ActorRef[Boolean]) extends Request
+  case class Delete(memberIdentifier: MemberIdentifier, replyTo: ActorRef[Boolean]) extends Request
   case class GetCount(replyTo: ActorRef[Int]) extends Request
-  case class GetInfo(replyTo: ActorRef[scorekeeping.Info]) extends Request
+  case class GetIdentifier(replyTo: ActorRef[LeaderboardIdentifier]) extends Request
+  case class GetInfo(replyTo: ActorRef[scorekeeping.LeaderboardInfo]) extends Request
   case class GetName(replyTo: ActorRef[Option[String]]) extends Request
   case class GetRange(start: Long, stop: Long, replyTo: ActorRef[scorekeeping.Range]) extends Request
-  case class GetScore(member: String, replyTo: ActorRef[Option[BigInt]]) extends Request
-  case class GetStanding(member: String, replyTo: ActorRef[Option[Standing]]) extends Request
+  case class GetScore(memberIdentifier: MemberIdentifier, replyTo: ActorRef[Option[Score]]) extends Request
+  case class GetStanding(memberIdentifier: MemberIdentifier, replyTo: ActorRef[Option[Standing]]) extends Request
   // case class Update(member: String, updateMode: UpdateMode, score: Score) extends Request
-  case class Update(member: String, updateMode: UpdateMode, score: Score, replyTo: ActorRef[Score]) extends Request
+  case class Update(memberIdentifier: MemberIdentifier, updateMode: UpdateMode, score: Score, replyTo: ActorRef[Score]) extends Request
   case class Spawn[M](behavior: Behavior[M], name:String) extends Request
 }
 
@@ -54,7 +54,7 @@ object LeaderboardActor {
   * @see [[https://doc.akka.io/docs/akka/2.5.18/typed/actors.html#introduction Akka Typed Introduction]]
   * @see [[https://doc.akka.io/docs/akka/2.5/typed/fault-tolerance.html#supervision Akka Typed Supervision]]
   */
-class LeaderboardActor(leaderboard: LeaderboardSync) extends LeaderboardAsync with Configuration with Logging {
+class LeaderboardActor(override val leaderboardIdentifier: LeaderboardIdentifier, leaderboard: LeaderboardSync) extends LeaderboardAsync with Configuration with Logging {
 //  uuid = initialUUID
 //  name = initialName
 
@@ -66,7 +66,6 @@ class LeaderboardActor(leaderboard: LeaderboardSync) extends LeaderboardAsync wi
   implicit val timeout: Timeout = 3 seconds
   implicit var scheduler: Scheduler = null
   implicit var executionContext: ExecutionContext = null
-
 
 //  val memberToScore = new util.HashMap[String,Option[Score]]
 //  val scoreToMember = new ConcurrentSkipListMap[Score,String]
@@ -88,13 +87,16 @@ class LeaderboardActor(leaderboard: LeaderboardSync) extends LeaderboardAsync wi
     Behaviors.receive[LeaderboardActor.Request] { (actorCell, message) ⇒
       logger.debug(s"received $message")
       message match {
-        case Delete(member: String, replyTo: ActorRef[Boolean]) ⇒
-          replyTo ! leaderboard.delete(member)
+        case Delete(memberIdentifier: MemberIdentifier, replyTo: ActorRef[Boolean]) ⇒
+          replyTo ! leaderboard.delete(memberIdentifier)
           Behaviors.same
         case GetCount(replyTo: ActorRef[Int]) ⇒
           replyTo ! leaderboard.getCount
           Behaviors.same
-        case GetInfo(replyTo: ActorRef[scorekeeping.Info]) ⇒
+        case GetIdentifier(replyTo: ActorRef[LeaderboardIdentifier]) ⇒
+          replyTo ! leaderboardIdentifier
+          Behaviors.same
+        case GetInfo(replyTo: ActorRef[scorekeeping.LeaderboardInfo]) ⇒
           replyTo ! leaderboard.getInfo
           Behaviors.same
         case GetName(replyTo: ActorRef[Option[String]]) ⇒
@@ -103,14 +105,14 @@ class LeaderboardActor(leaderboard: LeaderboardSync) extends LeaderboardAsync wi
         case GetRange(start: Long, stop: Long, replyTo: ActorRef[scorekeeping.Range]) ⇒
           replyTo ! leaderboard.getRange(start, stop)
           Behaviors.same
-        case GetScore(member: String, replyTo: ActorRef[Option[BigInt]]) ⇒
-          replyTo ! leaderboard.getScore(member)
+        case GetScore(memberIdentifier: MemberIdentifier, replyTo: ActorRef[Option[Score]]) ⇒
+          replyTo ! leaderboard.getScore(memberIdentifier)
           Behaviors.same
-        case GetStanding(member: String, replyTo: ActorRef[Option[Standing]]) ⇒
-          replyTo ! leaderboard.getStanding(member)
+        case GetStanding(memberIdentifier: MemberIdentifier, replyTo: ActorRef[Option[Standing]]) ⇒
+          replyTo ! leaderboard.getStanding(memberIdentifier)
           Behaviors.same
-        case Update(member: String, updateMode: UpdateMode, score: Score, replyTo: ActorRef[Score]) ⇒
-          replyTo ! leaderboard.update(updateMode, member, score)
+        case Update(memberIdentifier: MemberIdentifier, updateMode: UpdateMode, score: Score, replyTo: ActorRef[Score]) ⇒
+          replyTo ! leaderboard.update(updateMode, memberIdentifier, score)
           Behaviors.same
         case Spawn(behavior, name) ⇒
           logger.info(s"spawning $name")
@@ -124,33 +126,34 @@ class LeaderboardActor(leaderboard: LeaderboardSync) extends LeaderboardAsync wi
         logger.warn(s"received signal with event = $event with actorContext = $actorContext")
         event match {
           case terminated@Terminated(actorRef) ⇒
-            val failure = terminated.failure
-            logger.warn(s"actorRef = $actorRef, failure = $failure")
-            failure match {
-              case None ⇒
-                logger.error(s"FATAL stopping service because of unknown failure")
-                Behaviors.stopped
-              case Some(cause) ⇒
-                if (cause.isInstanceOf[ActorInitializationException]) {
-                  if (cause.getCause.isInstanceOf[ConfigurationError]) {
-                    // Constructing a ConfigurationError logs it's own diagnostics
-                    // Terminate things so that configuration problems can be resolved first
-                    logger.error(s"FATAL - stopping service because of ConfigurationError during Actor Initialization")
-                    Behaviors.stopped
-                  } else {
-                    // Any problem during Actor Initialization is probably transient and serious enough that it is
-                    // unwise to continue with the system. TODO: reconsider this
-                    logger.error(s"FATAL - stopping service because of ActorInitializationException", cause)
-                    Behaviors.stopped
-                  }
-                } else {
-                  logger.warn(s"unknown cause = $cause, continuing...")
-                  Behaviors.same
-                }
-              case _ ⇒
-                logger.warn(s"unknown failure = $failure, continuing...")
-                Behaviors.same
-            }
+            Behaviors.same
+//            val failure = terminated.failure
+//            logger.warn(s"actorRef = $actorRef, failure = $failure")
+//            failure match {
+//              case None ⇒
+//                logger.error(s"FATAL stopping service because of unknown failure")
+//                Behaviors.stopped
+//              case Some(cause) ⇒
+//                if (cause.isInstanceOf[ActorInitializationException]) {
+//                  if (cause.getCause.isInstanceOf[ConfigurationError]) {
+//                    // Constructing a ConfigurationError logs it's own diagnostics
+//                    // Terminate things so that configuration problems can be resolved first
+//                    logger.error(s"FATAL - stopping service because of ConfigurationError during Actor Initialization")
+//                    Behaviors.stopped
+//                  } else {
+//                    // Any problem during Actor Initialization is probably transient and serious enough that it is
+//                    // unwise to continue with the system. TODO: reconsider this
+//                    logger.error(s"FATAL - stopping service because of ActorInitializationException", cause)
+//                    Behaviors.stopped
+//                  }
+//                } else {
+//                  logger.warn(s"unknown cause = $cause, continuing...")
+//                  Behaviors.same
+//                }
+//              case _ ⇒
+//                logger.warn(s"unknown failure = $failure, continuing...")
+//                Behaviors.same
+//            }
           case _ ⇒
             logger.warn(s"unknown event = $event, continuing...")
             Behaviors.same
@@ -161,11 +164,14 @@ class LeaderboardActor(leaderboard: LeaderboardSync) extends LeaderboardAsync wi
     }
   }
 
-  override def delete(member: String) =
-    selfActorReference ? (actorRef ⇒ Delete(member, actorRef))
+  override def delete(memberIdentifier: MemberIdentifier) =
+    selfActorReference ? (actorRef ⇒ Delete(memberIdentifier, actorRef))
 
   override def getCount=
-    selfActorReference ? (actorRef ⇒ GetCount(actorRef))
+      selfActorReference ? (actorRef ⇒ GetCount(actorRef))
+
+  override def getIdentifier =
+    selfActorReference ? (actorRef ⇒ GetIdentifier(actorRef))
 
   override def getInfo =
     selfActorReference ? (actorRef ⇒ GetInfo(actorRef))
@@ -176,18 +182,15 @@ class LeaderboardActor(leaderboard: LeaderboardSync) extends LeaderboardAsync wi
   override def getRange(start: Long, stop: Long): Future[scorekeeping.Range] =
     selfActorReference ? (actorRef ⇒ GetRange(start: Long, stop: Long, actorRef))
 
-  override def getScore(member: String) =
-    selfActorReference ? (actorRef ⇒ GetScore(member, actorRef))
+  override def getScore(memberIdentifier: MemberIdentifier) =
+    selfActorReference ? (actorRef ⇒ GetScore(memberIdentifier, actorRef))
 
-  override def getStanding(member: String) =
-    selfActorReference ? (actorRef ⇒ GetStanding(member, actorRef))
+  override def getStanding(memberIdentifier: MemberIdentifier) =
+    selfActorReference ? (actorRef ⇒ GetStanding(memberIdentifier, actorRef))
 
-  override def getUrlIdentifier(identifier: String) = Future{Identity.getUrlIdentifier(identifier)}
-  override def getUrlIdentifier(uuid: UUID) = Future{Identity.getUrlIdentifier(uuid)}
-  override def getUuid = Future{uuid}
+  override def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, value: BigInt) =
+    update(mode, memberIdentifier, Score(value, Random.nextLong))
 
-  override def update(mode: UpdateMode, member: String, value: BigInt) = update(mode, member, Score(value))
-
-  override def update(mode: UpdateMode, member: String, newScore: Score) =
-    selfActorReference ? (actorRef ⇒ Update(member, mode, newScore, actorRef))
+  override def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, newScore: Score) =
+    selfActorReference ? (actorRef ⇒ Update(memberIdentifier, mode, newScore, actorRef))
 }
