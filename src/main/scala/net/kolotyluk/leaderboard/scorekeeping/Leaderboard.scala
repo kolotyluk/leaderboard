@@ -71,7 +71,7 @@ trait Leaderboard {
     * @param memberIdentifier
     * @return score
     */
-  def getScore(memberIdentifier: MemberIdentifier): Response[Option[BigInt]]
+  def getScore(memberIdentifier: MemberIdentifier): Response[Option[Score]]
 
   /** =Compute Standing=
     * <p>

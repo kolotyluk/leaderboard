@@ -10,7 +10,7 @@ import net.kolotyluk.scala.extras.{Configuration, Internalized, Logging}
 import scala.annotation.tailrec
 import scala.collection.concurrent.TrieMap
 import scala.collection.mutable.ArrayBuffer
-import scala.util.{Failure, Success, Try}
+import scala.util.{Failure, Random, Success, Try}
 
 /** =Leaderboard Management=
   *
@@ -196,13 +196,13 @@ class ConcurrentLeaderboard(override val leaderboardIdentifier: LeaderboardIdent
     Range(placings, totalCount)
   }
 
-  override def getScore(memberIdentifier: MemberIdentifier): Option[BigInt] = {
+  override def getScore(memberIdentifier: MemberIdentifier): Option[Score] = {
     //if (memberIdentifier == null) logger.error(s"\n\n\n\n\nget(memberIdentifier: MemberIdentifier): memberIdentifier = $memberIdentifier\n\n\n\n\n")
     getScore(memberIdentifier, 0)
   }
 
   @tailrec
-  final def getScore(memberIdentifier: MemberIdentifier, spinCount: Long): Option[BigInt] = {
+  final def getScore(memberIdentifier: MemberIdentifier, spinCount: Long): Option[Score] = {
     try {
       Metrics.checkSpinCount(memberIdentifier, spinCount)
     } catch {
@@ -219,7 +219,7 @@ class ConcurrentLeaderboard(override val leaderboardIdentifier: LeaderboardIdent
           //Thread.sleep(1)
           getScore(memberIdentifier, spinCount + 1)
         case Some(score) => // CRITICAL SECTION
-          Some(score.value)
+          Some(score)
       }
     }
   }
@@ -277,7 +277,7 @@ class ConcurrentLeaderboard(override val leaderboardIdentifier: LeaderboardIdent
     * @param value
     */
   override def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, value: BigInt) = {
-    update(mode, memberIdentifier, Score(value))
+    update(mode, memberIdentifier, Score(value, Random.nextLong))
   }
 
   override def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, newScore: Score) = {

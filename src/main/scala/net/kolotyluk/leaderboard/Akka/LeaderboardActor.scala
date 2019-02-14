@@ -13,6 +13,7 @@ import net.kolotyluk.scala.extras.Logging
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
+import scala.util.Random
 
 object LeaderboardActor {
   sealed trait Request
@@ -22,7 +23,7 @@ object LeaderboardActor {
   case class GetInfo(replyTo: ActorRef[scorekeeping.LeaderboardInfo]) extends Request
   case class GetName(replyTo: ActorRef[Option[String]]) extends Request
   case class GetRange(start: Long, stop: Long, replyTo: ActorRef[scorekeeping.Range]) extends Request
-  case class GetScore(memberIdentifier: MemberIdentifier, replyTo: ActorRef[Option[BigInt]]) extends Request
+  case class GetScore(memberIdentifier: MemberIdentifier, replyTo: ActorRef[Option[Score]]) extends Request
   case class GetStanding(memberIdentifier: MemberIdentifier, replyTo: ActorRef[Option[Standing]]) extends Request
   // case class Update(member: String, updateMode: UpdateMode, score: Score) extends Request
   case class Update(memberIdentifier: MemberIdentifier, updateMode: UpdateMode, score: Score, replyTo: ActorRef[Score]) extends Request
@@ -104,7 +105,7 @@ class LeaderboardActor(override val leaderboardIdentifier: LeaderboardIdentifier
         case GetRange(start: Long, stop: Long, replyTo: ActorRef[scorekeeping.Range]) ⇒
           replyTo ! leaderboard.getRange(start, stop)
           Behaviors.same
-        case GetScore(memberIdentifier: MemberIdentifier, replyTo: ActorRef[Option[BigInt]]) ⇒
+        case GetScore(memberIdentifier: MemberIdentifier, replyTo: ActorRef[Option[Score]]) ⇒
           replyTo ! leaderboard.getScore(memberIdentifier)
           Behaviors.same
         case GetStanding(memberIdentifier: MemberIdentifier, replyTo: ActorRef[Option[Standing]]) ⇒
@@ -188,7 +189,7 @@ class LeaderboardActor(override val leaderboardIdentifier: LeaderboardIdentifier
     selfActorReference ? (actorRef ⇒ GetStanding(memberIdentifier, actorRef))
 
   override def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, value: BigInt) =
-    update(mode, memberIdentifier, Score(value))
+    update(mode, memberIdentifier, Score(value, Random.nextLong))
 
   override def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, newScore: Score) =
     selfActorReference ? (actorRef ⇒ Update(memberIdentifier, mode, newScore, actorRef))

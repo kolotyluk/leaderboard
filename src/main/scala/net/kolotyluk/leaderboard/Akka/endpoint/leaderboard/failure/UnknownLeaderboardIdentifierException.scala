@@ -71,11 +71,8 @@ class UnknownLeaderboardIdentifierException(uuid: UUID, urlId: String)
       systemLogMessage = s"unknown leaderboard: urlId=$urlId, uuid=$uuid")
   ) {
 
-  def this(uuid: UUID) {
-    this(uuid, uuidToBase64UrlId(uuid))
-  }
+  def this(uuid: UUID) = this(uuid, uuidToBase64UrlId(uuid))
 
-  def this(leaderboardIdentifier: LeaderboardIdentifier) {
-    this(leaderboardIdentifier.value)
-  }
+  def this(leaderboardIdentifier: LeaderboardIdentifier) = this(leaderboardIdentifier.value)
+
 }

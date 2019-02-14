@@ -92,22 +92,27 @@ trait Behaviors extends JsonSupport with Logging { this: RoutingSpec =>
 
   def verifyScoreRequest(implementation: => Implementation.Value ): Unit = {
 
+    var leaderboardUrlId = ""
+    var member1 = "zjR9rwMITES9h5A_2gkJNA"
+
     it should s"create a ${implementation.toString} leaderboard for score verification" in {
+      val url = "/leaderboard"
       val payload = LeaderboardPostRequest(None, implementation.toString)
 
-      val id = Post(s"/leaderboard", payload) ~> leaderboardEndpoint.routes ~> check[String] {
-        Given(s"POST /leaderboard $payload")
+      leaderboardUrlId = Post(url, payload) ~> leaderboardEndpoint.routes ~> check[String] {
+        Given(s"POST $url $payload")
         status shouldBe Created
         When("status == Created")
         val response = responseAs[LeaderboardPostResponse]
         Then(s"leaderboard id = ${response.id}")
         response.id
       }
+    }
 
-      // Sanity Check
-      val endpoint = s"/leaderboard/${id}"
-      Get(endpoint) ~> leaderboardEndpoint.routes ~> check {
-        Given(s"GET $endpoint")
+    it should s"verify a ${implementation.toString} leaderboard was created correctly" in {
+      val url = s"/leaderboard/$leaderboardUrlId"
+      Get(url) ~> leaderboardEndpoint.routes ~> check {
+        Given(s"GET $url")
         status shouldBe OK
         When("status == Ok")
         val response = responseAs[LeaderboardStatusResponse]
@@ -117,8 +122,29 @@ trait Behaviors extends JsonSupport with Logging { this: RoutingSpec =>
       }
     }
 
-
-
+    it should s"increment a score for a member not yet on the ${implementation.toString} leaderboard" in {
+      // Create a score bigger than Long.MaxValue verify scores really are BigInt
+      val score = BigInt(Long.MaxValue) * BigInt(Long.MaxValue)
+      val url = s"/leaderboard/$leaderboardUrlId/$member1?score=$score"
+      Patch(url) ~> leaderboardEndpoint.routes ~> check {
+        Given(s"PATCH $url")
+        status shouldBe OK
+        When("status == Ok")
+        val response = responseAs[MemberStatusResponse]
+        Then( s"response = $response")
+        response.leaderboardId should be (leaderboardUrlId)
+        And(s"response.leaderboardId should be $leaderboardUrlId")
+        response.memberId should be (member1)
+        And(s"response.memberId should be $member1")
+        response.score match {
+          case None =>
+            fail
+          case Some(scoreResponse) =>
+            BigInt(scoreResponse.score) should be (score)
+            And(s"response.score should be $score")
+        }
+      }
+    }
   }
 
 }

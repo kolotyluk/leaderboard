@@ -65,10 +65,8 @@ class ConsecutiveLeaderboard(
     memberToScore.get(member) match {
       case null =>
         None
-      case None =>
-        None
-      case Some(score) =>
-        Some(score.value)
+      case score: Option[Score] =>
+        score
     }
   }
 

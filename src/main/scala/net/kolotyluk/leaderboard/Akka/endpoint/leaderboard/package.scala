@@ -29,7 +29,11 @@ package leaderboard {
   import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
   import spray.json.{DefaultJsonProtocol, PrettyPrinter}
 
-  final case class LeaderboardGetResponse(name: String, state: String, members: Long)
+  sealed trait EndpointResponse
+
+  final case class ScoreResponse(score: String, random: Long)
+
+  final case class LeaderboardGetResponse(id: String, state: String, members: Long)
 
   final case class LeaderboardPostRequest(leaderboardName: Option[String], implementationName: String)
 
@@ -39,13 +43,18 @@ package leaderboard {
 
   final case class LeaderboardPostResponse(name: Option[String], id: String)
 
-  final case class LeaderboardStatusResponse(id: String, size: Int)
+  final case class LeaderboardStatusResponse(id: String, size: Int) extends EndpointResponse
 
-  final case class LeaderboardStatusResponses(leaderboards: Seq[LeaderboardStatusResponse])
+  final case class LeaderboardStatusResponses(leaderboards: Seq[LeaderboardStatusResponse]) extends EndpointResponse
 
-  final case class MemberStatusResponse(leaderboardId: Option[String], memberId: Option[String], score: String)
+  final case class MemberStatusResponse(leaderboardId: String, memberId: String, score: Option[ScoreResponse]) extends EndpointResponse
 
   trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
+
+    implicit val scoreResponseFormat = jsonFormat2(ScoreResponse)
+
+    implicit val leaderboardGetResponseFormat = jsonFormat3(LeaderboardGetResponse)
+
     implicit val leaderboardPostRequestFormat = jsonFormat2(LeaderboardPostRequest)
     implicit val leaderboardPostResponseFormat = jsonFormat2(LeaderboardPostResponse)
 
@@ -55,6 +64,7 @@ package leaderboard {
     implicit val memberStatusResponsesFormat = jsonFormat3(MemberStatusResponse)
 
     implicit val updateScoreRequestFormat = jsonFormat3(UpdateScoreRequest)
+
   }
 
   trait PrettyJasonSupport extends SprayJsonSupport with DefaultJsonProtocol {
