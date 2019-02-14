@@ -5,6 +5,7 @@ import java.util.UUID
 import net.kolotyluk.scala.extras.Logging
 
 import _root_.scala.util.Random
+import scala.collection.mutable.ArrayBuffer
 
 /** =ScoreKeeping=
   *
@@ -49,15 +50,6 @@ package object scorekeeping extends Configuration with Logging {
     }
   }
 
-}
-
-/** =ScoreKeeping=
-  *
-  */
-package scorekeeping {
-
-  import scala.collection.mutable.ArrayBuffer
-
   sealed trait UpdateMode
   case object Increment extends UpdateMode
   case object Replace extends UpdateMode
@@ -85,5 +77,6 @@ package scorekeeping {
     */
   case class Standing(place: Int, count: Int)
 }
+
 
 

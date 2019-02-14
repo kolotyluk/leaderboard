@@ -113,7 +113,7 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
       Then("the score should be 1")
       finalResult[Int](leaderboard.getCount) should be (1)
       And("there should be only 1 score")
-      finalResult[Option[Score]](leaderboard.getScore(joeBlow)) should be (Some(1))
+      finalResult[Option[Score]](leaderboard.getScore(joeBlow)).get.value should be (1)
       And("the score should be 1")
       finalResult[Option[Standing]](leaderboard.getStanding(joeBlow)) should be (Some(Standing(1,1)))
       And("the standing should be 1 of 1")
@@ -143,7 +143,7 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
       finalResult[Score](leaderboard.update(Increment, joeBlow, Score(BigInt(1)))).value should be (2)
       When("the score is incremented")
 
-      finalResult[Option[BigInt]](leaderboard.getScore(joeBlow)) should be (Some(2))
+      finalResult[Option[Score]](leaderboard.getScore(joeBlow)).get.value should be (2)
       Then("it should be incremented correctly")
 
       finalResult[Option[Standing]](leaderboard.getStanding(joeBlow)) should be (Some(Standing(1,1)))
@@ -342,7 +342,7 @@ trait LeaderboardBehaviors extends Logging { this: UnitSpec =>
 
       val expectedScore = availableProcessors * iterations
       Then(s"$joeBlow's score should be $expectedScore")
-      finalResult[Option[Score]](leaderboard.getScore(joeBlow)).get should be (expectedScore)
+      finalResult[Option[Score]](leaderboard.getScore(joeBlow)).get.value should be (expectedScore)
     }
   }
 

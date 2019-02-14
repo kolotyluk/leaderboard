@@ -124,8 +124,8 @@ trait Behaviors extends JsonSupport with Logging { this: RoutingSpec =>
 
     it should s"increment a score for a member not yet on the ${implementation.toString} leaderboard" in {
       // Create a score bigger than Long.MaxValue verify scores really are BigInt
-      val score = BigInt(Long.MaxValue) * BigInt(Long.MaxValue)
-      val url = s"/leaderboard/$leaderboardUrlId/$member1?score=$score"
+      val scoreValue = BigInt(Long.MaxValue) * BigInt(Long.MaxValue)
+      val url = s"/leaderboard/$leaderboardUrlId/$member1?score=$scoreValue"
       Patch(url) ~> leaderboardEndpoint.routes ~> check {
         Given(s"PATCH $url")
         status shouldBe OK
@@ -139,8 +139,8 @@ trait Behaviors extends JsonSupport with Logging { this: RoutingSpec =>
         response.score match {
           case None =>
             fail
-          case Some(scoreResponse) =>
-            BigInt(scoreResponse.score) should be (score)
+          case Some(score) =>
+            BigInt(score.value) should be (scoreValue)
             And(s"response.score should be $score")
         }
       }

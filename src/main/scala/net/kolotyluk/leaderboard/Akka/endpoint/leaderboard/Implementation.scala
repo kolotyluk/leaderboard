@@ -4,14 +4,12 @@ import java.util.{HashMap, TreeMap, UUID}
 
 import net.kolotyluk.leaderboard.Akka.endpoint
 import net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.DupicateLeaderboardIdentifierError
-import net.kolotyluk.leaderboard.scorekeeping.{ConcurrentLeaderboard, Leaderboard, LeaderboardIdentifier, MemberIdentifier, Score, SynchronizedConcurrentLeaderboard, SynchronizedLeaderboard}
+import net.kolotyluk.leaderboard.scorekeeping.{ConcurrentLeaderboard, Leaderboard, LeaderboardIdentifier, MemberIdentifier, SynchronizedConcurrentLeaderboard, SynchronizedLeaderboard}
 import net.kolotyluk.scala.extras.{Internalized, Logging}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
-import scala.language.implicitConversions
-
-import scala.language.postfixOps
+import scala.language.{implicitConversions, postfixOps}
 
 
 /** =Leaderboard Implementation Enumeration=
@@ -43,8 +41,8 @@ object Implementation extends Enumeration with Logging {
 
   val ConcurrentLeaderboard = Val(
     leaderboardIdentifier => {
-      val memberToScore = new ConcurrentHashMap[MemberIdentifier,Option[Score]]
-      val scoreToMember = new ConcurrentSkipListMap[Score,MemberIdentifier]
+      val memberToScore = new ConcurrentHashMap[MemberIdentifier,Option[net.kolotyluk.leaderboard.scorekeeping.Score]]
+      val scoreToMember = new ConcurrentSkipListMap[net.kolotyluk.leaderboard.scorekeeping.Score,MemberIdentifier]
       new ConcurrentLeaderboard(leaderboardIdentifier, memberToScore, scoreToMember)
     }
   )
@@ -61,16 +59,16 @@ object Implementation extends Enumeration with Logging {
 
   val SynchronizedConcurrentLeaderboard = Val(
     leaderboardIdentifier => {
-      val memberToScore = new ConcurrentHashMap[MemberIdentifier, Option[Score]]
-      val scoreToMember = new ConcurrentSkipListMap[Score, MemberIdentifier]
+      val memberToScore = new ConcurrentHashMap[MemberIdentifier, Option[net.kolotyluk.leaderboard.scorekeeping.Score]]
+      val scoreToMember = new ConcurrentSkipListMap[net.kolotyluk.leaderboard.scorekeeping.Score, MemberIdentifier]
       new SynchronizedConcurrentLeaderboard(leaderboardIdentifier, memberToScore, scoreToMember)
     }
   )
 
   val SynchronizedLeaderboard = Val(
     leaderboardIdentifier => {
-      val memberToScore = new HashMap[MemberIdentifier, Option[Score]]
-      val scoreToMember = new TreeMap[Score, MemberIdentifier]
+      val memberToScore = new HashMap[MemberIdentifier, Option[net.kolotyluk.leaderboard.scorekeeping.Score]]
+      val scoreToMember = new TreeMap[net.kolotyluk.leaderboard.scorekeeping.Score, MemberIdentifier]
       new SynchronizedLeaderboard(leaderboardIdentifier, memberToScore, scoreToMember)
     }
   )

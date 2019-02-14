@@ -31,7 +31,7 @@ package leaderboard {
 
   sealed trait EndpointResponse
 
-  final case class ScoreResponse(score: String, random: Long)
+  final case class Score(value: String, random: Long)
 
   final case class LeaderboardGetResponse(id: String, state: String, members: Long)
 
@@ -47,11 +47,11 @@ package leaderboard {
 
   final case class LeaderboardStatusResponses(leaderboards: Seq[LeaderboardStatusResponse]) extends EndpointResponse
 
-  final case class MemberStatusResponse(leaderboardId: String, memberId: String, score: Option[ScoreResponse]) extends EndpointResponse
+  final case class MemberStatusResponse(leaderboardId: String, memberId: String, score: Option[Score]) extends EndpointResponse
 
   trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
 
-    implicit val scoreResponseFormat = jsonFormat2(ScoreResponse)
+    implicit val scoreResponseFormat = jsonFormat2(Score)
 
     implicit val leaderboardGetResponseFormat = jsonFormat3(LeaderboardGetResponse)
 

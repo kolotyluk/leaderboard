@@ -11,7 +11,8 @@ import javax.ws.rs.Path
 import net.kolotyluk.leaderboard.Akka.endpoint
 import net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.{UnknownImplementationException, UnknownLeaderboardIdentifierException}
 import net.kolotyluk.leaderboard.Akka.endpoint.{EndpointError, EndpointException, EndpointException2}
-import net.kolotyluk.leaderboard.scorekeeping.{ConcurrentLeaderboard, Increment, LeaderboardIdentifier, MemberIdentifier, Replace, Score, UpdateMode}
+import net.kolotyluk.leaderboard.scorekeeping
+import net.kolotyluk.leaderboard.scorekeeping.{ConcurrentLeaderboard, Increment, LeaderboardIdentifier, MemberIdentifier, Replace, UpdateMode}
 import net.kolotyluk.scala.extras.Logging
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -69,55 +70,6 @@ class Endpoint extends Directives with JsonSupport with PrettyJasonSupport with 
     * }}}
     * @return
     */
-    def leaderboardGet1(): Route = {
-      get {
-        pathEnd {
-          // unix shell: curl http://localhost:8080/leaderboard?name=foo
-          // PowerShell: Invoke-WebRequest -Method Get http://localhost:8080/leaderboard?name=foo
-          parameter('name) { name =>
-            nameToLeaderboardIdentifier.get(name) match {
-              case None =>
-                throw new UnknownLeaderboardNameException(name)
-              case Some(leaderboardIdentifier) =>
-                onComplete(getLeaderboardStatus(leaderboardIdentifier)) {
-                  case Success(value) => complete(value)
-                  case Failure(cause: EndpointException) => complete(cause.response)
-                  case Failure(cause) => complete("")
-                }
-            }
-          } ~
-          // unix shell: curl http://localhost:8080/leaderboard
-          // PowerShell: Invoke-WebRequest -Method Get http://localhost:8080/leaderboard
-          onComplete(getLeaderboards) {
-            case scala.util.Success(value) => complete(value)
-            case Failure(cause: EndpointException) => complete(cause.response)
-            case Failure(cause) => complete("")
-          }
-        } ~
-        pathPrefix(base64identifier) { leaderboardIdentifier =>
-          pathEnd {
-            // unix shell: curl http://localhost:8080/leaderboard/fiqkXE39T_WcUcCPtGcoaQ
-            // PowerShell: Invoke-WebRequest -Method Get http://localhost:8080/leaderboard/fiqkXE39T_WcUcCPtGcoaQ
-            onComplete(getLeaderboardStatus(leaderboardIdentifier)) {
-              case Success(value) => complete(value)
-              case Failure(cause: EndpointException) => complete(cause.response)
-              case Failure(cause) => complete("") // TODO
-            }
-          } ~
-          pathPrefix(base64identifier) { memberIdentifier =>
-            pathEnd {
-              // unix shell: curl http://localhost:8080/leaderboard/fiqkXE39T_WcUcCPtGcoaQ/keAoZQECSwm0h7v6yw_3WQ
-              // PowerShell: Invoke-WebRequest -Method Get http://localhost:8080/leaderboard/fiqkXE39T_WcUcCPtGcoaQ/keAoZQECSwm0h7v6yw_3WQ
-              complete(getLeaderboardStatus(leaderboardIdentifier, memberIdentifier))
-            }
-          }
-        } ~
-        complete {
-          HttpResponse(BadRequest, entity = "Bad GET /leaderboard request")
-        }
-      }
-    }
-
     def leaderboardGet(): Route = {
       get {
         pathPrefix(base64identifier) { leaderboardIdentifier =>
@@ -184,38 +136,27 @@ class Endpoint extends Directives with JsonSupport with PrettyJasonSupport with 
     * @return route
     */
   def scoreUpdate(updateMode: UpdateMode): Route = {
-    path(base64identifier / base64identifier ~ PathEnd) {(leaderboardIdentifier, memberIdentifier) =>
-      parameter('score) { score =>
-        completeFutureResponse(updateScore(updateMode, leaderboardIdentifier, memberIdentifier, BigInt(score)))
-      } ~
-      entity(as[UpdateScoreRequest]) { request =>
-        completeFutureResponse(updateScore(updateMode, leaderboardIdentifier, memberIdentifier, BigInt(request.score)))
-      }
-    } ~
-      path(base64identifier ~ PathEnd) { leaderboardId =>
-        completeFutureResponse(getLeaderboardStatus(leaderboardId))
-      } ~
-      pathEnd {
-        parameter('name) { name =>
-          nameToLeaderboardIdentifier.get(name) match {
-            case None =>
-              throw new UnknownLeaderboardNameException(name)
-            case Some(leaderboardIdentifier) =>
-              completeFutureResponse(getLeaderboardStatus(leaderboardIdentifier))
+    pathPrefix(base64identifier) { leaderboardIdentifier =>
+      pathPrefix(base64identifier) { memberIdentifier =>
+        pathEnd {
+          parameter('score) { score =>
+            completeFutureResponse(updateScore(updateMode, leaderboardIdentifier, memberIdentifier, BigInt(score)))
+          } ~
+          entity(as[UpdateScoreRequest]) { request =>
+            completeFutureResponse(updateScore(updateMode, leaderboardIdentifier, memberIdentifier, BigInt(request.score)))
           }
-        } ~
-        completeFutureResponse(getLeaderboards)
+        }
       }
+    }
   }
-
 
   /**
-    * We cannot define this in net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.package.scala
+    * We cannot define this in net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.package.scala as it seems to
+    * confuse the Scala compiler.
     */
-  object ScoreResponse {
-    def apply(score: Score) = net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.ScoreResponse(score.value.toString, score.random)
+  object Score {
+    def apply(score: scorekeeping.Score) = net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.Score(score.value.toString, score.random)
   }
-
 
   def updateScore(updateMode: UpdateMode, leaderboardIdentifier: LeaderboardIdentifier, memberIdentifier: MemberIdentifier, score: BigInt) : Future[MemberStatusResponse] = {
     val leaderboardUrlId = endpoint.internalIdentifierToUrlId(leaderboardIdentifier)
@@ -224,14 +165,12 @@ class Endpoint extends Directives with JsonSupport with PrettyJasonSupport with 
       case None =>
         throw new UnknownLeaderboardIdentifierException(leaderboardIdentifier)
       case Some(leaderboard) =>
-        val newScore = leaderboard.update(updateMode, memberIdentifier, score)
-        newScore match {
-          case future: Future[Any] =>
-            future.asInstanceOf[Future[Score]].map{ score =>
-              MemberStatusResponse(leaderboardUrlId, memberUrlId, Some(ScoreResponse(score)))
-            }
-          case score: Score =>
-            Future.successful(MemberStatusResponse(leaderboardUrlId, memberUrlId, Some(ScoreResponse(score))))
+        leaderboard.update(updateMode, memberIdentifier, score) match {
+          case score: scorekeeping.Score =>
+            Future.successful(MemberStatusResponse(leaderboardUrlId, memberUrlId, Some(Score(score))))
+          case future: Future[scorekeeping.Score] @unchecked =>
+            future.map(score => MemberStatusResponse(leaderboardUrlId, memberUrlId, Some(Score(score))))
+          case _ => throw new Error() // TODO define a suitable EndpointError
         }
     }
   }
@@ -239,13 +178,11 @@ class Endpoint extends Directives with JsonSupport with PrettyJasonSupport with 
   def getLeaderboards: Future[LeaderboardStatusResponses] = {
     val statusResponses = identifierToLeaderboard.map{case (identifier, leaderboard) =>
       val leaderboardId = endpoint.internalIdentifierToUrlId(identifier)
-      val count = leaderboard.getCount
-      if (count.isInstanceOf[Int]) {
-        Future.successful(LeaderboardStatusResponse(leaderboardId, count.asInstanceOf[Int]))
-      } else {
-        count.asInstanceOf[Future[Int]].map{ futureCount =>
-          LeaderboardStatusResponse(leaderboardId, futureCount)
-        }
+      leaderboard.getCount match {
+        case future: Future[Int] @unchecked =>
+          future.map(count => LeaderboardStatusResponse(leaderboardId, count))
+        case count: Int =>
+          Future.successful(LeaderboardStatusResponse(leaderboardId, count))
       }
     }
     Future.sequence(statusResponses).map{ leaderboardStatusResponse =>
@@ -265,7 +202,7 @@ class Endpoint extends Directives with JsonSupport with PrettyJasonSupport with 
         throw new UnknownLeaderboardIdentifierException(leaderboardIdentifier)
       case Some(leaderboard) =>
         leaderboard.getCount match {
-          case future: Future[Int] =>
+          case future: Future[Int] @unchecked =>
             future.map{ count =>
               LeaderboardStatusResponse(leaderboardUrlId, count)
             }
@@ -284,17 +221,17 @@ class Endpoint extends Directives with JsonSupport with PrettyJasonSupport with 
         throw new UnknownLeaderboardIdentifierException(leaderboardIdentifier)
       case Some(leaderboard) =>
         leaderboard.getScore(memberIdentifier) match {
-          case future: Future[Option[Score]] =>
+          case future: Future[Option[scorekeeping.Score]] @unchecked =>
             future.map { scoreOption =>
               scoreOption match {
                 case None =>
                   MemberStatusResponse(leaderboardUrlId, memberUrlId, None)
                 case Some(score) =>
-                  MemberStatusResponse(leaderboardUrlId, memberUrlId, Some(ScoreResponse(score)))
+                  MemberStatusResponse(leaderboardUrlId, memberUrlId, Some(Score(score)))
               }
             }
-          case Some(score: Score) =>
-            Future.successful(MemberStatusResponse(leaderboardUrlId, memberUrlId, Some(ScoreResponse(score))))
+          case Some(score: scorekeeping.Score) =>
+            Future.successful(MemberStatusResponse(leaderboardUrlId, memberUrlId, Some(Score(score))))
           case _ =>
             Future.successful(MemberStatusResponse(leaderboardUrlId, memberUrlId, None))
         }
@@ -311,7 +248,7 @@ class Endpoint extends Directives with JsonSupport with PrettyJasonSupport with 
     get {
       complete {
         ConcurrentLeaderboard.get(name) match {
-          case None =>  HttpResponse(NotFound, entity = HttpEntity(ContentTypes.`text/plain(UTF-8)`, s"Leaderboard '$name' not found"))
+          case None => HttpResponse(NotFound, entity = HttpEntity(ContentTypes.`text/plain(UTF-8)`, s"Leaderboard '$name' not found"))
           case Some(leaderboard) => HttpEntity(ContentTypes.`text/plain(UTF-8)`, s"Leaderboard '$name' exists")
         }
       }
@@ -350,8 +287,6 @@ class Endpoint extends Directives with JsonSupport with PrettyJasonSupport with 
   ))
   def leaderboardPost(): Route =
     post {
-      //logRequest("leaderboard", Logging.DebugLevel) {
-      //  handleExceptions(routeExceptionHandler) {
       handleRejections(postRejectionHandler) {
         pathEnd {
           parameter('name.?) { nameParameter =>
@@ -361,15 +296,6 @@ class Endpoint extends Directives with JsonSupport with PrettyJasonSupport with 
               complete(Created, leaderboardCreate(nameParameter, Some(leaderboard)))
             } ~
             complete(Created, leaderboardCreate(nameParameter, None)) // default leaderboard
-            //          entity(as[HttpRequest]) { httpRequest =>
-            //            // TODO do we really need this?
-            //            if (httpRequest.entity.getContentLengthOption().getAsLong == 0)
-            //            // unix shell: curl -d "" http://localhost:8080/leaderboard?name=foo
-            //            // PowerShell: Invoke-WebRequest -Method Post http://localhost:8080/leaderboard?name=foo
-            //              complete(leaderboardCreate(nameParameter, None)) // default leaderboard
-            //            else
-            //              complete(HttpResponse(BadRequest, entity = "****  Something Wrong  ****")) // TODO this better
-            //          }
           }
         }
       }
