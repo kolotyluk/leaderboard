@@ -9,10 +9,10 @@ import akka.http.scaladsl.server._
 import io.swagger.annotations._
 import javax.ws.rs.Path
 import net.kolotyluk.leaderboard.Akka.endpoint
-import net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.{UnknownImplementationException, UnknownLeaderboardIdentifierException}
+import net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.{UnexpectedApiResultError, UnknownImplementationException, UnknownLeaderboardIdentifierException}
 import net.kolotyluk.leaderboard.Akka.endpoint.{EndpointError, EndpointException, EndpointException2}
 import net.kolotyluk.leaderboard.scorekeeping
-import net.kolotyluk.leaderboard.scorekeeping.{ConcurrentLeaderboard, Increment, LeaderboardIdentifier, MemberIdentifier, Replace, UpdateMode}
+import net.kolotyluk.leaderboard.scorekeeping.{ConcurrentLeaderboard, Increment, Leaderboard, LeaderboardIdentifier, MemberIdentifier, Replace, UpdateMode}
 import net.kolotyluk.scala.extras.Logging
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -158,20 +158,38 @@ class Endpoint extends Directives with JsonSupport with PrettyJasonSupport with 
     def apply(score: scorekeeping.Score) = net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.Score(score.value.toString, score.random)
   }
 
-  def updateScore(updateMode: UpdateMode, leaderboardIdentifier: LeaderboardIdentifier, memberIdentifier: MemberIdentifier, score: BigInt) : Future[MemberStatusResponse] = {
+  def updateScore(updateMode: UpdateMode, leaderboardIdentifier: LeaderboardIdentifier, memberIdentifier: MemberIdentifier, bigIntScore: BigInt) : Future[MemberStatusResponse] = {
     val leaderboardUrlId = endpoint.internalIdentifierToUrlId(leaderboardIdentifier)
     val memberUrlId = endpoint.internalIdentifierToUrlId(memberIdentifier)
     identifierToLeaderboard.get(leaderboardIdentifier) match {
       case None =>
         throw new UnknownLeaderboardIdentifierException(leaderboardIdentifier)
       case Some(leaderboard) =>
-        leaderboard.update(updateMode, memberIdentifier, score) match {
-          case score: scorekeeping.Score =>
-            Future.successful(MemberStatusResponse(leaderboardUrlId, memberUrlId, Some(Score(score))))
-          case future: Future[scorekeeping.Score] @unchecked =>
-            future.map(score => MemberStatusResponse(leaderboardUrlId, memberUrlId, Some(Score(score))))
-          case _ => throw new Error() // TODO define a suitable EndpointError
-        }
+//        leaderboard.update(updateMode, memberIdentifier, score) match {
+//          case score: scorekeeping.Score =>
+//            Future.successful(MemberStatusResponse(leaderboardUrlId, memberUrlId, Some(Score(score))))
+//          case future: Future[scorekeeping.Score] @unchecked =>
+//            future.map(score => MemberStatusResponse(leaderboardUrlId, memberUrlId, Some(Score(score))))
+//          case result: Any =>
+//            throw new UnexpectedApiResultError(result, expecting = Score.getClass)
+//        }
+        handle[scorekeeping.Score,MemberStatusResponse](
+          leaderboard.update(updateMode, memberIdentifier, bigIntScore),
+          score => MemberStatusResponse(leaderboardUrlId, memberUrlId, Some(Score(score))))
+    }
+  }
+
+  import scala.reflect.runtime.universe._
+
+  def handle[I,O](input: Any, output: I => O) = {
+
+    input match {
+      case future: Future[I] => // This needs to come first
+      future.map(value => output(value))
+      case value: I =>
+        Future.successful(output(value))
+      // case result: Any =>
+      //   throw new UnexpectedApiResultError(result, expecting = typeOf[A])
     }
   }
 
