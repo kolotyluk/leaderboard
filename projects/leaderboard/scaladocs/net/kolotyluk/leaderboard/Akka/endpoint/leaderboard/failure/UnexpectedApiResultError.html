@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title>Leaderboard Micro Service 0.0.1-SNAPSHOT API  - net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.DupicateLeaderboardIdentifierError</title>
-          <meta name="description" content="Leaderboard Micro Service 0.0.1 - SNAPSHOT API - net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.DupicateLeaderboardIdentifierError" />
-          <meta name="keywords" content="Leaderboard Micro Service 0.0.1 SNAPSHOT API net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.DupicateLeaderboardIdentifierError" />
+          <title>Leaderboard Micro Service 0.0.1-SNAPSHOT API  - net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.UnexpectedApiResultError</title>
+          <meta name="description" content="Leaderboard Micro Service 0.0.1 - SNAPSHOT API - net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.UnexpectedApiResultError" />
+          <meta name="keywords" content="Leaderboard Micro Service 0.0.1 SNAPSHOT API net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.UnexpectedApiResultError" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../../../lib/index.css" media="screen" type="text/css" rel="stylesheet" />
@@ -230,12 +230,12 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
 failure responses, so the scaladoc needs to be well written.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard">leaderboard</a></dd></dl></div>
     </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="" title="When attempting to create a new leaderboard, this leaderboard identifier already exists."></a>
-                        <a href="" title="When attempting to create a new leaderboard, this leaderboard identifier already exists.">DupicateLeaderboardIdentifierError</a>
+                        <a class="class" href="DupicateLeaderboardIdentifierError.html" title="When attempting to create a new leaderboard, this leaderboard identifier already exists."></a>
+                        <a href="DupicateLeaderboardIdentifierError.html" title="When attempting to create a new leaderboard, this leaderboard identifier already exists.">DupicateLeaderboardIdentifierError</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="UnexpectedApiResultError.html" title="When referring to a leaderboard, the leaderboard ID specified could not be found."></a>
-                        <a href="UnexpectedApiResultError.html" title="When referring to a leaderboard, the leaderboard ID specified could not be found.">UnexpectedApiResultError</a>
+                        <a class="class" href="" title="When referring to a leaderboard, the leaderboard ID specified could not be found."></a>
+                        <a href="" title="When referring to a leaderboard, the leaderboard ID specified could not be found.">UnexpectedApiResultError</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
                         <a class="class" href="UnknownImplementationException.html" title="When requesting to create a new leaderboard, the implementation specified could not be found."></a>
@@ -253,8 +253,8 @@ failure responses, so the scaladoc needs to be well written.</p></div><dl class=
       <div id="definition">
         <div class="big-circle class">c</div>
         <p id="owner"><a href="../../../../../../index.html" class="extype" name="net">net</a>.<a href="../../../../../index.html" class="extype" name="net.kolotyluk">kolotyluk</a>.<a href="../../../../index.html" class="extype" name="net.kolotyluk.leaderboard">leaderboard</a>.<a href="../../../index.html" class="extype" name="net.kolotyluk.leaderboard.Akka">Akka</a>.<a href="../../index.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint">endpoint</a>.<a href="../index.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard">leaderboard</a>.<a href="index.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure">failure</a></p>
-        <h1>DupicateLeaderboardIdentifierError<span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html" title="Permalink">
+        <h1>UnexpectedApiResultError<span class="permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span></h1>
@@ -267,18 +267,18 @@ failure responses, so the scaladoc needs to be well written.</p></div><dl class=
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">DupicateLeaderboardIdentifierError</span><span class="result"> extends <a href="../../EndpointError.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointError">EndpointError</a></span>
+        <span class="name">UnexpectedApiResultError</span><span class="result"> extends <a href="../../EndpointError.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointError">EndpointError</a></span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><h3>Duplicate Leaderboard Identifier</h3><p>When attempting to create a new leaderboard, this leaderboard identifier already exists.</p><ol class="decimal"><li>Leaderboard identifiers are only created by the software</li><li>It's a programming defect to try to create another with the same identifier</li><li>It's not a API user error</li><li>It's not a fatal error, just an indication of an internal defect.</li></ol><h4>Examples</h4><pre>unix shell: curl http:<span class="cmt">//localhost:8080/leaderboard/fiqkXE39T_WcUcCPtGcoaQ</span>
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><h3>Unknown Leaderboard Identifier</h3><p>When referring to a leaderboard, the leaderboard ID specified could not be found.</p><ol class="decimal"><li>Leaderboards must first explicitly be created before they are referenced</li><li>If the leaderboard is deleted, so is its Identifier</li></ol><h4>Examples</h4><pre>unix shell: curl http:<span class="cmt">//localhost:8080/leaderboard/fiqkXE39T_WcUcCPtGcoaQ</span>
 PowerShell: Invoke-WebRequest -Method Get http:<span class="cmt">//localhost:8080/leaderboard/fiqkXE39T_WcUcCPtGcoaQ</span></pre><p>results in:</p><pre>StatusCode        : <span class="num">404</span>
 StatusDescription : Not Found
 Content           : {
                       <span class="lit">"cause"</span>: <span class="lit">"The specified leaderboard cannot be found: urlId=IMvWdANITIWZxm7efUKVAg, uuid=20cbd674-0348-4c85-99c6-6ede7d429502."</span>,
                       <span class="lit">"diagnosis"</span>: = <span class="lit">"Did you forget to create it?"</span>,
-                      <span class="lit">"explanation"</span>: <span class="lit">"http://kolotyluk.github.io/projects/leaderboard/scaladocs/net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/UnknownLeaderboardIdentifierException.html"</span>,
+                      <span class="lit">"explanation"</span>: <span class="lit">"http://kolotyluk.github.io/projects/leaderboard/scaladocs/net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnknownLeaderboardIdentifierException.html"</span>,
                       <span class="lit">"systemLogMessage"</span>: <span class="lit">"unknown leaderboard: urlId=IMvWdANITIWZxm7efUKVAg, uuid=20cbd674-0348-4c85-99c6-6ede7d429502"</span>
                     }</pre><h5>Solutions</h5><p>First create a leaderboard</p><pre>unix shell: curl -d <span class="lit">""</span> http:<span class="cmt">//localhost:8080/leaderboard</span>
 PowerShell: Invoke-WebRequest -Method Post http:<span class="cmt">//localhost:8080/leaderboard</span></pre><p>You should see something like:</p><pre>StatusCode        : <span class="num">201</span>
@@ -321,7 +321,7 @@ Content           : {
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.DupicateLeaderboardIdentifierError"><span>DupicateLeaderboardIdentifierError</span></li><li class="in" name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointError"><span>EndpointError</span></li><li class="in" name="java.lang.Error"><span>Error</span></li><li class="in" name="java.lang.Throwable"><span>Throwable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.UnexpectedApiResultError"><span>UnexpectedApiResultError</span></li><li class="in" name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointError"><span>EndpointError</span></li><li class="in" name="java.lang.Error"><span>Error</span></li><li class="in" name="java.lang.Throwable"><span>Throwable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -341,10 +341,10 @@ Content           : {
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.DupicateLeaderboardIdentifierError#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(leaderboardIdentifier:net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier):net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.DupicateLeaderboardIdentifierError"></a><a id="&lt;init&gt;:DupicateLeaderboardIdentifierError"></a>
+              <ol><li name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.UnexpectedApiResultError#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(leaderboardIdentifier:net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier):net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.UnexpectedApiResultError"></a><a id="&lt;init&gt;:UnexpectedApiResultError"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#&lt;init&gt;(leaderboardIdentifier:net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier):net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.DupicateLeaderboardIdentifierError" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#&lt;init&gt;(leaderboardIdentifier:net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier):net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.UnexpectedApiResultError" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -353,14 +353,14 @@ Content           : {
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">DupicateLeaderboardIdentifierError</span><span class="params">(<span name="leaderboardIdentifier">leaderboardIdentifier: <a href="../../../../scorekeeping/index.html#LeaderboardIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier">LeaderboardIdentifier</a></span>)</span>
+        <span class="name">UnexpectedApiResultError</span><span class="params">(<span name="leaderboardIdentifier">leaderboardIdentifier: <a href="../../../../scorekeeping/index.html#LeaderboardIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier">LeaderboardIdentifier</a></span>)</span>
       </span>
       
       
-    </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.DupicateLeaderboardIdentifierError#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(uuid:java.util.UUID):net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.DupicateLeaderboardIdentifierError"></a><a id="&lt;init&gt;:DupicateLeaderboardIdentifierError"></a>
+    </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.UnexpectedApiResultError#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(uuid:java.util.UUID):net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.UnexpectedApiResultError"></a><a id="&lt;init&gt;:UnexpectedApiResultError"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#&lt;init&gt;(uuid:java.util.UUID):net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.DupicateLeaderboardIdentifierError" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#&lt;init&gt;(uuid:java.util.UUID):net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.UnexpectedApiResultError" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -369,14 +369,14 @@ Content           : {
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">DupicateLeaderboardIdentifierError</span><span class="params">(<span name="uuid">uuid: <span class="extype" name="java.util.UUID">UUID</span></span>)</span>
+        <span class="name">UnexpectedApiResultError</span><span class="params">(<span name="uuid">uuid: <span class="extype" name="java.util.UUID">UUID</span></span>)</span>
       </span>
       
       
-    </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.DupicateLeaderboardIdentifierError#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(uuid:java.util.UUID,urlId:String):net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.DupicateLeaderboardIdentifierError"></a><a id="&lt;init&gt;:DupicateLeaderboardIdentifierError"></a>
+    </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.UnexpectedApiResultError#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(found:Any,expecting:Object):net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.UnexpectedApiResultError"></a><a id="&lt;init&gt;:UnexpectedApiResultError"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#&lt;init&gt;(uuid:java.util.UUID,urlId:String):net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.DupicateLeaderboardIdentifierError" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#&lt;init&gt;(found:Any,expecting:Object):net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.failure.UnexpectedApiResultError" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -385,10 +385,10 @@ Content           : {
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">DupicateLeaderboardIdentifierError</span><span class="params">(<span name="uuid">uuid: <span class="extype" name="java.util.UUID">UUID</span></span>, <span name="urlId">urlId: <span class="extype" name="scala.Predef.String">String</span></span>)</span>
+        <span class="name">UnexpectedApiResultError</span><span class="params">(<span name="found">found: <span class="extype" name="scala.Any">Any</span></span>, <span name="expecting">expecting: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span>
       </span>
       
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">uuid</dt><dd class="cmt"><p>internal leaderboard UUID</p></dd><dt class="param">urlId</dt><dd class="cmt"><p>external Base 64 URL Id</p></dd></dl></div>
+      
     </li></ol>
             </div>
 
@@ -402,7 +402,7 @@ Content           : {
                 <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#!=(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#!=(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -418,7 +418,7 @@ Content           : {
     </li><li name="scala.AnyRef###" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html###():Int" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html###():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -434,7 +434,7 @@ Content           : {
     </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#==(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#==(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -450,7 +450,7 @@ Content           : {
     </li><li name="java.lang.Throwable#addSuppressed" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="addSuppressed(x$1:Throwable):Unit"></a><a id="addSuppressed(Throwable):Unit"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#addSuppressed(x$1:Throwable):Unit" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#addSuppressed(x$1:Throwable):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -466,7 +466,7 @@ Content           : {
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#asInstanceOf[T0]:T0" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#asInstanceOf[T0]:T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -482,7 +482,7 @@ Content           : {
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#clone():Object" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#clone():Object" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -508,7 +508,7 @@ Content           : {
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#eq(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#eq(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -524,7 +524,7 @@ Content           : {
     </li><li name="scala.AnyRef#equals" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="equals(x$1:Any):Boolean"></a><a id="equals(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#equals(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#equals(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -540,7 +540,7 @@ Content           : {
     </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointError#errorPayload" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="errorPayload:net.kolotyluk.leaderboard.Akka.endpoint.ErrorPayload"></a><a id="errorPayload:ErrorPayload"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#errorPayload:net.kolotyluk.leaderboard.Akka.endpoint.ErrorPayload" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#errorPayload:net.kolotyluk.leaderboard.Akka.endpoint.ErrorPayload" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -556,7 +556,7 @@ Content           : {
     </li><li name="java.lang.Throwable#fillInStackTrace" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="fillInStackTrace():Throwable"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#fillInStackTrace():Throwable" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#fillInStackTrace():Throwable" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -572,7 +572,7 @@ Content           : {
     </li><li name="java.lang.Throwable#getCause" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getCause():Throwable"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#getCause():Throwable" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#getCause():Throwable" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -588,7 +588,7 @@ Content           : {
     </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#getClass():Class[_]" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#getClass():Class[_]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -609,7 +609,7 @@ Content           : {
     </li><li name="java.lang.Throwable#getLocalizedMessage" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getLocalizedMessage():String"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#getLocalizedMessage():String" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#getLocalizedMessage():String" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -625,7 +625,7 @@ Content           : {
     </li><li name="java.lang.Throwable#getMessage" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getMessage():String"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#getMessage():String" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#getMessage():String" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -641,7 +641,7 @@ Content           : {
     </li><li name="java.lang.Throwable#getStackTrace" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getStackTrace():Array[StackTraceElement]"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#getStackTrace():Array[StackTraceElement]" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#getStackTrace():Array[StackTraceElement]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -657,7 +657,7 @@ Content           : {
     </li><li name="java.lang.Throwable#getSuppressed" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getSuppressed():Array[Throwable]"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#getSuppressed():Array[Throwable]" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#getSuppressed():Array[Throwable]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -673,7 +673,7 @@ Content           : {
     </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#hashCode():Int" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#hashCode():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -694,7 +694,7 @@ Content           : {
     </li><li name="java.lang.Throwable#initCause" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="initCause(x$1:Throwable):Throwable"></a><a id="initCause(Throwable):Throwable"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#initCause(x$1:Throwable):Throwable" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#initCause(x$1:Throwable):Throwable" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -710,7 +710,7 @@ Content           : {
     </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#isInstanceOf[T0]:Boolean" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#isInstanceOf[T0]:Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -726,7 +726,7 @@ Content           : {
     </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#ne(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#ne(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -742,7 +742,7 @@ Content           : {
     </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#notify():Unit" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#notify():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -763,7 +763,7 @@ Content           : {
     </li><li name="scala.AnyRef#notifyAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#notifyAll():Unit" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#notifyAll():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -784,7 +784,7 @@ Content           : {
     </li><li name="java.lang.Throwable#printStackTrace" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="printStackTrace(x$1:java.io.PrintWriter):Unit"></a><a id="printStackTrace(PrintWriter):Unit"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#printStackTrace(x$1:java.io.PrintWriter):Unit" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#printStackTrace(x$1:java.io.PrintWriter):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -800,7 +800,7 @@ Content           : {
     </li><li name="java.lang.Throwable#printStackTrace" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="printStackTrace(x$1:java.io.PrintStream):Unit"></a><a id="printStackTrace(PrintStream):Unit"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#printStackTrace(x$1:java.io.PrintStream):Unit" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#printStackTrace(x$1:java.io.PrintStream):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -816,7 +816,7 @@ Content           : {
     </li><li name="java.lang.Throwable#printStackTrace" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="printStackTrace():Unit"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#printStackTrace():Unit" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#printStackTrace():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -832,7 +832,7 @@ Content           : {
     </li><li name="java.lang.Throwable#setStackTrace" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="setStackTrace(x$1:Array[StackTraceElement]):Unit"></a><a id="setStackTrace(Array[StackTraceElement]):Unit"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#setStackTrace(x$1:Array[StackTraceElement]):Unit" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#setStackTrace(x$1:Array[StackTraceElement]):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -848,7 +848,7 @@ Content           : {
     </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.EndpointError#statusCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="statusCode:akka.http.scaladsl.model.StatusCode"></a><a id="statusCode:StatusCode"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#statusCode:akka.http.scaladsl.model.StatusCode" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#statusCode:akka.http.scaladsl.model.StatusCode" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -864,7 +864,7 @@ Content           : {
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -880,7 +880,7 @@ Content           : {
     </li><li name="java.lang.Throwable#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#toString():String" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#toString():String" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -896,7 +896,7 @@ Content           : {
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -918,7 +918,7 @@ Content           : {
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long):Unit"></a><a id="wait(Long):Unit"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#wait(x$1:Long):Unit" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#wait(x$1:Long):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -942,7 +942,7 @@ Content           : {
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#wait():Unit" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#wait():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -972,7 +972,7 @@ Content           : {
               <ol><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <span class="permalink">
-      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/DupicateLeaderboardIdentifierError.html#finalize():Unit" title="Permalink">
+      <a href="../../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/failure/UnexpectedApiResultError.html#finalize():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>

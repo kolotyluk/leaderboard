@@ -238,6 +238,10 @@ failure responses, so the scaladoc needs to be well written.</p></div><dl class=
                         <a href="" title="">Endpoint</a>
                       </li><li class="current-entities indented6">
                         <span class="separator"></span>
+                        <a class="trait" href="EndpointResponse.html" title=""></a>
+                        <a href="EndpointResponse.html" title="">EndpointResponse</a>
+                      </li><li class="current-entities indented6">
+                        <span class="separator"></span>
                         <a class="class" href="IdNotFoundException.html" title=""></a>
                         <a href="IdNotFoundException.html" title="">IdNotFoundException</a>
                       </li><li class="current-entities indented6">
@@ -288,6 +292,10 @@ failure responses, so the scaladoc needs to be well written.</p></div><dl class=
                         <span class="separator"></span>
                         <a class="trait" href="PrettyJasonSupport.html" title=""></a>
                         <a href="PrettyJasonSupport.html" title="">PrettyJasonSupport</a>
+                      </li><li class="current-entities indented6">
+                        <span class="separator"></span>
+                        <a class="class" href="Score.html" title=""></a>
+                        <a href="Score.html" title="">Score</a>
                       </li><li class="current-entities indented6">
                         <span class="separator"></span>
                         <a class="class" href="UnknownLeaderboardNameException.html" title=""></a>
@@ -1234,6 +1242,22 @@ failure responses, so the scaladoc needs to be well written.</p></div><dl class=
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>RouteDirectives</dd></dl></div>
+    </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.Endpoint#completeFutureResponse" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="completeFutureResponse(futureResponse:scala.concurrent.Future[net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.EndpointResponse]):akka.http.scaladsl.server.Route"></a><a id="completeFutureResponse(Future[EndpointResponse]):Route"></a>
+      <span class="permalink">
+      <a href="../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/Endpoint.html#completeFutureResponse(futureResponse:scala.concurrent.Future[net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.EndpointResponse]):akka.http.scaladsl.server.Route" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">completeFutureResponse</span><span class="params">(<span name="futureResponse">futureResponse: <span class="extype" name="scala.concurrent.Future">Future</span>[<a href="EndpointResponse.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.EndpointResponse">EndpointResponse</a>]</span>)</span><span class="result">: <span class="extype" name="akka.http.scaladsl.server.Route">Route</span></span>
+      </span>
+      
+      
     </li><li name="akka.http.scaladsl.server.directives.FutureDirectives#completeOrRecoverWith" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="completeOrRecoverWith(magnet:akka.http.scaladsl.server.directives.CompleteOrRecoverWithMagnet):akka.http.scaladsl.server.Directive1[Throwable]"></a><a id="completeOrRecoverWith(CompleteOrRecoverWithMagnet):Directive1[Throwable]"></a>
       <span class="permalink">
@@ -3590,7 +3614,7 @@ failure responses, so the scaladoc needs to be well written.</p></div><dl class=
                 <span class="name">@ApiResponses</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.Endpoint#leaderboardGet" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.Endpoint#leaderboardGet" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="leaderboardGet():akka.http.scaladsl.server.Route"></a><a id="leaderboardGet():Route"></a>
       <span class="permalink">
       <a href="../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/Endpoint.html#leaderboardGet():akka.http.scaladsl.server.Route" title="Permalink">
@@ -3605,24 +3629,24 @@ failure responses, so the scaladoc needs to be well written.</p></div><dl class=
         <span class="name">leaderboardGet</span><span class="params">()</span><span class="result">: <span class="extype" name="akka.http.scaladsl.server.Route">Route</span></span>
       </span>
       
-      
-    </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.Endpoint#leaderboardGet1" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="leaderboardGet1():akka.http.scaladsl.server.Route"></a><a id="leaderboardGet1():Route"></a>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"><h3>GET leaderboard</h3><h4>examples</h4><pre>unix shell: curl http:<span class="cmt">//localhost:8080/leaderboard/fiqkXE39T_WcUcCPtGcoaQ</span>
+PowerShell: Invoke-WebRequest -Method Get http:<span class="cmt">//localhost:8080/leaderboard/fiqkXE39T_WcUcCPtGcoaQ</span></pre></div></div>
+    </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.JsonSupport#leaderboardGetResponseFormat" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="leaderboardGetResponseFormat:spray.json.RootJsonFormat[net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.LeaderboardGetResponse]"></a><a id="leaderboardGetResponseFormat:RootJsonFormat[LeaderboardGetResponse]"></a>
       <span class="permalink">
-      <a href="../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/Endpoint.html#leaderboardGet1():akka.http.scaladsl.server.Route" title="Permalink">
+      <a href="../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/Endpoint.html#leaderboardGetResponseFormat:spray.json.RootJsonFormat[net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.LeaderboardGetResponse]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
       <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">leaderboardGet1</span><span class="params">()</span><span class="result">: <span class="extype" name="akka.http.scaladsl.server.Route">Route</span></span>
+        <span class="name">leaderboardGetResponseFormat</span><span class="result">: <span class="extype" name="spray.json.RootJsonFormat">RootJsonFormat</span>[<a href="LeaderboardGetResponse.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.LeaderboardGetResponse">LeaderboardGetResponse</a>]</span>
       </span>
       
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"><h3>GET leaderboard</h3><h4>examples</h4><pre>unix shell: curl http:<span class="cmt">//localhost:8080/leaderboard/fiqkXE39T_WcUcCPtGcoaQ</span>
-PowerShell: Invoke-WebRequest -Method Get http:<span class="cmt">//localhost:8080/leaderboard/fiqkXE39T_WcUcCPtGcoaQ</span></pre></div></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="JsonSupport.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.JsonSupport">JsonSupport</a></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.Endpoint#leaderboardPatch" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="leaderboardPatch():akka.http.scaladsl.server.Route"></a><a id="leaderboardPatch():Route"></a>
       <span class="permalink">
@@ -5208,6 +5232,22 @@ logger.debug(s<span class="lit">"@foo $bar"</span>)</pre><p>Where <code>s&quot;$
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>SchemeDirectives</dd></dl></div>
+    </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.JsonSupport#scoreResponseFormat" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="scoreResponseFormat:spray.json.RootJsonFormat[net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.Score]"></a><a id="scoreResponseFormat:RootJsonFormat[Score]"></a>
+      <span class="permalink">
+      <a href="../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/Endpoint.html#scoreResponseFormat:spray.json.RootJsonFormat[net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.Score]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">scoreResponseFormat</span><span class="result">: <span class="extype" name="spray.json.RootJsonFormat">RootJsonFormat</span>[<a href="Score.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.Score">Score</a>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="JsonSupport.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.JsonSupport">JsonSupport</a></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.Endpoint#scoreUpdate" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scoreUpdate(updateMode:net.kolotyluk.leaderboard.scorekeeping.UpdateMode):akka.http.scaladsl.server.Route"></a><a id="scoreUpdate(UpdateMode):Route"></a>
       <span class="permalink">
@@ -5224,10 +5264,9 @@ logger.debug(s<span class="lit">"@foo $bar"</span>)</pre><p>Where <code>s&quot;$
       </span>
       
       <p class="shortcomment cmt">Philosophical question: Do we really want to use two different HTTP Methods to update member scores on a
-leaderboard, or should we just overload PATCH?
-</p><div class="fullcomment"><div class="comment cmt"><h3>Score Update Route</h3><p>Philosophical question: Do we really want to use two different HTTP Methods to update member scores on a
-leaderboard, or should we just overload PATCH?
-</p></div><dl class="paramcmts block"><dt class="param">updateMode</dt><dd class="cmt"><p>Increment or Replace</p></dd></dl></div>
+leaderboard, or should we just overload PATCH? For now we practice strict HTTP.</p><div class="fullcomment"><div class="comment cmt"><h3>Score Update Route</h3><p>Philosophical question: Do we really want to use two different HTTP Methods to update member scores on a
+leaderboard, or should we just overload PATCH? For now we practice strict HTTP.
+</p></div><dl class="paramcmts block"><dt class="param">updateMode</dt><dd class="cmt"><p>Increment or Replace</p></dd><dt>returns</dt><dd class="cmt"><p>route</p></dd></dl></div>
     </li><li name="akka.http.scaladsl.server.directives.MiscDirectives#selectPreferredLanguage" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="selectPreferredLanguage(first:akka.http.scaladsl.model.headers.Language,more:akka.http.scaladsl.model.headers.Language*):akka.http.scaladsl.server.Directive1[akka.http.scaladsl.model.headers.Language]"></a><a id="selectPreferredLanguage(Language,Language*):Directive1[Language]"></a>
       <span class="permalink">
@@ -5699,9 +5738,9 @@ leaderboard, or should we just overload PATCH?
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>StandardFormats</dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.Endpoint#updateScore" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="updateScore(updateMode:net.kolotyluk.leaderboard.scorekeeping.UpdateMode,leaderboardIdentifier:net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier,memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,score:BigInt):scala.concurrent.Future[net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.MemberStatusResponse]"></a><a id="updateScore(UpdateMode,LeaderboardIdentifier,MemberIdentifier,BigInt):Future[MemberStatusResponse]"></a>
+      <a id="updateScore(updateMode:net.kolotyluk.leaderboard.scorekeeping.UpdateMode,leaderboardIdentifier:net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier,memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,bigIntScore:BigInt):scala.concurrent.Future[net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.MemberStatusResponse]"></a><a id="updateScore(UpdateMode,LeaderboardIdentifier,MemberIdentifier,BigInt):Future[MemberStatusResponse]"></a>
       <span class="permalink">
-      <a href="../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/Endpoint.html#updateScore(updateMode:net.kolotyluk.leaderboard.scorekeeping.UpdateMode,leaderboardIdentifier:net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier,memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,score:BigInt):scala.concurrent.Future[net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.MemberStatusResponse]" title="Permalink">
+      <a href="../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/Endpoint.html#updateScore(updateMode:net.kolotyluk.leaderboard.scorekeeping.UpdateMode,leaderboardIdentifier:net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier,memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,bigIntScore:BigInt):scala.concurrent.Future[net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.MemberStatusResponse]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -5710,7 +5749,7 @@ leaderboard, or should we just overload PATCH?
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">updateScore</span><span class="params">(<span name="updateMode">updateMode: <a href="../../../scorekeeping/package$$UpdateMode.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.UpdateMode">UpdateMode</a></span>, <span name="leaderboardIdentifier">leaderboardIdentifier: <a href="../../../scorekeeping/index.html#LeaderboardIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier">LeaderboardIdentifier</a></span>, <span name="memberIdentifier">memberIdentifier: <a href="../../../scorekeeping/index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>, <span name="score">score: <span class="extype" name="scala.BigInt">BigInt</span></span>)</span><span class="result">: <span class="extype" name="scala.concurrent.Future">Future</span>[<a href="MemberStatusResponse.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.MemberStatusResponse">MemberStatusResponse</a>]</span>
+        <span class="name">updateScore</span><span class="params">(<span name="updateMode">updateMode: <a href="../../../scorekeeping/package$$UpdateMode.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.UpdateMode">UpdateMode</a></span>, <span name="leaderboardIdentifier">leaderboardIdentifier: <a href="../../../scorekeeping/index.html#LeaderboardIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier">LeaderboardIdentifier</a></span>, <span name="memberIdentifier">memberIdentifier: <a href="../../../scorekeeping/index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>, <span name="bigIntScore">bigIntScore: <span class="extype" name="scala.BigInt">BigInt</span></span>)</span><span class="result">: <span class="extype" name="scala.concurrent.Future">Future</span>[<a href="MemberStatusResponse.html" class="extype" name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.MemberStatusResponse">MemberStatusResponse</a>]</span>
       </span>
       
       
@@ -6230,22 +6269,6 @@ leaderboard, or should we just overload PATCH?
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>BasicFormats</dd></dl></div>
-    </li><li name="akka.http.scaladsl.server.PathMatchers.PathEnd" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="PathEnd"></a><a id="PathEnd:PathEnd"></a>
-      <span class="permalink">
-      <a href="../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/Endpoint.html#PathEnd" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <span class="name">PathEnd</span><span class="result"> extends <span class="extype" name="akka.http.scaladsl.server.PathMatcher0">PathMatcher0</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>PathMatchers</dd></dl></div>
     </li><li name="spray.json.AdditionalFormats.RootJsArrayFormat" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="RootJsArrayFormat"></a><a id="RootJsArrayFormat:RootJsArrayFormat"></a>
       <span class="permalink">
@@ -6278,6 +6301,23 @@ leaderboard, or should we just overload PATCH?
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AdditionalFormats</dd></dl></div>
+    </li><li name="net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.Endpoint.Score" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Score"></a><a id="Score:Score"></a>
+      <span class="permalink">
+      <a href="../../../../../../net/kolotyluk/leaderboard/Akka/endpoint/leaderboard/Endpoint.html#Score" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="We cannot define this in net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.package.scala as it seems to confuse the Scala compiler." href="Endpoint$Score$.html"><span class="name">Score</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">We cannot define this in net.kolotyluk.leaderboard.Akka.endpoint.leaderboard.package.scala as it seems to
+confuse the Scala compiler.</p>
     </li><li name="spray.json.BasicFormats.ShortJsonFormat" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ShortJsonFormat"></a><a id="ShortJsonFormat:ShortJsonFormat"></a>
       <span class="permalink">

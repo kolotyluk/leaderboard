@@ -399,6 +399,26 @@ main body of code you might use:</p><pre><span class="kw">val</span> akkaSystemN
       </span>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"><h3>Parse UUID from Base 64 URL String</h3></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>Unique Universal Identifier</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt"><p><a href="InvalidBase64UrlToUuidException.html" class="extype" name="net.kolotyluk.scala.extras.InvalidBase64UrlToUuidException"><code>InvalidBase64UrlToUuidException</code></a> when parsing fails</p></span></dd></dl></div>
+    </li><li name="net.kolotyluk.scala.extras#getFutureResult" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getFutureResult[I,O](input:Any,output:I=&gt;O)(implicitexecutor:scala.concurrent.ExecutionContext):scala.concurrent.Future[O]"></a><a id="getFutureResult[I,O](Any,(I)⇒O)(ExecutionContext):Future[O]"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/scala/extras/index.html#getFutureResult[I,O](input:Any,output:I=&gt;O)(implicitexecutor:scala.concurrent.ExecutionContext):scala.concurrent.Future[O]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getFutureResult</span><span class="tparams">[<span name="I">I</span>, <span name="O">O</span>]</span><span class="params">(<span name="input">input: <span class="extype" name="scala.Any">Any</span></span>, <span name="output">output: (<span class="extype" name="net.kolotyluk.scala.extras.getFutureResult.I">I</span>) ⇒ <span class="extype" name="net.kolotyluk.scala.extras.getFutureResult.O">O</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="executor">executor: <span class="extype" name="scala.concurrent.ExecutionContext">ExecutionContext</span></span>)</span><span class="result">: <span class="extype" name="scala.concurrent.Future">Future</span>[<span class="extype" name="net.kolotyluk.scala.extras.getFutureResult.O">O</span>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Given a input value which can return either a value or a Future(value), this function always returns a Future
+output value.</p><div class="fullcomment"><div class="comment cmt"><h3>Return a Future Result</h3><p>Given a input value which can return either a value or a Future(value), this function always returns a Future
+output value.</p><h4>Examples</h4><pre>getFutureResult[<span class="std">Int</span>,LeaderboardStatusResponse](
+  leaderboard.getCount,
+  count <span class="kw">=&gt;</span> LeaderboardStatusResponse(leaderboardUrlId, count))</pre></div><dl class="paramcmts block"><dt class="tparam">I</dt><dd class="cmt"><p>Input Type</p></dd><dt class="tparam">O</dt><dd class="cmt"><p>Output Type</p></dd><dt class="param">input</dt><dd class="cmt"><p>value</p></dd><dt class="param">output</dt><dd class="cmt"><p>function</p></dd><dt class="param">executor</dt><dd class="cmt"><p>ExecutionContext for running Futures</p></dd><dt>returns</dt><dd class="cmt"><p>Future with Output Result</p></dd></dl></div>
     </li><li name="net.kolotyluk.scala.extras#uuidToBase64UrlId" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="uuidToBase64UrlId(uuid:java.util.UUID):String"></a><a id="uuidToBase64UrlId(UUID):String"></a>
       <span class="permalink">

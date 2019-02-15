@@ -310,9 +310,9 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
         <div id="types" class="types members">
               <h3>Type Members</h3>
               <ol><li name="net.kolotyluk.leaderboard.Akka.LeaderboardManagerActor.Create" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="CreateextendsLeaderboardManagerActor.MessagewithProductwithSerializable"></a><a id="Create:Create"></a>
+      <a id="CreateextendsLeaderboardManagerActor.RequestwithProductwithSerializable"></a><a id="Create:Create"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/Akka/LeaderboardManagerActor$.html#CreateextendsLeaderboardManagerActor.MessagewithProductwithSerializable" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/Akka/LeaderboardManagerActor$.html#CreateextendsLeaderboardManagerActor.RequestwithProductwithSerializable" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -321,14 +321,14 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="LeaderboardManagerActor$$Create.html"><span class="name">Create</span></a><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="LeaderboardManagerActor$$Message.html" class="extype" name="net.kolotyluk.leaderboard.Akka.LeaderboardManagerActor.Message">Message</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="LeaderboardManagerActor$$Create.html"><span class="name">Create</span></a><span class="params">(<span name="leaderboardIdentifier">leaderboardIdentifier: <a href="../scorekeeping/index.html#LeaderboardIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier">LeaderboardIdentifier</a></span>, <span name="replyTo">replyTo: <span class="extype" name="akka.actor.typed.ActorRef">ActorRef</span>[<a href="../scorekeeping/Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a>]</span>)</span><span class="result"> extends <a href="LeaderboardManagerActor$$Request.html" class="extype" name="net.kolotyluk.leaderboard.Akka.LeaderboardManagerActor.Request">Request</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
-    </li><li name="net.kolotyluk.leaderboard.Akka.LeaderboardManagerActor.Message" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="MessageextendsAnyRef"></a><a id="Message:Message"></a>
+    </li><li name="net.kolotyluk.leaderboard.Akka.LeaderboardManagerActor.Request" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="RequestextendsAnyRef"></a><a id="Request:Request"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/Akka/LeaderboardManagerActor$.html#MessageextendsAnyRef" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/Akka/LeaderboardManagerActor$.html#RequestextendsAnyRef" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -337,14 +337,14 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a title="" href="LeaderboardManagerActor$$Message.html"><span class="name">Message</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a title="" href="LeaderboardManagerActor$$Request.html"><span class="name">Request</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       
       
     </li><li name="net.kolotyluk.leaderboard.Akka.LeaderboardManagerActor.Spawn" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Spawn[M]extendsLeaderboardManagerActor.MessagewithProductwithSerializable"></a><a id="Spawn[M]:Spawn[M]"></a>
+      <a id="Spawn[M]extendsLeaderboardManagerActor.RequestwithProductwithSerializable"></a><a id="Spawn[M]:Spawn[M]"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/Akka/LeaderboardManagerActor$.html#Spawn[M]extendsLeaderboardManagerActor.MessagewithProductwithSerializable" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/Akka/LeaderboardManagerActor$.html#Spawn[M]extendsLeaderboardManagerActor.RequestwithProductwithSerializable" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -353,14 +353,14 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="LeaderboardManagerActor$$Spawn.html"><span class="name">Spawn</span></a><span class="tparams">[<span name="M">M</span>]</span><span class="params">(<span name="behavior">behavior: <span class="extype" name="akka.actor.typed.Behavior">Behavior</span>[<span class="extype" name="net.kolotyluk.leaderboard.Akka.LeaderboardManagerActor.Spawn.M">M</span>]</span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="LeaderboardManagerActor$$Message.html" class="extype" name="net.kolotyluk.leaderboard.Akka.LeaderboardManagerActor.Message">Message</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="LeaderboardManagerActor$$Spawn.html"><span class="name">Spawn</span></a><span class="tparams">[<span name="M">M</span>]</span><span class="params">(<span name="behavior">behavior: <span class="extype" name="akka.actor.typed.Behavior">Behavior</span>[<span class="extype" name="net.kolotyluk.leaderboard.Akka.LeaderboardManagerActor.Spawn.M">M</span>]</span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="LeaderboardManagerActor$$Request.html" class="extype" name="net.kolotyluk.leaderboard.Akka.LeaderboardManagerActor.Request">Request</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
     </li><li name="net.kolotyluk.leaderboard.Akka.LeaderboardManagerActor.Update" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="UpdateextendsLeaderboardManagerActor.MessagewithProductwithSerializable"></a><a id="Update:Update"></a>
+      <a id="UpdateextendsLeaderboardManagerActor.RequestwithProductwithSerializable"></a><a id="Update:Update"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/Akka/LeaderboardManagerActor$.html#UpdateextendsLeaderboardManagerActor.MessagewithProductwithSerializable" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/Akka/LeaderboardManagerActor$.html#UpdateextendsLeaderboardManagerActor.RequestwithProductwithSerializable" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -369,7 +369,7 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="LeaderboardManagerActor$$Update.html"><span class="name">Update</span></a><span class="params">(<span name="leaderboard">leaderboard: <span class="extype" name="java.util.UUID">UUID</span></span>, <span name="member">member: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="updateMode">updateMode: <a href="../scorekeeping/package$$UpdateMode.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.UpdateMode">UpdateMode</a></span>, <span name="score">score: <a href="../scorekeeping/package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a></span>)</span><span class="result"> extends <a href="LeaderboardManagerActor$$Message.html" class="extype" name="net.kolotyluk.leaderboard.Akka.LeaderboardManagerActor.Message">Message</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="LeaderboardManagerActor$$Update.html"><span class="name">Update</span></a><span class="params">(<span name="leaderboard">leaderboard: <span class="extype" name="java.util.UUID">UUID</span></span>, <span name="member">member: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="updateMode">updateMode: <a href="../scorekeeping/package$$UpdateMode.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.UpdateMode">UpdateMode</a></span>, <span name="score">score: <a href="../scorekeeping/package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a></span>)</span><span class="result"> extends <a href="LeaderboardManagerActor$$Request.html" class="extype" name="net.kolotyluk.leaderboard.Akka.LeaderboardManagerActor.Request">Request</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       

@@ -142,7 +142,7 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <a title="" href="index.html"><span class="name">scorekeeping</span></a>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="net.kolotyluk.leaderboard">leaderboard</a></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"><h3>ScoreKeeping</h3></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="net.kolotyluk.leaderboard">leaderboard</a></dd></dl></div>
     </li><li class="current-entities indented4">
                         <a class="object" href="ConcurrentLeaderboard$.html" title=""></a>
                         <a class="class" href="ConcurrentLeaderboard.html" title="Keep track of leaderboard scores."></a>
@@ -607,11 +607,11 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <span class="name">getRange</span><span class="params">(<span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="stop">stop: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="package$$Range.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Range">Range</a></span>
       </span>
       
-      <p class="shortcomment cmt">Return a range of scores from start to stop</p><div class="fullcomment"><div class="comment cmt"><h3>Get Range of Scores</h3><p>Return a range of scores from start to stop</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.SynchronizedLeaderboard">SynchronizedLeaderboard</a> → <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd><dt>Exceptions thrown</dt><dd><span class="cmt"><p><span class="extype" name="java.lang.IndexOutOfBoundsException"><code>java.lang.IndexOutOfBoundsException</code></span> if more than Int.MaxValue scores in the result</p></span></dd></dl></div>
+      <p class="shortcomment cmt">Return a range of scores from start to stop</p><div class="fullcomment"><div class="comment cmt"><h3>Get Range of Scores</h3><p>Return a range of scores from start to stop</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.SynchronizedLeaderboard">SynchronizedLeaderboard</a> → <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd><dt>Exceptions thrown</dt><dd><span class="cmt"><p><span class="extype" name="IndexOutOfBoundsException"><code>IndexOutOfBoundsException</code></span> if more than Int.MaxValue scores in the result</p></span></dd><dt>See also</dt><dd><span class="cmt"><p><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IndexOutOfBoundsException.html" target="_blank">java.lang.IndexOutOfBoundsException</a></p></span></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.SynchronizedLeaderboard#getScore" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getScore(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):SynchronizedLeaderboard.this.consecutiveLeaderboard.Response[Option[BigInt]]"></a><a id="getScore(MemberIdentifier):ConsecutiveLeaderboard.Response[Option[BigInt]]"></a>
+      <a id="getScore(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):SynchronizedLeaderboard.this.consecutiveLeaderboard.Response[Option[net.kolotyluk.leaderboard.scorekeeping.Score]]"></a><a id="getScore(MemberIdentifier):ConsecutiveLeaderboard.Response[Option[Score]]"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/SynchronizedLeaderboard.html#getScore(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):SynchronizedLeaderboard.this.consecutiveLeaderboard.Response[Option[BigInt]]" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/SynchronizedLeaderboard.html#getScore(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):SynchronizedLeaderboard.this.consecutiveLeaderboard.Response[Option[net.kolotyluk.leaderboard.scorekeeping.Score]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -620,7 +620,7 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getScore</span><span class="params">(<span name="memberIdentifier">memberIdentifier: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>)</span><span class="result">: <a href="ConsecutiveLeaderboard.html#Response[A]=A" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.ConsecutiveLeaderboard.Response">ConsecutiveLeaderboard.Response</a>[<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.BigInt">BigInt</span>]]</span>
+        <span class="name">getScore</span><span class="params">(<span name="memberIdentifier">memberIdentifier: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>)</span><span class="result">: <a href="ConsecutiveLeaderboard.html#Response[A]=A" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.ConsecutiveLeaderboard.Response">ConsecutiveLeaderboard.Response</a>[<span class="extype" name="scala.Option">Option</span>[<a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a>]]</span>
       </span>
       
       <p class="shortcomment cmt">Get the member's score from the leaderboard
@@ -680,6 +680,22 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="net.kolotyluk.leaderboard.scorekeeping.SynchronizedLeaderboard#leaderboardIdentifier" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="leaderboardIdentifier:net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier"></a><a id="leaderboardIdentifier:LeaderboardIdentifier"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/SynchronizedLeaderboard.html#leaderboardIdentifier:net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">leaderboardIdentifier</span><span class="result">: <a href="index.html#LeaderboardIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier">LeaderboardIdentifier</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.SynchronizedLeaderboard">SynchronizedLeaderboard</a> → <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
     </li><li name="net.kolotyluk.scala.extras.Logging#logger" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="logger:grizzled.slf4j.Logger"></a><a id="logger:Logger"></a>
       <span class="permalink">
@@ -706,22 +722,6 @@ For example:</p><pre><span class="kw">val</span> foo = <span class="lit">"foo"</
 logger.debug(s<span class="lit">"@foo $bar"</span>)</pre><p>Where <code>s&quot;$foo $bar&quot;</code> is only evaluated if logging level is &quot;DEBUG&quot; or higher</p><p>This is lazy so that startup messaging can work without logging failures disrupting things. For example
 <a href="../../scala/extras/index.html" class="extype" name="net.kolotyluk.scala.extras">net.kolotyluk.scala.extras.</a>
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a></dd></dl></div>
-    </li><li name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard#memberIdentifier" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier"></a><a id="memberIdentifier:MemberIdentifier"></a>
-      <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/SynchronizedLeaderboard.html#memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">memberIdentifier</span><span class="result">: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard#name" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="name:String"></a>
       <span class="permalink">
