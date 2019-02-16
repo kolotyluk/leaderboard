@@ -2,32 +2,39 @@ package net.kolotyluk.leaderboard.scorekeeping
 
 import scala.language.higherKinds
 
-
 /** =Leaderboard Interface=
   *
   * Fundamental API for all Leaderboard access.
   *
+  * There are both synchronous and asynchronous versions of this API/
+  *
+  * @see [[net.kolotyluk.leaderboard.scorekeeping.LeaderboardAsync]]
+  * @see [[net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync]]
   *
   */
 trait Leaderboard {
 
-  /** =Abstract Response Type=
+  /** =Abstract Result Type=
     * This API supports both asynchronous and synchronous responses.
     * ==Examples==
     * {{{
-    * val count = leaderboard.getCount
-    * if (count.isInstanceOf[Int]) {
-    *   Future.successful(LeaderboardStatusResponse(leaderboardUrlId, count.asInstanceOf[Int]))
-    * } else {
-    *   count.asInstanceOf[Future[Int]].map{ futureCount =>
-    *     LeaderboardStatusResponse(leaderboardUrlId, futureCount)
-    *   }
+    * leaderboard.getCount match {
+    *   case future: Future[Int]] =>
+    *     future.map(count => LeaderboardStatusResponse(leaderboardUrlId, count))
+    *   case count: Int =>
+    *     Future.successful(LeaderboardStatusResponse(leaderboardUrlId, count)
     * }
     * }}}
+    * or more concisely
+    * {{{
+    * getFutureResult[Int,LeaderboardStatusResponse](
+    *   leaderboard.getCount,
+    *   count =>LeaderboardStatusResponse(leaderboardId, count) )
+    * }}}
     *
-    * @tparam A either Future[A] or A
+    * @tparam A either Future[Type] or Type
     */
-  type Response[A]
+  type AbstractResult[A] // Needs to be define here, and not at some other level
 
   val leaderboardIdentifier: LeaderboardIdentifier = null
   var name: String = null
@@ -37,19 +44,19 @@ trait Leaderboard {
     * @param memberIdentifier
     * @return true, if member was on leaderboard
     */
-  def delete(memberIdentifier: MemberIdentifier): Response[Boolean]
+  def delete(memberIdentifier: MemberIdentifier): AbstractResult[Boolean]
 
   /** =Leaderboard Member Count=
     * Get the total count of all members on the leaderboard
     * @return count
     */
-  def getCount: Response[Int]
+  def getCount: AbstractResult[Int]
 
-  def getIdentifier: Response[LeaderboardIdentifier]
+  def getIdentifier: AbstractResult[LeaderboardIdentifier]
 
-  def getInfo: Response[LeaderboardInfo]
+  def getInfo: AbstractResult[LeaderboardInfo]
 
-  def getName: Response[Option[String]]
+  def getName: AbstractResult[Option[String]]
 
   /** =Get Range of Scores=
     * <p>
@@ -63,7 +70,7 @@ trait Leaderboard {
     *
     * @see [[https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IndexOutOfBoundsException.html java.lang.IndexOutOfBoundsException]]
     */
-  def getRange(start: Long, stop: Long): Response[Range]
+  def getRange(start: Long, stop: Long): AbstractResult[Range]
 
   /** =Member's Score=
     * Get the member's score from the leaderboard
@@ -71,7 +78,7 @@ trait Leaderboard {
     * @param memberIdentifier
     * @return score
     */
-  def getScore(memberIdentifier: MemberIdentifier): Response[Option[Score]]
+  def getScore(memberIdentifier: MemberIdentifier): AbstractResult[Option[Score]]
 
   /** =Compute Standing=
     * <p>
@@ -83,9 +90,9 @@ trait Leaderboard {
     * @param memberIdentifier
     * @return None if member not present, Some[Standing] otherwise
     */
-  def getStanding(memberIdentifier: MemberIdentifier): Response[Option[Standing]]
+  def getStanding(memberIdentifier: MemberIdentifier): AbstractResult[Option[Standing]]
 
-  def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, value: BigInt): Response[Score]
+  def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, value: BigInt): AbstractResult[Score]
 
   /** =Update Member Score=
     * Update member's score on leaderboard
@@ -100,6 +107,6 @@ trait Leaderboard {
     * @param memberIdentfier   member ID
     * @param newScore existing score created by another ScoreKeeper
     */
-  def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, newScore: Score): Response[Score]
+  def update(mode: UpdateMode, memberIdentifier: MemberIdentifier, newScore: Score): AbstractResult[Score]
 
 }

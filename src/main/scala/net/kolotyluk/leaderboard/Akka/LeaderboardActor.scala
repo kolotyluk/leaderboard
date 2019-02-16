@@ -10,6 +10,8 @@ import net.kolotyluk.leaderboard.scorekeeping.{LeaderboardAsync, LeaderboardIden
 import net.kolotyluk.leaderboard.{Configuration, scorekeeping}
 import net.kolotyluk.scala.extras.Logging
 
+import scala.language.higherKinds
+
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps

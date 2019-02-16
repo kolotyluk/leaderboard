@@ -11,7 +11,6 @@ import unit.RoutingSpec
 import scala.language.postfixOps
 import scala.util.Random
 
-
 /** =Leaderboard Endpoint Unit Test Behaviors=
   * Standard behaviors of the Leaderboard HTTP Endpoint for all implementations
   * <p>
@@ -94,6 +93,7 @@ trait Behaviors extends JsonSupport with Logging { this: RoutingSpec =>
 
     var leaderboardUrlId = ""
     var member1 = "zjR9rwMITES9h5A_2gkJNA"
+    var member2 = "zjR9rwMITES9h5A_2gkJNB"
 
     it should s"create a ${implementation.toString} leaderboard for score verification" in {
       val url = "/leaderboard"
@@ -122,7 +122,7 @@ trait Behaviors extends JsonSupport with Logging { this: RoutingSpec =>
       }
     }
 
-    it should s"increment a score for a member not yet on the ${implementation.toString} leaderboard" in {
+    it should s"increment a score for a member1 not yet on the ${implementation.toString} leaderboard" in {
       // Create a score bigger than Long.MaxValue verify scores really are BigInt
       val scoreValue = BigInt(Long.MaxValue) * BigInt(Long.MaxValue)
       val url = s"/leaderboard/$leaderboardUrlId/$member1?score=$scoreValue"
@@ -145,6 +145,77 @@ trait Behaviors extends JsonSupport with Logging { this: RoutingSpec =>
         }
       }
     }
+
+    it should s"verify the score for a member1 is actually there on ${implementation.toString} leaderboard" in {
+      // Create a score bigger than Long.MaxValue verify scores really are BigInt
+      val scoreValue = BigInt(Long.MaxValue) * BigInt(Long.MaxValue)
+      val url = s"/leaderboard/$leaderboardUrlId/$member1"
+      Get(url) ~> leaderboardEndpoint.routes ~> check {
+        Given(s"GET $url")
+        status shouldBe OK
+        When("status == Ok")
+        val response = responseAs[MemberStatusResponse]
+        Then( s"response = $response")
+        response.leaderboardId should be (leaderboardUrlId)
+        And(s"response.leaderboardId should be $leaderboardUrlId")
+        response.memberId should be (member1)
+        And(s"response.memberId should be $member1")
+        response.score match {
+          case None =>
+            fail
+          case Some(score) =>
+            BigInt(score.value) should be (scoreValue)
+            And(s"response.score should be $score")
+        }
+      }
+    }
+
+    it should s"replace a score for a member1 on the ${implementation.toString} leaderboard" in {
+      val scoreValue = 0
+      val url = s"/leaderboard/$leaderboardUrlId/$member1?score=$scoreValue"
+      Put(url) ~> leaderboardEndpoint.routes ~> check {
+        Given(s"PUT $url")
+        status shouldBe OK
+        When("status == Ok")
+        val response = responseAs[MemberStatusResponse]
+        Then( s"response = $response")
+        response.leaderboardId should be (leaderboardUrlId)
+        And(s"response.leaderboardId should be $leaderboardUrlId")
+        response.memberId should be (member1)
+        And(s"response.memberId should be $member1")
+        response.score match {
+          case None =>
+            fail
+          case Some(score) =>
+            BigInt(score.value) should be (scoreValue)
+            And(s"response.score should be $score")
+        }
+      }
+    }
+
+    it should s"verify the score for member1 was actually replaced on the ${implementation.toString} leaderboard" in {
+      val scoreValue = 0
+      val url = s"/leaderboard/$leaderboardUrlId/$member1?score=$scoreValue"
+      Get(url) ~> leaderboardEndpoint.routes ~> check {
+        Given(s"GET $url")
+        status shouldBe OK
+        When("status == Ok")
+        val response = responseAs[MemberStatusResponse]
+        Then( s"response = $response")
+        response.leaderboardId should be (leaderboardUrlId)
+        And(s"response.leaderboardId should be $leaderboardUrlId")
+        response.memberId should be (member1)
+        And(s"response.memberId should be $member1")
+        response.score match {
+          case None =>
+            fail
+          case Some(score) =>
+            BigInt(score.value) should be (scoreValue)
+            And(s"response.score should be $score")
+        }
+      }
+    }
+
   }
 
 }

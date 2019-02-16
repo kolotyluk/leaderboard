@@ -3,6 +3,9 @@ package net.kolotyluk.scala
 import java.nio.ByteBuffer
 import java.util.{Base64, UUID}
 
+import scala.concurrent.{ExecutionContext, Future}
+import scala.language.higherKinds
+
 /** =Extra Utilities=
   * Extra utilities for Scala developers.
   * <p>
@@ -38,6 +41,41 @@ import java.util.{Base64, UUID}
   * Would internally refer to a resource for "foo/91e02865-0102-4b09-b487-bbfacb0ff759"
   */
 package object extras {
+
+  /** =Return a Future Result=
+    *
+    * Given a input value which can return either a value or a Future(value), this function always returns a Future
+    * output value.
+    *
+    * ==Examples==
+    * {{{
+    * getFutureResult[Int,LeaderboardStatusResponse](
+    *   leaderboard.getCount,
+    *   count => LeaderboardStatusResponse(leaderboardUrlId, count))
+    * }}}
+    *
+    * @param input value
+    * @param output function
+    * @param executor ExecutionContext for running Futures
+    * @tparam I Input Type
+    * @tparam O Output Type
+    * @return Future with Output Result
+    */
+  def getFutureResult[I,O](input: Any, output: I => O)(implicit executor: ExecutionContext): Future[O] = {
+    input match {
+      case future: Future[I] @unchecked => // This needs to come first because of type erasure
+        future.map(value => output(value))
+      case value: I @unchecked =>
+        try {
+          Future.successful(output(value))
+        } catch {
+          case cause: Throwable =>
+            Future.failed(cause)
+        }
+      // case result: Any =>
+      //   throw new UnexpectedApiResultError(result, expecting = typeOf[A])
+    }
+  }
 
   /** =Generate Base 64 URL String from UUID=
     *

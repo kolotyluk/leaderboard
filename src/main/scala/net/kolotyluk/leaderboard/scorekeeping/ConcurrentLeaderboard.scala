@@ -86,30 +86,13 @@ object ConcurrentLeaderboard extends LeaderboardManager {
   * <p>
   * Keep track of leaderboard scores.
   * <p>
-  * ==Redis==
-  * Many leaderboard implementations use Redis Sorted Sets for keeping track of scores. In general
-  * this is an excellent way to implement a leaderboard, but there are some issues with this.
-  * ===Floating Point Scores===
-  * Redis uses a [[https://en.wikipedia.org/wiki/Double-precision_floating-point_format 64-bit floating point number]]
-  * for scores. The main problem with this is that this
-  * puts an upper limit on scorekeeping because beyond 52 bits of precision, it is no longer possible
-  * to distinguish unique scores. This implementation uses BigInt, which has infinite precision, so
-  * there are no bounds on how high (or low) scores can get.
-  * ===Tie Breaking===
-  * The next problem is tie-breaking, which relies on the lexical ordering of member IDs. This is
-  * intrinsically unfair because it means the same members will alway win in a tie-breaking situation.
-  * Instead, tie-breaking here is done based on random numbers, such that the largest random number
-  * breaks the tie.
-  * ==Random Numbers==
-  * Timestamps, UUIDs, and other methods were considered for tie-breaking, but this design allows
-  * for multiple ScoreKeepers on multiple Akka Cluster Nodes, and timestamps and UUIDs would lead
-  * to different nodes giving tie-breaking preference over other nodes. Random numbers are 64-bits,
-  * so there is a 1 in 2^64^ chance of a collision, and a failed tie breaking. Random seeds are
-  * created by calling System.nanoTime each time a new random number is generated.
-  * <p>
   * =Threadsafe=
   * This code is intended to be threadsafe, using concurrent non-blocking data structures, in order
   * to offer better performance over serialization in a single actor.
+  *
+  * @see [[net.kolotyluk.leaderboard.scorekeeping.Leaderboard]]
+  * @see [[https://github.com/kolotyluk/leaderboard/blob/master/BACKGROUND.md Background]]
+  * @see [[https://github.com/kolotyluk/leaderboard/blob/master/BENCHMARKS.md Background]]
   *
   * @author eric@kolotyluk.net
   */

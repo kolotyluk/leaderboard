@@ -1,7 +1,8 @@
 package net.kolotyluk.leaderboard.scorekeeping
 
 import scala.concurrent.Future
+import scala.language.higherKinds
 
 trait LeaderboardAsync extends Leaderboard {
-  type Response[A] = Future[A]
+  type AbstractResult[A] = Future[A]
 }

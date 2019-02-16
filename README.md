@@ -3,15 +3,7 @@ Leaderboard Micro-Service which implements standalone leaderboard service
 inspired by
 [Redis Sorted Sets](https://redis.io/topics/data-types).
 
-Many leaderboard implementation make use of the general Sorted Set operations
-in [Redis](https://redis.io/) such as [ZADD](https://redis.io/commands/zadd),
-[ZRANK](https://redis.io/commands/zrank), [ZRANGE](https://redis.io/commands/zrange),
-etc. This project is an academic exercise which attempts to improve on some
-of the restrictions of Redis, while maintaining the robustness of it.
-Academically, it is also an exercise in designing and implementing a
-micro-service, and experimenting with modern cloud principles.
-
-See also [Diary](DIARY.md), [Benchmarks](BENCHMARKS.md)
+See also [Background](BACKGROUND.md), [Diary](DIARY.md), [Benchmarks](BENCHMARKS.md)
 
 # DevOps
 
