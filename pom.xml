@@ -381,7 +381,7 @@
                 <version>3.0.1</version>
                 <configuration>
                     <jvmArgs>
-                        <jvmArg>-Dgatling.test.host=localhost:8080</jvmArg>
+                        <jvmArg>-Dgatling.test.host=aquarius:8080</jvmArg>
                     </jvmArgs>
                     <simulationClass>it.gatling.ScoreSimulationIT</simulationClass>
                 </configuration>
