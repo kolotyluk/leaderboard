@@ -3,7 +3,7 @@ package net.kolotyluk.akka.scala
 import java.util.UUID
 
 import akka.http.scaladsl.server.{PathMatcher, PathMatcher1}
-import net.kolotyluk.leaderboard.Akka.endpoint.InvalidUrlIdException
+import net.kolotyluk.leaderboard.akka_specific.endpoint.InvalidUrlIdException
 import net.kolotyluk.scala.extras.base64UrlIdToUuid
 
 package object extras {

@@ -383,7 +383,7 @@
                     <jvmArgs>
                         <jvmArg>-Dgatling.test.host=localhost:8080</jvmArg>
                     </jvmArgs>
-                    <simulationClass>it.GatlingScoreSimulationIT</simulationClass>
+                    <simulationClass>it.gatling.ScoreSimulationIT</simulationClass>
                 </configuration>
                 <executions>
                     <execution>

@@ -1,4 +1,4 @@
-package it
+package it.gatling
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
@@ -11,7 +11,6 @@ import net.kolotyluk.scala.extras.Configuration
   */
 class GatlingPingSimulationIT extends Simulation with Configuration {
 
-  val testHost = config.getString("gatling.test.host")
 
   val httpProtocol = http
     //.baseUrl("http://localhost:8080") // Here is the root for all relative URLs

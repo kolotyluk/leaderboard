@@ -4,7 +4,7 @@ import java.util
 import java.util.UUID
 
 import akka.actor.testkit.typed.scaladsl.ActorTestKit
-import net.kolotyluk.leaderboard.Akka.LeaderboardActor
+import net.kolotyluk.leaderboard.akka_specific.LeaderboardActor
 import net.kolotyluk.scala.extras.Internalized
 import org.scalatest.BeforeAndAfterAll
 import unit.UnitSpec

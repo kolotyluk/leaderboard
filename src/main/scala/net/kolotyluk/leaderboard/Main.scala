@@ -1,8 +1,8 @@
 package net.kolotyluk.leaderboard
 
 import akka.actor.typed.ActorSystem
-import net.kolotyluk.leaderboard.Akka.guardianActor
-import net.kolotyluk.leaderboard.Akka.GuardianActor.Bind
+import net.kolotyluk.leaderboard.akka_specific.guardianActor
+import net.kolotyluk.leaderboard.akka_specific.GuardianActor.Bind
 import net.kolotyluk.scala.extras.{Environment, Logging}
 
 import scala.util.{Failure, Success}
