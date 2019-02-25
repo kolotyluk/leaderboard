@@ -380,16 +380,28 @@
                 <artifactId>gatling-maven-plugin</artifactId>
                 <version>3.0.1</version>
                 <configuration>
+                    <!--
+                        When disabling the compiler, remember to force compilation before running `mvn gatling:test`,
+                        or otherwise invoke via `mvn verify` which will force compilation, but do all sorts of other
+                        stuff you may not want.
+                    -->
+                    <disableCompiler>true</disableCompiler>
                     <jvmArgs>
                         <jvmArg>-Dgatling.test.host=aquarius:8080</jvmArg>
+                        <jvmArg>-Dakka.loglevel=DEBUG</jvmArg>
                     </jvmArgs>
-                    <simulationClass>it.gatling.ScoreSimulationIT</simulationClass>
+                    <runMultipleSimulations>true</runMultipleSimulations>
+                    <includes>
+                        <!--<include>it.gatling.PingFloodSimulationIT</include>-->
+                        <include>it.gatling.ScoreSimulationIT</include>
+                    </includes>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>Ping Flood</id>
+                        <id>Scoring</id>
                         <phase>integration-test</phase>
                         <goals>
+
                             <goal>test</goal>
                         </goals>
                     </execution>

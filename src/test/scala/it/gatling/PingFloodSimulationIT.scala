@@ -1,8 +1,12 @@
 package it.gatling
 
 import io.gatling.core.Predef._
-import io.gatling.http.Predef._
 import net.kolotyluk.scala.extras.Configuration
+
+import scala.language.postfixOps
+
+import scala.concurrent.duration._
+
 
 /** =Basic Gatling Simulation=
   * Ping the leaderboard service
@@ -50,25 +54,8 @@ import net.kolotyluk.scala.extras.Configuration
   * ================================================================================
   * }}}
   */
-class GatlingPingFloodSimulationIT extends Simulation with Configuration {
+class PingFloodSimulationIT extends Simulation with Configuration {
 
-  val testHost = config.getString("gatling.test.host")
+  setUp(pingFloodScenario.inject(rampUsers(userCount) during (20 seconds)).protocols(httpProtocol))
 
-  val requestCount = 100000
-  val userCount = 1000
-
-  val httpProtocol = http
-    //.baseUrl("http://localhost:8080") // Here is the root for all relative URLs
-    .baseUrl(s"http://$testHost") // Here is the root for all relative URLs
-    .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8") // Here are the common headers
-    .acceptEncodingHeader("gzip, deflate")
-    .acceptLanguageHeader("en-US,en;q=0.5")
-    .userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0")
-
-  val simpleUser = scenario("Ping") // A scenario is a chain of requests and pauses
-      .repeat(requestCount / userCount) {
-          exec(http("ping request").get("/ping"))
-        }
-
-  setUp(simpleUser.inject(atOnceUsers(userCount)).protocols(httpProtocol))
 }

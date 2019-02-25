@@ -35,8 +35,14 @@
         <appender-ref ref="SYSLOG" />
     </appender>
 
+    <!-- https://gatling.io/docs/3.0/general/configuration/ -->
+    <!-- uncomment and set to DEBUG to log all failing HTTP requests -->
+    <!-- uncomment and set to TRACE to log all HTTP requests -->
+    <logger name="io.gatling.http.engine.response" level="DEBUG" />
+    <logger name="it.gatling.package$" level="DEBUG" />
+
     <!-- When using Akka, use AsyncAppender -->
-    <root level="debug">
+    <root level="info">
         <appender-ref ref="ASYNC-CONSOLE" />
         <appender-ref ref="ASYNC-SYSLOG" />
     </root>

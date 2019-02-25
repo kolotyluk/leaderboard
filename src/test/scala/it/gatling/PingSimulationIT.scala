@@ -9,7 +9,7 @@ import net.kolotyluk.scala.extras.Configuration
   * <p>
   * usage: `mvn gatling:test`
   */
-class GatlingPingSimulationIT extends Simulation with Configuration {
+class PingSimulationIT extends Simulation with Configuration {
 
 
   val httpProtocol = http

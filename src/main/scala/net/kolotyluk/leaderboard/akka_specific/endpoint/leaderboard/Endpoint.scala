@@ -9,7 +9,7 @@ import akka.http.scaladsl.server._
 import io.swagger.annotations._
 import javax.ws.rs.Path
 import net.kolotyluk.leaderboard.akka_specific.endpoint
-import net.kolotyluk.leaderboard.akka_specific.endpoint.leaderboard.failure.{UnknownImplementationException, UnknownLeaderboardIdentifierException}
+import net.kolotyluk.leaderboard.akka_specific.endpoint.leaderboard.failure.{InvalidUrlIdentifierException, UnknownImplementationException, UnknownLeaderboardIdentifierException}
 import net.kolotyluk.leaderboard.akka_specific.endpoint.{EndpointError, EndpointException, EndpointException2}
 import net.kolotyluk.leaderboard.scorekeeping
 import net.kolotyluk.leaderboard.scorekeeping.{ConcurrentLeaderboard, Increment, LeaderboardIdentifier, MemberIdentifier, Replace, UpdateMode}
@@ -145,6 +145,9 @@ class Endpoint extends Directives with JsonSupport with PrettyJasonSupport with 
             completeFutureResponse(updateScore(updateMode, leaderboardIdentifier, memberIdentifier, BigInt(request.score)))
           }
         }
+      } ~
+        pathPrefix(Segment) {identifier =>
+          throw new InvalidUrlIdentifierException(identifier)
       }
     }
   }

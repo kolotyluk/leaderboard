@@ -1,10 +1,16 @@
 package it
 
+import java.util.UUID
+
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import net.kolotyluk.scala.extras.Configuration
+import net.kolotyluk.scala.extras.{Configuration, Logging, base64UrlIdToUuid, uuidToBase64UrlId}
 
-package object gatling extends Simulation with  Configuration {
+import scala.collection.concurrent.TrieMap
+
+package object gatling extends Simulation with Configuration with Logging {
+
+  val userIdToUrlId = new TrieMap[Long,String]()
 
   var leaderboardId = ""
 
@@ -22,20 +28,51 @@ package object gatling extends Simulation with  Configuration {
     .post("/leaderboard")
     .check(status.is(201), jsonPath("$..id").ofType[String].saveAs("leaderboardId")))
 
-  val updateLeaderboardChain = exec(http("Update leaderboard").patch("/leaderboard/${leaderboardId}/keAoZQECSwm0h7v6yw_3WQ?score=10"))
+  val updateLeaderboardChain = exec(http("Update leaderboard")
+    .patch("/leaderboard/${leaderboardId}/${memberId}?score=10")
+    .check(status.is(200)))
 
   val createLeaderboardScenario = scenario("Create scenario")
     .exec(createLeaderboardChain)
     .exec {session =>
       leaderboardId = session("leaderboardId").as[String]
-      println(s"leaderboardId = $leaderboardId")
+      logger.info(s"leaderboardId = $leaderboardId")
       session
     }
 
+  /** =Update Leaderboard With Scores=
+    *
+    * ==Test Case==
+    *
+    * For each user: update the leaderboard, multiple times, with some score, as if participating in some contest or
+    * event in a game.
+    *
+    *
+    */
   val updateLeaderboardScenario = scenario("Update scenario")
     .exec{ session =>
-      println(s"leaderboardId = $leaderboardId")
-      session.set("leaderboardId", leaderboardId)
+      val userId = session.userId
+      val memberId = userIdToUrlId.getOrElseUpdate(userId, uuidToBase64UrlId(UUID.randomUUID()))
+      val uuid = base64UrlIdToUuid(memberId)
+      logger.debug(s"userId = $userId, leaderboardId = $leaderboardId, memberId = $memberId, uuid = $uuid")
+      session
+        .set("leaderboardId", leaderboardId)
+        .set("memberId", memberId)
     }
-    .exec(updateLeaderboardChain)
+    .repeat(100) {
+      exec(updateLeaderboardChain)
+    }
+
+  val pingScenario = scenario("Ping") // A scenario is a chain of requests and pauses
+    .repeat(1) {
+    exec(http("ping request").get("/ping"))
+  }
+
+  val requestCount = 100000
+  val userCount = 1000
+
+  val pingFloodScenario = scenario("Ping") // A scenario is a chain of requests and pauses
+    .repeat(requestCount / userCount) {
+    exec(http("ping request").get("/ping"))
+  }
 }

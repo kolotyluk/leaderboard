@@ -3,23 +3,53 @@ package it.gatling
 import io.gatling.core.Predef._
 import net.kolotyluk.scala.extras.Configuration
 
-import scala.concurrent.duration._
 import scala.language.postfixOps
 
+import scala.concurrent.duration._
 
-/** =Basic Gatling Simulation=
-  * Ping the leaderboard service
+/** =Gatling Scoring Simulation=
+  *
+  * Simulate a scoring simulation where leaderboard members can directly add their scores to a leaderboard.
   * <p>
-  * usage: `mvn gatling:test`
+  *
+  *
+  * ==Test Strategy==
+  *
+  * ===Test Levels===
+  *
+  * ===Roles and Responsibilities===
+  *
+  * ===Environment Requirements===
+  *
+  * === Testing Tools===
+  *
+  * ===Risks and Mitigation===
+  *
+  * ===Test Schedule===
+  *
+  * ==Test Plan==
+  *
+  * ===Test Coverage===
+  *
+  * ===Test Methods===
+  *
+  * ===Test Responsibilities===
+  *
+  * ==Test Suite==
+  *
+  *   1. Create Leaderboard(s)
+  *   1. Update Leaderboard(s)
+  *
+  * <p>
+  * usage: `mvn gatling:test`, or `mvn verify`
   * {{{
   * }}}
+  * @see [[https://en.wikipedia.org/wiki/Test_strategy Test Strategy]]
+  * @see [[https://en.wikipedia.org/wiki/Test_plan Test Plan]]
+  * @see [[https://en.wikipedia.org/wiki/Test_suite Test Suite]]
+  * @see [[https://en.wikipedia.org/wiki/Test_case Test Case]]
   */
 class ScoreSimulationIT extends Simulation with Configuration {
-
-  val testHost = config.getString("gatling.test.host")
-
-  val requestCount = 100000
-  val userCount = 1000
 
   setUp(
     createLeaderboardScenario.inject(
@@ -27,7 +57,8 @@ class ScoreSimulationIT extends Simulation with Configuration {
       .protocols(httpProtocol),
     updateLeaderboardScenario.inject(
         nothingFor(4 seconds),
-        rampUsers(10) during (20 seconds))
+        rampUsers(10000) during (100 seconds))
       .protocols(httpProtocol)
   )
+
 }

@@ -29,7 +29,7 @@ import net.kolotyluk.scala.extras.Configuration
   * ================================================================================
   * }}}
   */
-class GatlingPingFloodRequestSimulationIT extends Simulation with Configuration {
+class PingFloodRequestSimulationIT extends Simulation with Configuration {
 
   val testHost = config.getString("gatling.test.host")
 

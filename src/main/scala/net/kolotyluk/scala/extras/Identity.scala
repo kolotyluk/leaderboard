@@ -29,7 +29,8 @@ object Identity {
     *
     * @see [[https://commons.apache.org/proper/commons-codec/archives/1.11/apidocs/org/apache/commons/codec/binary/Base64.html#decodeBase64-java.lang.String- decodeBase64]]
     */
-  def getUrlIdentifier(identifier: String): UUID = {
+  def getUrlIdentifier(identifier: String): UUID = { // TODO - this is way fucked up - don't use it
+    // println(s"identifier = $identifier")
     UUID.nameUUIDFromBytes(Base64.decodeBase64(identifier))
   }
 }
