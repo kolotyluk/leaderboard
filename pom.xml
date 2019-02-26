@@ -401,7 +401,6 @@
                         <id>Scoring</id>
                         <phase>integration-test</phase>
                         <goals>
-
                             <goal>test</goal>
                         </goals>
                     </execution>
