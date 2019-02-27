@@ -1,5 +1,78 @@
 # Benchmarks
 
+As the **Leaderboard Micro Service** is a research project, good
+[benchmarks](https://en.wikipedia.org/wiki/Benchmark_(computing))
+are critical to understanding if design and implementation choices make
+a difference.
+
+## Test Environments
+
+### System Under Test
+
+- [Dell Precision T3500](https://www.dell.com/downloads/global/products/precn/en/q2wk6_dell_precision_t3500_spec_sheet.pdf) -
+  Windows 10 Pro - 1809
+- [Intel Xeon W3680](https://ark.intel.com/content/www/us/en/ark/products/47917/intel-xeon-processor-w3680-12m-cache-3-33-ghz-6-40-gt-s-intel-qpi.html)
+  @ 3.33 GHz / 24 GB / 6 Cores, 12 vCPUs
+  - This is somewhere between an
+    [AWS c5.2xlarge and c5.4xlarge](https://aws.amazon.com/ec2/instance-types/)
+- [java "11.0.1" 2018-10-16 LTS](https://www.oracle.com/technetwork/java/javase/11-0-1-relnotes-5032023.html)
+- [Akka Typed 2.5.19](https://doc.akka.io/docs/akka/2.5/typed/index.html)
+- [Scala 2.12.7](https://www.scala-lang.org/download/2.12.7.html)
+
+### Load Generator
+
+- Apple MacBook Pro - Early 2013 - OS 10.14.3
+- Intel Core i7 @ 2.8 GHz  / 16 GB / 4 Cores, 8 vCPUs
+- [java "11.0.1" 2018-10-16 LTS](https://www.oracle.com/technetwork/java/javase/11-0-1-relnotes-5032023.html)
+- [Gatling 3.0](https://gatling.io/docs/3.0/)
+
+## Highlights
+
+### Raw Throughput
+
+On order of 500,000 leaderboard updates per second, via unit tests
+
+### Network Throughput
+
+These are individual HTTP REST operations.
+
+#### Client
+
+- Ethernet: 160 Mbps mean, 170 Mbps max, via 1000BaseT wire-line
+- Peak HTTP updates: 35,000 per second
+- Sustained HTTP updates: 25,000 per second
+- 100,000 users, performing 150 updates each, over 10 minutes, 0 errors
+
+Percentile | Latency ms
+----------:|----------:
+       max |    4,139
+       99% |       38
+       95% |        7
+       90% |        2
+       50% |        2
+       min |        0
+
+#### Server
+
+- Ethernet: 160 Mbps mean, 170 Mbps max, via 1000BaseT wire-line
+- CPU: 90% mean, 95% peak
+
+### Conclusions
+
+This is approaching the upper limit for this system/network configuration.
+Earlier experiments with the client on WiFi started seeing errors at
+about 60 Mbps.
+
+Gatling is easily able to generate a larger load, such 200 updates per
+user, or running over 5 minutes, but then CPU on the server starts
+hitting 100%, and connections/requests are dropped, timed out, etc.
+
+It is anticipated that the network transaction rate can be improved with
+bulk operations, given the raw throughput of the underlying data structures
+is capable of 500,000 TPS.
+
+# Data
+
 These benchmarks are compiled by running the unit test suites. Different
 storage mechanism are used for each category of test, but identical test
 code is used to exercise each category.
@@ -11,10 +84,6 @@ Two primary data structures are used:
 
 Note, a score is a pair of BigInt (the score) and a Long random number
 to prevent collisions, and impose ordering on tie scores (tie breaker).
-
-## Test Runs
-
-Intel Xeon W3680 @ 3.33 GHz / 24 GB / 6 Cores, 12 vCPUs / java version "11.0.1" 2018-10-16 LTS
 
 ### 2019-01-19 18:28:23
 

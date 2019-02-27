@@ -13,7 +13,7 @@ git
 See also:
 [Background](BACKGROUND.md),
 [Benchmarks](BENCHMARKS.md),
-[Diary](DIARY.md)
+[Anecdotes](ANECDOTES.md)
 
 ## Coordinates
 
