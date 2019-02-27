@@ -59,7 +59,7 @@ package object gatling extends Simulation with Configuration with Logging {
         .set("leaderboardId", leaderboardId)
         .set("memberId", memberId)
     }
-    .repeat(100) {
+    .repeat(150) {
       exec(updateLeaderboardChain)
     }
 

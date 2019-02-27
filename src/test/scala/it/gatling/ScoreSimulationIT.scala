@@ -57,8 +57,9 @@ class ScoreSimulationIT extends Simulation with Configuration {
       .protocols(httpProtocol),
     updateLeaderboardScenario.inject(
         nothingFor(4 seconds),
-        rampUsers(10000) during (100 seconds))
+        rampUsers(100000) during (600 seconds))
       .protocols(httpProtocol)
+      //.protocols(httpProtocol.shareConnections)
   )
 
 }
