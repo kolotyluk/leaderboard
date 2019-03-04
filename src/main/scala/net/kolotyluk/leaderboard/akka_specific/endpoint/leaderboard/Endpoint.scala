@@ -13,7 +13,7 @@ import net.kolotyluk.leaderboard.akka_specific.endpoint.leaderboard.failure.{Inv
 import net.kolotyluk.leaderboard.akka_specific.endpoint.{EndpointError, EndpointException, EndpointException2}
 import net.kolotyluk.leaderboard.scorekeeping
 import net.kolotyluk.leaderboard.scorekeeping.{ConcurrentLeaderboard, Increment, LeaderboardIdentifier, MemberIdentifier, Replace, UpdateMode}
-import net.kolotyluk.scala.extras.{Logging, getFutureResult}
+import net.kolotyluk.scala.extras.{Internalized, Logging, base64UrlIdToUuid, getFutureResult}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -21,7 +21,7 @@ import scala.util.{Failure, Success}
 
 @Api(value = "/leaderboard", produces = "text/plain(UTF-8)")
 @Path("/leaderboard")
-class Endpoint extends Directives with JsonSupport with PrettyJasonSupport with Logging {
+class Endpoint extends Directives with JsonSupport with PrettyJsonSupport with Logging {
 
   def exceptionHandler: ExceptionHandler =
     ExceptionHandler {
@@ -41,6 +41,7 @@ class Endpoint extends Directives with JsonSupport with PrettyJasonSupport with 
       case Success(value: LeaderboardStatusResponse) => complete(value)
       case Success(value: LeaderboardStatusResponses) => complete(value)
       case Success(value: MemberStatusResponse) => complete(value)
+      case Success(value: MemberStatusResponses) => complete(value)
       case Failure(cause: EndpointException) => complete(cause.response)
       case Failure(cause) => complete(cause)
     }
@@ -140,10 +141,10 @@ class Endpoint extends Directives with JsonSupport with PrettyJasonSupport with 
         pathEnd {
           parameter('score) { score =>
             completeFutureResponse(updateScore(updateMode, leaderboardIdentifier, memberIdentifier, BigInt(score)))
-          } ~
-          entity(as[UpdateScoreRequest]) { request =>
-            completeFutureResponse(updateScore(updateMode, leaderboardIdentifier, memberIdentifier, BigInt(request.score)))
-          }
+          } //~
+          //entity(as[UpdateScoresRequest]) { request =>
+          //  completeFutureResponse(updateScore(updateMode, leaderboardIdentifier, memberIdentifier, BigInt(request.score)))
+          //}
         }
       } ~
         pathPrefix(Segment) {identifier =>
@@ -163,6 +164,7 @@ class Endpoint extends Directives with JsonSupport with PrettyJasonSupport with 
   def updateScore(updateMode: UpdateMode, leaderboardIdentifier: LeaderboardIdentifier, memberIdentifier: MemberIdentifier, bigIntScore: BigInt) : Future[MemberStatusResponse] = {
     val leaderboardUrlId = endpoint.internalIdentifierToUrlId(leaderboardIdentifier)
     val memberUrlId = endpoint.internalIdentifierToUrlId(memberIdentifier)
+    logger.warn(s"updateScore($updateMode, $leaderboardUrlId, $memberUrlId, $bigIntScore)")
     identifierToLeaderboard.get(leaderboardIdentifier) match {
       case None =>
         throw new UnknownLeaderboardIdentifierException(leaderboardIdentifier)
@@ -274,6 +276,18 @@ class Endpoint extends Directives with JsonSupport with PrettyJasonSupport with 
     post {
       handleRejections(postRejectionHandler) {
         pathEnd {
+          entity(as[UpdateScoresRequest]) { updateScoresRequest =>
+            logger.warn(s"updateScoresRequest = $updateScoresRequest")
+            val memberStatusResponseFutures = for {
+              leaderboardScores <- updateScoresRequest.leaderboards
+              memberScore <- leaderboardScores.scores
+            } yield update(memberScore.mode, leaderboardScores.leaderboardId, memberScore.memberId, memberScore.score)
+            complete(
+              Future.sequence(memberStatusResponseFutures).map { memberStatusResponses =>
+                MemberStatusResponses(memberStatusResponses)
+              }
+            )
+          } ~
           parameter('name.?) { nameParameter =>
             entity(as[LeaderboardPostRequest]) { leaderboard =>
               // unix shell: curl -H "Content-Type: application/json" -d '{"name":"foo","kind":"ConcurrentLeaderboard"}' -X POST http://localhost:8080/leaderboard
@@ -285,6 +299,18 @@ class Endpoint extends Directives with JsonSupport with PrettyJasonSupport with 
         }
       }
     }
+
+  def update(updateModeString: Option[String], leaderboardUrlId: String, memberUrlId: String, score: String) = {
+    logger.warn(s"update($updateModeString,$leaderboardUrlId, $memberUrlId, $score)")
+    val updateMode = updateModeString match {
+      case Some("increment") => Increment
+      case Some("replace") => Replace
+      case _ => Increment
+    }
+    val leaderboardIdentifier = Internalized(base64UrlIdToUuid(leaderboardUrlId))
+    val memberIdentifier = Internalized(base64UrlIdToUuid(memberUrlId))
+    updateScore(updateMode, leaderboardIdentifier, memberIdentifier, BigInt(score))
+  }
 
   def leaderboardCreate(parameterNameOption: Option[String], payload: Option[LeaderboardPostRequest]): LeaderboardPostResponse = {
 

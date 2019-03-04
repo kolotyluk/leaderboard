@@ -37,9 +37,13 @@ package leaderboard {
 
   final case class LeaderboardPostRequest(leaderboardName: Option[String], implementationName: String)
 
-  final case class UpdateScoreRequest(leaderboardId: Option[String], memberId: Option[String], score: String)
+  final case class MemberScore(memberId: String, score: String, mode: Option[String])
 
-  final case class LeaderboardPutScoresRequest(scores: Seq[UpdateScoreRequest])
+  final case class LeaderboardScores(leaderboardId: String, scores: Seq[MemberScore])
+
+  final case class UpdateScoresRequest(leaderboards: Seq[LeaderboardScores])
+
+  final case class LeaderboardPutScoresRequest(scores: Seq[UpdateScoresRequest])
 
   final case class LeaderboardPostResponse(name: Option[String], id: String)
 
@@ -48,6 +52,8 @@ package leaderboard {
   final case class LeaderboardStatusResponses(leaderboards: Seq[LeaderboardStatusResponse]) extends EndpointResponse
 
   final case class MemberStatusResponse(leaderboardId: String, memberId: String, score: Option[Score]) extends EndpointResponse
+
+  final case class MemberStatusResponses(responses: Seq[MemberStatusResponse]) extends EndpointResponse
 
   trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
 
@@ -61,13 +67,19 @@ package leaderboard {
     implicit val leaderboardStatusResponseFormat = jsonFormat2(LeaderboardStatusResponse)
     implicit val leaderboardStatusResponsesFormat = jsonFormat1(LeaderboardStatusResponses)
 
-    implicit val memberStatusResponsesFormat = jsonFormat3(MemberStatusResponse)
+    implicit val memberStatusResponseFormat = jsonFormat3(MemberStatusResponse)
 
-    implicit val updateScoreRequestFormat = jsonFormat3(UpdateScoreRequest)
+    implicit val memberStatusResponsesFormat = jsonFormat1(MemberStatusResponses)
+
+    implicit val memberScoreFormat = jsonFormat3(MemberScore)
+
+    implicit val leaderboardScoresFormat = jsonFormat2(LeaderboardScores)
+
+    implicit val updateScoresRequestFormat = jsonFormat1(UpdateScoresRequest)
 
   }
 
-  trait PrettyJasonSupport extends SprayJsonSupport with DefaultJsonProtocol {
+  trait PrettyJsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
     implicit val printer = PrettyPrinter
     implicit val errorPayloadFormat = jsonFormat4(ErrorPayload)
   }

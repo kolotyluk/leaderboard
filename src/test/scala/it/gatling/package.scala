@@ -3,12 +3,15 @@ package it
 import java.util.UUID
 
 import io.gatling.core.Predef._
+import io.gatling.core.structure.ChainBuilder
 import io.gatling.http.Predef._
+import net.kolotyluk.leaderboard.akka_specific.endpoint.leaderboard.{JsonSupport, LeaderboardScores, MemberScore, UpdateScoresRequest}
 import net.kolotyluk.scala.extras.{Configuration, Logging, base64UrlIdToUuid, uuidToBase64UrlId}
 
 import scala.collection.concurrent.TrieMap
+import spray.json._
 
-package object gatling extends Simulation with Configuration with Logging {
+package object gatling extends Simulation with Configuration with Logging with JsonSupport {
 
   val userIdToUrlId = new TrieMap[Long,String]()
 
@@ -31,6 +34,21 @@ package object gatling extends Simulation with Configuration with Logging {
   val updateLeaderboardChain = exec(http("Update leaderboard")
     .patch("/leaderboard/${leaderboardId}/${memberId}?score=10")
     .check(status.is(200)))
+
+  val bulkUpdateLeaderboardChain = exec(http("Bulk Update leaderboard")
+    .post("/leaderboard").body(StringBody(session => {
+      val member1 = uuidToBase64UrlId(UUID.randomUUID())
+      val member2 = uuidToBase64UrlId(UUID.randomUUID())
+
+      val body = UpdateScoresRequest(
+        Seq(LeaderboardScores(leaderboardId,
+          Seq(
+            MemberScore(member1, "10", None),
+           MemberScore(member2, "10", None)
+        ))))
+
+      body.toJson.compactPrint
+    })).asJson)
 
   val createLeaderboardScenario = scenario("Create scenario")
     .exec(createLeaderboardChain)
@@ -61,6 +79,20 @@ package object gatling extends Simulation with Configuration with Logging {
     }
     .repeat(100) {
       exec(updateLeaderboardChain)
+    }
+
+  def updateScenario(chainBuilder: ChainBuilder) = scenario("Update scenario")
+    .exec{ session =>
+      val userId = session.userId
+      val memberId = userIdToUrlId.getOrElseUpdate(userId, uuidToBase64UrlId(UUID.randomUUID()))
+      val uuid = base64UrlIdToUuid(memberId)
+      logger.debug(s"userId = $userId, leaderboardId = $leaderboardId, memberId = $memberId, uuid = $uuid")
+      session
+        .set("leaderboardId", leaderboardId)
+        .set("memberId", memberId)
+    }
+    .repeat(100) {
+      exec(chainBuilder)
     }
 
   val pingScenario = scenario("Ping") // A scenario is a chain of requests and pauses

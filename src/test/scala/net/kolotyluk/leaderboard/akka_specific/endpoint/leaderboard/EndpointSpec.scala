@@ -4,9 +4,9 @@ import java.util.UUID
 
 import akka.actor.testkit.typed.scaladsl.ActorTestKit
 import akka.http.scaladsl.model.StatusCodes.{BadRequest, Created, NotFound, OK}
-import net.kolotyluk.leaderboard.akka_specific.endpoint.leaderboard._
 import net.kolotyluk.leaderboard.akka_specific.endpoint.urlIdToInternalIdentifier
 import net.kolotyluk.leaderboard.akka_specific.guardianActor
+import net.kolotyluk.scala.extras.uuidToBase64UrlId
 import unit.RoutingSpec
 
 import scala.language.postfixOps
@@ -103,6 +103,41 @@ class EndpointSpec extends RoutingSpec with Behaviors with JsonSupport {
 
     it must behave like verifyScoreRequest(implementation)
 
+  }
+
+  it should "handle batch update" in {
+    val uri = "/leaderboard"
+
+    var leaderboardId = ""
+
+    Post(uri) ~> leaderboardEndpoint.routes  ~> check {
+      Given(s"POST $uri")
+      status shouldBe Created
+      When("status == OK")
+      val response = responseAs[LeaderboardPostResponse]
+      leaderboardId = response.id
+      urlIdToInternalIdentifier(leaderboardId).getValue[UUID] shouldBe a [UUID]
+      Then("response.id parses to a UUID")
+      response.name shouldBe None
+      And("response.name == None")
+    }
+
+    val member1 = uuidToBase64UrlId(UUID.randomUUID())
+    val member2 = uuidToBase64UrlId(UUID.randomUUID())
+
+    val updateScoresRequest = UpdateScoresRequest(Seq(LeaderboardScores(leaderboardId,
+      Seq(
+        MemberScore(member1, "10", None),
+        MemberScore(member2, "10", None)
+      ))))
+    Post(uri, updateScoresRequest) ~> leaderboardEndpoint.routes  ~> check {
+      Given(s"POST $uri ${updateScoresRequest.toString}")
+      status shouldBe OK
+      When("status == BadRequest")
+      When(s"response=${response.entity}")
+      // TODO check that response.explanation URI exists
+      // TODO check system log that response.systemLogMessage exists
+    }
   }
 
 }
