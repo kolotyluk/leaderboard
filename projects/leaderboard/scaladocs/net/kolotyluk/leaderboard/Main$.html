@@ -127,10 +127,10 @@ while maintaining the robustness of it. Academically, it is also an exercise in 
 micro service, and experimenting with modern cloud principles.</p><p>Also known as a <a href="https://en.wikipedia.org/wiki/Score_(game)#High_score" target="_blank">High Score Table</a>, this service tracks
 scores for a number of contests, events, etc. See also: <a href="https://github.com/kolotyluk/leaderboard" target="_blank">README</a>
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="net.kolotyluk">kolotyluk</a></dd></dl></div>
-    </li><li name="net.kolotyluk.leaderboard.Akka" visbl="pub" class="indented4 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="Akka"></a><a id="Akka:Akka"></a>
+    </li><li name="net.kolotyluk.leaderboard.akka_specific" visbl="pub" class="indented4 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="akka_specific"></a><a id="akka_specific:akka_specific"></a>
       <span class="permalink">
-      <a href="../../../net/kolotyluk/leaderboard/index.html#Akka" title="Permalink">
+      <a href="../../../net/kolotyluk/leaderboard/index.html#akka_specific" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -139,23 +139,15 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="Defined behaviors for actors." href="Akka/index.html"><span class="name">Akka</span></a>
+        <a title="Defined behaviors for actors." href="akka_specific/index.html"><span class="name">akka_specific</span></a>
       </span>
       
       <p class="shortcomment cmt">Defined behaviors for actors.</p><div class="fullcomment"><div class="comment cmt"><h3>Akka Actors</h3><h4>Overview</h4><p>Defined behaviors for actors. In <a href="https://doc.akka.io/docs/akka/2.5/typed/index.html" target="_blank">Akka Typed</a>,
 a behavior is similar to the actor context in legacy Akka.</p><h3>Guardian</h3><p>Is the top level actor in the Akka hierarchy of actors. That is, it the highest level actor the software developer
 has access to. Typically started with something like:</p><pre><span class="kw">val</span> systemName = <span class="lit">"Leaderboard"</span>
 <span class="kw">val</span> guardian = <span class="kw">new</span> Guardian() <span class="cmt">// top level of our actor hierarchy</span>
-<span class="kw">val</span> system = ActorSystem(guardian.behavior, systemName)</pre><p>where <a href="Akka/GuardianActor.html" class="extype" name="net.kolotyluk.leaderboard.Akka.GuardianActor">net.kolotyluk.leaderboard.Akka.GuardianActor</a> defines the behavior.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="net.kolotyluk.leaderboard">leaderboard</a></dd></dl></div>
-    </li><li class="current-entities indented3">
-                        <span class="separator"></span>
-                        <a class="trait" href="Configuration.html" title="Central point of all leaderboard configuration"></a>
-                        <a href="Configuration.html" title="Central point of all leaderboard configuration">Configuration</a>
-                      </li><li class="current-entities indented3">
-                        <span class="separator"></span>
-                        <a class="object" href="" title=""></a>
-                        <a href="" title="">Main</a>
-                      </li><li name="net.kolotyluk.leaderboard.scorekeeping" visbl="pub" class="indented4 " data-isabs="false" fullComment="yes" group="Ungrouped">
+<span class="kw">val</span> system = ActorSystem(guardian.behavior, systemName)</pre><p>where <a href="akka_specific/GuardianActor.html" class="extype" name="net.kolotyluk.leaderboard.akka_specific.GuardianActor">net.kolotyluk.leaderboard.akka_specific.GuardianActor</a> defines the behavior.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="net.kolotyluk.leaderboard">leaderboard</a></dd></dl></div>
+    </li><li name="net.kolotyluk.leaderboard.scorekeeping" visbl="pub" class="indented4 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scorekeeping"></a><a id="scorekeeping:scorekeeping"></a>
       <span class="permalink">
       <a href="../../../net/kolotyluk/leaderboard/index.html#scorekeeping" title="Permalink">
@@ -203,7 +195,15 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="net.kolotyluk.leaderboard">leaderboard</a></dd></dl></div>
-    </li>
+    </li><li class="current-entities indented3">
+                        <span class="separator"></span>
+                        <a class="trait" href="Configuration.html" title="Central point of all leaderboard configuration"></a>
+                        <a href="Configuration.html" title="Central point of all leaderboard configuration">Configuration</a>
+                      </li><li class="current-entities indented3">
+                        <span class="separator"></span>
+                        <a class="object" href="" title=""></a>
+                        <a href="" title="">Main</a>
+                      </li>
               </ul>
             </div>
           </div>
@@ -766,9 +766,9 @@ logger.debug(s<span class="lit">"@foo $bar"</span>)</pre><p>Where <code>s&quot;$
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.Main#system" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="system:akka.actor.typed.ActorSystem[net.kolotyluk.leaderboard.Akka.GuardianActor.Message]"></a><a id="system:ActorSystem[Message]"></a>
+      <a id="system:akka.actor.typed.ActorSystem[net.kolotyluk.leaderboard.akka_specific.GuardianActor.Message]"></a><a id="system:ActorSystem[Message]"></a>
       <span class="permalink">
-      <a href="../../../net/kolotyluk/leaderboard/Main$.html#system:akka.actor.typed.ActorSystem[net.kolotyluk.leaderboard.Akka.GuardianActor.Message]" title="Permalink">
+      <a href="../../../net/kolotyluk/leaderboard/Main$.html#system:akka.actor.typed.ActorSystem[net.kolotyluk.leaderboard.akka_specific.GuardianActor.Message]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -777,7 +777,7 @@ logger.debug(s<span class="lit">"@foo $bar"</span>)</pre><p>Where <code>s&quot;$
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">system</span><span class="result">: <span class="extype" name="akka.actor.typed.ActorSystem">ActorSystem</span>[<a href="Akka/GuardianActor$$Message.html" class="extype" name="net.kolotyluk.leaderboard.Akka.GuardianActor.Message">Message</a>]</span>
+        <span class="name">system</span><span class="result">: <span class="extype" name="akka.actor.typed.ActorSystem">ActorSystem</span>[<a href="akka_specific/GuardianActor$$Message.html" class="extype" name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Message">Message</a>]</span>
       </span>
       
       

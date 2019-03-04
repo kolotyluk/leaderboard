@@ -127,10 +127,10 @@ while maintaining the robustness of it. Academically, it is also an exercise in 
 micro service, and experimenting with modern cloud principles.</p><p>Also known as a <a href="https://en.wikipedia.org/wiki/Score_(game)#High_score" target="_blank">High Score Table</a>, this service tracks
 scores for a number of contests, events, etc. See also: <a href="https://github.com/kolotyluk/leaderboard" target="_blank">README</a>
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="net.kolotyluk">kolotyluk</a></dd></dl></div>
-    </li><li name="net.kolotyluk.leaderboard.Akka" visbl="pub" class="indented4 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="Akka"></a><a id="Akka:Akka"></a>
+    </li><li name="net.kolotyluk.leaderboard.akka_specific" visbl="pub" class="indented4 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="akka_specific"></a><a id="akka_specific:akka_specific"></a>
       <span class="permalink">
-      <a href="../../../net/kolotyluk/leaderboard/index.html#Akka" title="Permalink">
+      <a href="../../../net/kolotyluk/leaderboard/index.html#akka_specific" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -139,14 +139,14 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="Defined behaviors for actors." href="../Akka/index.html"><span class="name">Akka</span></a>
+        <a title="Defined behaviors for actors." href="../akka_specific/index.html"><span class="name">akka_specific</span></a>
       </span>
       
       <p class="shortcomment cmt">Defined behaviors for actors.</p><div class="fullcomment"><div class="comment cmt"><h3>Akka Actors</h3><h4>Overview</h4><p>Defined behaviors for actors. In <a href="https://doc.akka.io/docs/akka/2.5/typed/index.html" target="_blank">Akka Typed</a>,
 a behavior is similar to the actor context in legacy Akka.</p><h3>Guardian</h3><p>Is the top level actor in the Akka hierarchy of actors. That is, it the highest level actor the software developer
 has access to. Typically started with something like:</p><pre><span class="kw">val</span> systemName = <span class="lit">"Leaderboard"</span>
 <span class="kw">val</span> guardian = <span class="kw">new</span> Guardian() <span class="cmt">// top level of our actor hierarchy</span>
-<span class="kw">val</span> system = ActorSystem(guardian.behavior, systemName)</pre><p>where <a href="../Akka/GuardianActor.html" class="extype" name="net.kolotyluk.leaderboard.Akka.GuardianActor">net.kolotyluk.leaderboard.Akka.GuardianActor</a> defines the behavior.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="net.kolotyluk.leaderboard">leaderboard</a></dd></dl></div>
+<span class="kw">val</span> system = ActorSystem(guardian.behavior, systemName)</pre><p>where <a href="../akka_specific/GuardianActor.html" class="extype" name="net.kolotyluk.leaderboard.akka_specific.GuardianActor">net.kolotyluk.leaderboard.akka_specific.GuardianActor</a> defines the behavior.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="net.kolotyluk.leaderboard">leaderboard</a></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping" visbl="pub" class="indented4 current" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scorekeeping"></a><a id="scorekeeping:scorekeeping"></a>
       <span class="permalink">
@@ -386,21 +386,9 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
         <a title="Keep track of leaderboard scores." href="ConcurrentLeaderboard.html"><span class="name">ConcurrentLeaderboard</span></a><span class="result"> extends <a href="LeaderboardSync.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync">LeaderboardSync</a> with <a href="../../scala/extras/Configuration.html" class="extype" name="net.kolotyluk.scala.extras.Configuration">scala.extras.Configuration</a> with <a href="../../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a></span>
       </span>
       
-      <p class="shortcomment cmt">Keep track of leaderboard scores.</p><div class="fullcomment"><div class="comment cmt"><h3>Leaderboard Score Keeping</h3><p>Keep track of leaderboard scores.</p><h4>Redis</h4><p>Many leaderboard implementations use Redis Sorted Sets for keeping track of scores. In general
-this is an excellent way to implement a leaderboard, but there are some issues with this.</p><h5>Floating Point Scores</h5><p>Redis uses a <a href="https://en.wikipedia.org/wiki/Double-precision_floating-point_format" target="_blank">64-bit floating point number</a>
-for scores. The main problem with this is that this
-puts an upper limit on scorekeeping because beyond 52 bits of precision, it is no longer possible
-to distinguish unique scores. This implementation uses BigInt, which has infinite precision, so
-there are no bounds on how high (or low) scores can get.</p><h5>Tie Breaking</h5><p>The next problem is tie-breaking, which relies on the lexical ordering of member IDs. This is
-intrinsically unfair because it means the same members will alway win in a tie-breaking situation.
-Instead, tie-breaking here is done based on random numbers, such that the largest random number
-breaks the tie.</p><h4>Random Numbers</h4><p>Timestamps, UUIDs, and other methods were considered for tie-breaking, but this design allows
-for multiple ScoreKeepers on multiple Akka Cluster Nodes, and timestamps and UUIDs would lead
-to different nodes giving tie-breaking preference over other nodes. Random numbers are 64-bits,
-so there is a 1 in 2<sup>64</sup> chance of a collision, and a failed tie breaking. Random seeds are
-created by calling System.nanoTime each time a new random number is generated.</p><h3>Threadsafe</h3><p>This code is intended to be threadsafe, using concurrent non-blocking data structures, in order
+      <p class="shortcomment cmt">Keep track of leaderboard scores.</p><div class="fullcomment"><div class="comment cmt"><h3>Leaderboard Score Keeping</h3><p>Keep track of leaderboard scores.</p><h3>Threadsafe</h3><p>This code is intended to be threadsafe, using concurrent non-blocking data structures, in order
 to offer better performance over serialization in a single actor.
-</p></div></div>
+</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">net.kolotyluk.leaderboard.scorekeeping.Leaderboard</a></p></span><span class="cmt"><p><a href="https://github.com/kolotyluk/leaderboard/blob/master/BACKGROUND.md" target="_blank">Background</a></p></span><span class="cmt"><p><a href="https://github.com/kolotyluk/leaderboard/blob/master/BENCHMARKS.md" target="_blank">Background</a></p></span></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.ConsecutiveLeaderboard" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ConsecutiveLeaderboardextendsLeaderboardSyncwithLogging"></a><a id="ConsecutiveLeaderboard:ConsecutiveLeaderboard"></a>
       <span class="permalink">
@@ -433,7 +421,8 @@ to offer better performance over serialization in a single actor.
         <a title="Fundamental API for all Leaderboard access." href="Leaderboard.html"><span class="name">Leaderboard</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       
-      <p class="shortcomment cmt">Fundamental API for all Leaderboard access.</p><div class="fullcomment"><div class="comment cmt"><h3>Leaderboard Interface</h3><p>Fundamental API for all Leaderboard access.</p></div></div>
+      <p class="shortcomment cmt">Fundamental API for all Leaderboard access.</p><div class="fullcomment"><div class="comment cmt"><h3>Leaderboard Interface</h3><p>Fundamental API for all Leaderboard access.</p><p>There are both synchronous and asynchronous versions of this API/
+</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="LeaderboardAsync.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardAsync">net.kolotyluk.leaderboard.scorekeeping.LeaderboardAsync</a></p></span><span class="cmt"><p><a href="LeaderboardSync.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync">net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync</a></p></span></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardAsync" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="LeaderboardAsyncextendsLeaderboard"></a><a id="LeaderboardAsync:LeaderboardAsync"></a>
       <span class="permalink">

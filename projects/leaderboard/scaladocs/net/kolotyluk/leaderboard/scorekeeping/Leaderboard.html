@@ -251,7 +251,8 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><h3>Leaderboard Interface</h3><p>Fundamental API for all Leaderboard access.</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><h3>Leaderboard Interface</h3><p>Fundamental API for all Leaderboard access.</p><p>There are both synchronous and asynchronous versions of this API/
+</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="LeaderboardAsync.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardAsync">net.kolotyluk.leaderboard.scorekeeping.LeaderboardAsync</a></p></span><span class="cmt"><p><a href="LeaderboardSync.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync">net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync</a></p></span></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -260,7 +261,7 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
             <span class="toggle">
               Known Subclasses
             </span>
-            <div class="subClasses hiddenContent"><a href="../Akka/LeaderboardActor.html" class="extype" name="net.kolotyluk.leaderboard.Akka.LeaderboardActor">LeaderboardActor</a>, <a href="ConcurrentLeaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard">ConcurrentLeaderboard</a>, <a href="ConsecutiveLeaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.ConsecutiveLeaderboard">ConsecutiveLeaderboard</a>, <a href="LeaderboardAsync.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardAsync">LeaderboardAsync</a>, <a href="LeaderboardSync.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync">LeaderboardSync</a>, <a href="SynchronizedConcurrentLeaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.SynchronizedConcurrentLeaderboard">SynchronizedConcurrentLeaderboard</a>, <a href="SynchronizedLeaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.SynchronizedLeaderboard">SynchronizedLeaderboard</a></div>
+            <div class="subClasses hiddenContent"><a href="../akka_specific/LeaderboardActor.html" class="extype" name="net.kolotyluk.leaderboard.akka_specific.LeaderboardActor">LeaderboardActor</a>, <a href="ConcurrentLeaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.ConcurrentLeaderboard">ConcurrentLeaderboard</a>, <a href="ConsecutiveLeaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.ConsecutiveLeaderboard">ConsecutiveLeaderboard</a>, <a href="LeaderboardAsync.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardAsync">LeaderboardAsync</a>, <a href="LeaderboardSync.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync">LeaderboardSync</a>, <a href="SynchronizedConcurrentLeaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.SynchronizedConcurrentLeaderboard">SynchronizedConcurrentLeaderboard</a>, <a href="SynchronizedLeaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.SynchronizedLeaderboard">SynchronizedLeaderboard</a></div>
           </div></div>
         
 
@@ -308,10 +309,10 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.Response" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="Response[A]"></a><a id="Response[A]:Response[A]"></a>
+              <ol><li name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.AbstractResult" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="AbstractResult[A]"></a><a id="AbstractResult[A]:AbstractResult[A]"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/Leaderboard.html#Response[A]" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/Leaderboard.html#AbstractResult[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -320,26 +321,26 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">Response</span><span class="tparams">[<span name="A">A</span>]</span>
+        <span class="name">AbstractResult</span><span class="tparams">[<span name="A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">This API supports both asynchronous and synchronous responses.</p><div class="fullcomment"><div class="comment cmt"><h3>Abstract Response Type</h3><p>This API supports both asynchronous and synchronous responses.</p><h4>Examples</h4><pre><span class="kw">val</span> count = leaderboard.getCount
-<span class="kw">if</span> (count.isInstanceOf[<span class="std">Int</span>]) {
-  Future.successful(LeaderboardStatusResponse(leaderboardUrlId, count.asInstanceOf[<span class="std">Int</span>]))
-} <span class="kw">else</span> {
-  count.asInstanceOf[Future[<span class="std">Int</span>]].map{ futureCount <span class="kw">=&gt;</span>
-    LeaderboardStatusResponse(leaderboardUrlId, futureCount)
-  }
-}</pre></div></div>
+      <p class="shortcomment cmt">This API supports both asynchronous and synchronous responses.</p><div class="fullcomment"><div class="comment cmt"><h3>Abstract Result Type</h3><p>This API supports both asynchronous and synchronous responses.</p><h4>Examples</h4><pre>leaderboard.getCount <span class="kw">match</span> {
+  <span class="kw">case</span> future: Future[<span class="std">Int</span>]] <span class="kw">=&gt;</span>
+    future.map(count <span class="kw">=&gt;</span> LeaderboardStatusResponse(leaderboardUrlId, count))
+  <span class="kw">case</span> count: <span class="std">Int</span> <span class="kw">=&gt;</span>
+    Future.successful(LeaderboardStatusResponse(leaderboardUrlId, count)
+}</pre><p>or more concisely</p><pre>getFutureResult[<span class="std">Int</span>,LeaderboardStatusResponse](
+  leaderboard.getCount,
+  count <span class="kw">=&gt;</span>LeaderboardStatusResponse(leaderboardId, count) )</pre></div></div>
     </li></ol>
             </div>
 
         <div class="values members">
               <h3>Abstract Value Members</h3>
               <ol><li name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard#delete" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="delete(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):Leaderboard.this.Response[Boolean]"></a><a id="delete(MemberIdentifier):Response[Boolean]"></a>
+      <a id="delete(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):Leaderboard.this.AbstractResult[Boolean]"></a><a id="delete(MemberIdentifier):AbstractResult[Boolean]"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/Leaderboard.html#delete(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):Leaderboard.this.Response[Boolean]" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/Leaderboard.html#delete(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):Leaderboard.this.AbstractResult[Boolean]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -348,14 +349,14 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">delete</span><span class="params">(<span name="memberIdentifier">memberIdentifier: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>)</span><span class="result">: <a href="#Response[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.Response">Response</a>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
+        <span class="name">delete</span><span class="params">(<span name="memberIdentifier">memberIdentifier: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>)</span><span class="result">: <a href="#AbstractResult[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.AbstractResult">AbstractResult</a>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Delete member from leaderboard</p><div class="fullcomment"><div class="comment cmt"><h3>Delete Member</h3><p>Delete member from leaderboard</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true, if member was on leaderboard</p></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard#getCount" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="getCount:Leaderboard.this.Response[Int]"></a><a id="getCount:Response[Int]"></a>
+      <a id="getCount:Leaderboard.this.AbstractResult[Int]"></a><a id="getCount:AbstractResult[Int]"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/Leaderboard.html#getCount:Leaderboard.this.Response[Int]" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/Leaderboard.html#getCount:Leaderboard.this.AbstractResult[Int]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -364,14 +365,14 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getCount</span><span class="result">: <a href="#Response[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.Response">Response</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+        <span class="name">getCount</span><span class="result">: <a href="#AbstractResult[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.AbstractResult">AbstractResult</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Get the total count of all members on the leaderboard</p><div class="fullcomment"><div class="comment cmt"><h3>Leaderboard Member Count</h3><p>Get the total count of all members on the leaderboard</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>count</p></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard#getIdentifier" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="getIdentifier:Leaderboard.this.Response[net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier]"></a><a id="getIdentifier:Response[LeaderboardIdentifier]"></a>
+      <a id="getIdentifier:Leaderboard.this.AbstractResult[net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier]"></a><a id="getIdentifier:AbstractResult[LeaderboardIdentifier]"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/Leaderboard.html#getIdentifier:Leaderboard.this.Response[net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier]" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/Leaderboard.html#getIdentifier:Leaderboard.this.AbstractResult[net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -380,14 +381,14 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getIdentifier</span><span class="result">: <a href="#Response[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.Response">Response</a>[<a href="index.html#LeaderboardIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier">LeaderboardIdentifier</a>]</span>
+        <span class="name">getIdentifier</span><span class="result">: <a href="#AbstractResult[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.AbstractResult">AbstractResult</a>[<a href="index.html#LeaderboardIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardIdentifier">LeaderboardIdentifier</a>]</span>
       </span>
       
       
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard#getInfo" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="getInfo:Leaderboard.this.Response[net.kolotyluk.leaderboard.scorekeeping.LeaderboardInfo]"></a><a id="getInfo:Response[LeaderboardInfo]"></a>
+      <a id="getInfo:Leaderboard.this.AbstractResult[net.kolotyluk.leaderboard.scorekeeping.LeaderboardInfo]"></a><a id="getInfo:AbstractResult[LeaderboardInfo]"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/Leaderboard.html#getInfo:Leaderboard.this.Response[net.kolotyluk.leaderboard.scorekeeping.LeaderboardInfo]" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/Leaderboard.html#getInfo:Leaderboard.this.AbstractResult[net.kolotyluk.leaderboard.scorekeeping.LeaderboardInfo]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -396,14 +397,14 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getInfo</span><span class="result">: <a href="#Response[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.Response">Response</a>[<a href="package$$LeaderboardInfo.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardInfo">LeaderboardInfo</a>]</span>
+        <span class="name">getInfo</span><span class="result">: <a href="#AbstractResult[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.AbstractResult">AbstractResult</a>[<a href="package$$LeaderboardInfo.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardInfo">LeaderboardInfo</a>]</span>
       </span>
       
       
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard#getName" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="getName:Leaderboard.this.Response[Option[String]]"></a><a id="getName:Response[Option[String]]"></a>
+      <a id="getName:Leaderboard.this.AbstractResult[Option[String]]"></a><a id="getName:AbstractResult[Option[String]]"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/Leaderboard.html#getName:Leaderboard.this.Response[Option[String]]" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/Leaderboard.html#getName:Leaderboard.this.AbstractResult[Option[String]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -412,14 +413,14 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getName</span><span class="result">: <a href="#Response[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.Response">Response</a>[<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>
+        <span class="name">getName</span><span class="result">: <a href="#AbstractResult[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.AbstractResult">AbstractResult</a>[<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>
       </span>
       
       
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard#getRange" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="getRange(start:Long,stop:Long):Leaderboard.this.Response[net.kolotyluk.leaderboard.scorekeeping.Range]"></a><a id="getRange(Long,Long):Response[Range]"></a>
+      <a id="getRange(start:Long,stop:Long):Leaderboard.this.AbstractResult[net.kolotyluk.leaderboard.scorekeeping.Range]"></a><a id="getRange(Long,Long):AbstractResult[Range]"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/Leaderboard.html#getRange(start:Long,stop:Long):Leaderboard.this.Response[net.kolotyluk.leaderboard.scorekeeping.Range]" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/Leaderboard.html#getRange(start:Long,stop:Long):Leaderboard.this.AbstractResult[net.kolotyluk.leaderboard.scorekeeping.Range]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -428,14 +429,14 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getRange</span><span class="params">(<span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="stop">stop: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="#Response[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.Response">Response</a>[<a href="package$$Range.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Range">Range</a>]</span>
+        <span class="name">getRange</span><span class="params">(<span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="stop">stop: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="#AbstractResult[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.AbstractResult">AbstractResult</a>[<a href="package$$Range.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Range">Range</a>]</span>
       </span>
       
       <p class="shortcomment cmt">Return a range of scores from start to stop</p><div class="fullcomment"><div class="comment cmt"><h3>Get Range of Scores</h3><p>Return a range of scores from start to stop</p></div><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt"><p><span class="extype" name="IndexOutOfBoundsException"><code>IndexOutOfBoundsException</code></span> if more than Int.MaxValue scores in the result</p></span></dd><dt>See also</dt><dd><span class="cmt"><p><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IndexOutOfBoundsException.html" target="_blank">java.lang.IndexOutOfBoundsException</a></p></span></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard#getScore" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="getScore(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):Leaderboard.this.Response[Option[net.kolotyluk.leaderboard.scorekeeping.Score]]"></a><a id="getScore(MemberIdentifier):Response[Option[Score]]"></a>
+      <a id="getScore(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):Leaderboard.this.AbstractResult[Option[net.kolotyluk.leaderboard.scorekeeping.Score]]"></a><a id="getScore(MemberIdentifier):AbstractResult[Option[Score]]"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/Leaderboard.html#getScore(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):Leaderboard.this.Response[Option[net.kolotyluk.leaderboard.scorekeeping.Score]]" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/Leaderboard.html#getScore(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):Leaderboard.this.AbstractResult[Option[net.kolotyluk.leaderboard.scorekeeping.Score]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -444,16 +445,16 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getScore</span><span class="params">(<span name="memberIdentifier">memberIdentifier: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>)</span><span class="result">: <a href="#Response[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.Response">Response</a>[<span class="extype" name="scala.Option">Option</span>[<a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a>]]</span>
+        <span class="name">getScore</span><span class="params">(<span name="memberIdentifier">memberIdentifier: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>)</span><span class="result">: <a href="#AbstractResult[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.AbstractResult">AbstractResult</a>[<span class="extype" name="scala.Option">Option</span>[<a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a>]]</span>
       </span>
       
       <p class="shortcomment cmt">Get the member's score from the leaderboard
 </p><div class="fullcomment"><div class="comment cmt"><h3>Member's Score</h3><p>Get the member's score from the leaderboard
 </p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>score</p></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard#getStanding" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="getStanding(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):Leaderboard.this.Response[Option[net.kolotyluk.leaderboard.scorekeeping.Standing]]"></a><a id="getStanding(MemberIdentifier):Response[Option[Standing]]"></a>
+      <a id="getStanding(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):Leaderboard.this.AbstractResult[Option[net.kolotyluk.leaderboard.scorekeeping.Standing]]"></a><a id="getStanding(MemberIdentifier):AbstractResult[Option[Standing]]"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/Leaderboard.html#getStanding(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):Leaderboard.this.Response[Option[net.kolotyluk.leaderboard.scorekeeping.Standing]]" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/Leaderboard.html#getStanding(memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier):Leaderboard.this.AbstractResult[Option[net.kolotyluk.leaderboard.scorekeeping.Standing]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -462,15 +463,15 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getStanding</span><span class="params">(<span name="memberIdentifier">memberIdentifier: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>)</span><span class="result">: <a href="#Response[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.Response">Response</a>[<span class="extype" name="scala.Option">Option</span>[<a href="package$$Standing.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Standing">Standing</a>]]</span>
+        <span class="name">getStanding</span><span class="params">(<span name="memberIdentifier">memberIdentifier: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>)</span><span class="result">: <a href="#AbstractResult[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.AbstractResult">AbstractResult</a>[<span class="extype" name="scala.Option">Option</span>[<a href="package$$Standing.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Standing">Standing</a>]]</span>
       </span>
       
       <p class="shortcomment cmt">Iterate through the map to compute member standing</p><div class="fullcomment"><div class="comment cmt"><h3>Compute Standing</h3><p>Iterate through the map to compute member standing</p><h4>Performance</h4><p>O(N) where N = count of members on leaderboard
 </p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>None if member not present, Some[Standing] otherwise</p></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard#update" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="update(mode:net.kolotyluk.leaderboard.scorekeeping.UpdateMode,memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,newScore:net.kolotyluk.leaderboard.scorekeeping.Score):Leaderboard.this.Response[net.kolotyluk.leaderboard.scorekeeping.Score]"></a><a id="update(UpdateMode,MemberIdentifier,Score):Response[Score]"></a>
+      <a id="update(mode:net.kolotyluk.leaderboard.scorekeeping.UpdateMode,memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,newScore:net.kolotyluk.leaderboard.scorekeeping.Score):Leaderboard.this.AbstractResult[net.kolotyluk.leaderboard.scorekeeping.Score]"></a><a id="update(UpdateMode,MemberIdentifier,Score):AbstractResult[Score]"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/Leaderboard.html#update(mode:net.kolotyluk.leaderboard.scorekeeping.UpdateMode,memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,newScore:net.kolotyluk.leaderboard.scorekeeping.Score):Leaderboard.this.Response[net.kolotyluk.leaderboard.scorekeeping.Score]" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/Leaderboard.html#update(mode:net.kolotyluk.leaderboard.scorekeeping.UpdateMode,memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,newScore:net.kolotyluk.leaderboard.scorekeeping.Score):Leaderboard.this.AbstractResult[net.kolotyluk.leaderboard.scorekeeping.Score]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -479,15 +480,15 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">update</span><span class="params">(<span name="mode">mode: <a href="package$$UpdateMode.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.UpdateMode">UpdateMode</a></span>, <span name="memberIdentifier">memberIdentifier: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>, <span name="newScore">newScore: <a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a></span>)</span><span class="result">: <a href="#Response[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.Response">Response</a>[<a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a>]</span>
+        <span class="name">update</span><span class="params">(<span name="mode">mode: <a href="package$$UpdateMode.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.UpdateMode">UpdateMode</a></span>, <span name="memberIdentifier">memberIdentifier: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>, <span name="newScore">newScore: <a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a></span>)</span><span class="result">: <a href="#AbstractResult[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.AbstractResult">AbstractResult</a>[<a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a>]</span>
       </span>
       
       <p class="shortcomment cmt">Update member's score on leaderboard</p><div class="fullcomment"><div class="comment cmt"><h3>Update Member Score</h3><p>Update member's score on leaderboard</p><p>This should only be called from another ScoreKeeper, running in a different Akka Cluster Node.</p><p>Performance is a little better for Replace than Increment, but for both cases, performance is O(log n).</p><h4>Performance</h4><p>O(log N) where N = count of members on the leaderboard
 </p></div><dl class="paramcmts block"><dt class="param">newScore</dt><dd class="cmt"><p>existing score created by another ScoreKeeper</p></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard#update" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="update(mode:net.kolotyluk.leaderboard.scorekeeping.UpdateMode,memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,value:BigInt):Leaderboard.this.Response[net.kolotyluk.leaderboard.scorekeeping.Score]"></a><a id="update(UpdateMode,MemberIdentifier,BigInt):Response[Score]"></a>
+      <a id="update(mode:net.kolotyluk.leaderboard.scorekeeping.UpdateMode,memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,value:BigInt):Leaderboard.this.AbstractResult[net.kolotyluk.leaderboard.scorekeeping.Score]"></a><a id="update(UpdateMode,MemberIdentifier,BigInt):AbstractResult[Score]"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/Leaderboard.html#update(mode:net.kolotyluk.leaderboard.scorekeeping.UpdateMode,memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,value:BigInt):Leaderboard.this.Response[net.kolotyluk.leaderboard.scorekeeping.Score]" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/Leaderboard.html#update(mode:net.kolotyluk.leaderboard.scorekeeping.UpdateMode,memberIdentifier:net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier,value:BigInt):Leaderboard.this.AbstractResult[net.kolotyluk.leaderboard.scorekeeping.Score]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -496,7 +497,7 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">update</span><span class="params">(<span name="mode">mode: <a href="package$$UpdateMode.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.UpdateMode">UpdateMode</a></span>, <span name="memberIdentifier">memberIdentifier: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>, <span name="value">value: <span class="extype" name="scala.BigInt">BigInt</span></span>)</span><span class="result">: <a href="#Response[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.Response">Response</a>[<a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a>]</span>
+        <span class="name">update</span><span class="params">(<span name="mode">mode: <a href="package$$UpdateMode.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.UpdateMode">UpdateMode</a></span>, <span name="memberIdentifier">memberIdentifier: <a href="index.html#MemberIdentifier=net.kolotyluk.leaderboard.InternalIdentifier[java.util.UUID]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.MemberIdentifier">MemberIdentifier</a></span>, <span name="value">value: <span class="extype" name="scala.BigInt">BigInt</span></span>)</span><span class="result">: <a href="#AbstractResult[A]" class="extmbr" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard.AbstractResult">AbstractResult</a>[<a href="package$$Score.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Score">Score</a>]</span>
       </span>
       
       

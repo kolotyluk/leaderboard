@@ -253,21 +253,9 @@ scores for a number of contests, events, etc. See also: <a href="https://github.
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><h3>Leaderboard Score Keeping</h3><p>Keep track of leaderboard scores.</p><h4>Redis</h4><p>Many leaderboard implementations use Redis Sorted Sets for keeping track of scores. In general
-this is an excellent way to implement a leaderboard, but there are some issues with this.</p><h5>Floating Point Scores</h5><p>Redis uses a <a href="https://en.wikipedia.org/wiki/Double-precision_floating-point_format" target="_blank">64-bit floating point number</a>
-for scores. The main problem with this is that this
-puts an upper limit on scorekeeping because beyond 52 bits of precision, it is no longer possible
-to distinguish unique scores. This implementation uses BigInt, which has infinite precision, so
-there are no bounds on how high (or low) scores can get.</p><h5>Tie Breaking</h5><p>The next problem is tie-breaking, which relies on the lexical ordering of member IDs. This is
-intrinsically unfair because it means the same members will alway win in a tie-breaking situation.
-Instead, tie-breaking here is done based on random numbers, such that the largest random number
-breaks the tie.</p><h4>Random Numbers</h4><p>Timestamps, UUIDs, and other methods were considered for tie-breaking, but this design allows
-for multiple ScoreKeepers on multiple Akka Cluster Nodes, and timestamps and UUIDs would lead
-to different nodes giving tie-breaking preference over other nodes. Random numbers are 64-bits,
-so there is a 1 in 2<sup>64</sup> chance of a collision, and a failed tie breaking. Random seeds are
-created by calling System.nanoTime each time a new random number is generated.</p><h3>Threadsafe</h3><p>This code is intended to be threadsafe, using concurrent non-blocking data structures, in order
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><h3>Leaderboard Score Keeping</h3><p>Keep track of leaderboard scores.</p><h3>Threadsafe</h3><p>This code is intended to be threadsafe, using concurrent non-blocking data structures, in order
 to offer better performance over serialization in a single actor.
-</p></div><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">net.kolotyluk.leaderboard.scorekeeping.Leaderboard</a></p></span><span class="cmt"><p><a href="https://github.com/kolotyluk/leaderboard/blob/master/BACKGROUND.md" target="_blank">Background</a></p></span><span class="cmt"><p><a href="https://github.com/kolotyluk/leaderboard/blob/master/BENCHMARKS.md" target="_blank">Background</a></p></span></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -338,10 +326,10 @@ to offer better performance over serialization in a single actor.
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync.Response" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="Response[A]=A"></a><a id="Response[A]:Response[A]"></a>
+              <ol><li name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync.AbstractResult" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="AbstractResult[A]=A"></a><a id="AbstractResult[A]:AbstractResult[A]"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#Response[A]=A" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/scorekeeping/ConcurrentLeaderboard.html#AbstractResult[A]=A" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -350,17 +338,17 @@ to offer better performance over serialization in a single actor.
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">Response</span><span class="tparams">[<span name="A">A</span>]</span><span class="result alias"> = <span class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync.Response.A">A</span></span>
+        <span class="name">AbstractResult</span><span class="tparams">[<span name="A">A</span>]</span><span class="result alias"> = <span class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync.AbstractResult.A">A</span></span>
       </span>
       
-      <p class="shortcomment cmt">This API supports both asynchronous and synchronous responses.</p><div class="fullcomment"><div class="comment cmt"><h3>Abstract Response Type</h3><p>This API supports both asynchronous and synchronous responses.</p><h4>Examples</h4><pre><span class="kw">val</span> count = leaderboard.getCount
-<span class="kw">if</span> (count.isInstanceOf[<span class="std">Int</span>]) {
-  Future.successful(LeaderboardStatusResponse(leaderboardUrlId, count.asInstanceOf[<span class="std">Int</span>]))
-} <span class="kw">else</span> {
-  count.asInstanceOf[Future[<span class="std">Int</span>]].map{ futureCount <span class="kw">=&gt;</span>
-    LeaderboardStatusResponse(leaderboardUrlId, futureCount)
-  }
-}</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LeaderboardSync.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync">LeaderboardSync</a> → <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
+      <p class="shortcomment cmt">This API supports both asynchronous and synchronous responses.</p><div class="fullcomment"><div class="comment cmt"><h3>Abstract Result Type</h3><p>This API supports both asynchronous and synchronous responses.</p><h4>Examples</h4><pre>leaderboard.getCount <span class="kw">match</span> {
+  <span class="kw">case</span> future: Future[<span class="std">Int</span>]] <span class="kw">=&gt;</span>
+    future.map(count <span class="kw">=&gt;</span> LeaderboardStatusResponse(leaderboardUrlId, count))
+  <span class="kw">case</span> count: <span class="std">Int</span> <span class="kw">=&gt;</span>
+    Future.successful(LeaderboardStatusResponse(leaderboardUrlId, count)
+}</pre><p>or more concisely</p><pre>getFutureResult[<span class="std">Int</span>,LeaderboardStatusResponse](
+  leaderboard.getCount,
+  count <span class="kw">=&gt;</span>LeaderboardStatusResponse(leaderboardId, count) )</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LeaderboardSync.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.LeaderboardSync">LeaderboardSync</a> → <a href="Leaderboard.html" class="extype" name="net.kolotyluk.leaderboard.scorekeeping.Leaderboard">Leaderboard</a></dd></dl></div>
     </li><li name="net.kolotyluk.scala.extras.Configuration.ConfigurationError" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ConfigurationErrorextendsError"></a><a id="ConfigurationError:ConfigurationError"></a>
       <span class="permalink">
