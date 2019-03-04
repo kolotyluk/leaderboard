@@ -164,7 +164,7 @@ class Endpoint extends Directives with JsonSupport with PrettyJsonSupport with L
   def updateScore(updateMode: UpdateMode, leaderboardIdentifier: LeaderboardIdentifier, memberIdentifier: MemberIdentifier, bigIntScore: BigInt) : Future[MemberStatusResponse] = {
     val leaderboardUrlId = endpoint.internalIdentifierToUrlId(leaderboardIdentifier)
     val memberUrlId = endpoint.internalIdentifierToUrlId(memberIdentifier)
-    logger.warn(s"updateScore($updateMode, $leaderboardUrlId, $memberUrlId, $bigIntScore)")
+    //logger.warn(s"updateScore($updateMode, $leaderboardUrlId, $memberUrlId, $bigIntScore)")
     identifierToLeaderboard.get(leaderboardIdentifier) match {
       case None =>
         throw new UnknownLeaderboardIdentifierException(leaderboardIdentifier)
@@ -277,7 +277,7 @@ class Endpoint extends Directives with JsonSupport with PrettyJsonSupport with L
       handleRejections(postRejectionHandler) {
         pathEnd {
           entity(as[UpdateScoresRequest]) { updateScoresRequest =>
-            logger.warn(s"updateScoresRequest = $updateScoresRequest")
+            //logger.warn(s"updateScoresRequest = $updateScoresRequest")
             val memberStatusResponseFutures = for {
               leaderboardScores <- updateScoresRequest.leaderboards
               memberScore <- leaderboardScores.scores
@@ -301,7 +301,7 @@ class Endpoint extends Directives with JsonSupport with PrettyJsonSupport with L
     }
 
   def update(updateModeString: Option[String], leaderboardUrlId: String, memberUrlId: String, score: String) = {
-    logger.warn(s"update($updateModeString,$leaderboardUrlId, $memberUrlId, $score)")
+    //logger.warn(s"update($updateModeString,$leaderboardUrlId, $memberUrlId, $score)")
     val updateMode = updateModeString match {
       case Some("increment") => Increment
       case Some("replace") => Replace

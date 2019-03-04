@@ -394,7 +394,8 @@
                     <runMultipleSimulations>true</runMultipleSimulations>
                     <includes>
                         <!--<include>it.gatling.PingFloodSimulationIT</include>-->
-                        <include>it.gatling.ScoreSimulationIT</include>
+                        <!--<include>it.gatling.ScoreSimulationIT</include>-->
+                        <include>it.gatling.BulkScoreSimulationIT</include>
                     </includes>
                 </configuration>
                 <executions>
