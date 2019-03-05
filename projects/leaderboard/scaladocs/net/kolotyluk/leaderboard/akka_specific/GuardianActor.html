@@ -264,7 +264,12 @@ automatically restarted. In Akka Typed, the default action is not to restart chi
 we need to explicitly state our Supervision Policies.</p><h5>Initialization</h5><p>The policy here is that if anything fails during Actor Initialization, we should consider that FATAL, and
 shut down the system.</p><h5>Configuration</h5><p>While most configuration happens during initialization, one conclusion would be that Configuration Errors
 are also FATAL. However, configuration can happen at other times as well, such as when configuration can
-change dynamically.
+change dynamically.</p><h4>Shutting Down</h4><h5>Bind and Unbind</h5><p>We delegate HTTP handling to our <a href="RestActor.html" class="extype" name="net.kolotyluk.leaderboard.akka_specific.RestActor">RestActor</a> because the Akka HTTP APIs are
+<a href="https://doc.akka.io/docs/akka/current/stream" target="_blank">Streams</a>
+based, where streams are manifested by other actors. Consequently these stream actors are child actors of
+the RestActor, so <a href="https://en.wikipedia.org/wiki/Separation_of_concerns" target="_blank">separation of concerns</a> implies
+we don't want to be concerned with those stream actors here.</p><p>When shutting down, we want to do so gracefully, such that all pending 'in-flight' HTTP requests can complete
+normally with normal HTTP responses. We leave this up to the RestActor.
 </p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="https://doc.akka.io/docs/akka/2.5.18/typed/actors.html#introduction" target="_blank">Akka Typed Introduction</a></p></span><span class="cmt"><p><a href="https://doc.akka.io/docs/akka/2.5/typed/fault-tolerance.html#supervision" target="_blank">Akka Typed Supervision</a></p></span></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
@@ -757,6 +762,22 @@ logger.debug(s<span class="lit">"@foo $bar"</span>)</pre><p>Where <code>s&quot;$
       </span>
       
       
+    </li><li name="net.kolotyluk.leaderboard.akka_specific.GuardianActor#shutdownBehavior" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="shutdownBehavior:akka.actor.typed.Behavior[net.kolotyluk.leaderboard.akka_specific.GuardianActor.Message]"></a><a id="shutdownBehavior:Behavior[Message]"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor.html#shutdownBehavior:akka.actor.typed.Behavior[net.kolotyluk.leaderboard.akka_specific.GuardianActor.Message]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">shutdownBehavior</span><span class="result">: <span class="extype" name="akka.actor.typed.Behavior">Behavior</span>[<a href="GuardianActor$$Message.html" class="extype" name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Message">Message</a>]</span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
@@ -789,6 +810,22 @@ logger.debug(s<span class="lit">"@foo $bar"</span>)</pre><p>Where <code>s&quot;$
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="net.kolotyluk.leaderboard.akka_specific.GuardianActor#unbindTimeout" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="unbindTimeout:scala.concurrent.duration.FiniteDuration"></a><a id="unbindTimeout:FiniteDuration"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor.html#unbindTimeout:scala.concurrent.duration.FiniteDuration" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">unbindTimeout</span><span class="result">: <span class="extype" name="scala.concurrent.duration.FiniteDuration">FiniteDuration</span></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
       <span class="permalink">

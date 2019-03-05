@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title>Leaderboard Micro Service 0.0.1-SNAPSHOT API  - net.kolotyluk.leaderboard.akka_specific.GuardianActor.Spawn</title>
-          <meta name="description" content="Leaderboard Micro Service 0.0.1 - SNAPSHOT API - net.kolotyluk.leaderboard.akka specific.GuardianActor.Spawn" />
-          <meta name="keywords" content="Leaderboard Micro Service 0.0.1 SNAPSHOT API net.kolotyluk.leaderboard.akka specific.GuardianActor.Spawn" />
+          <title>Leaderboard Micro Service 0.0.1-SNAPSHOT API  - net.kolotyluk.leaderboard.akka_specific.GuardianActor.Shutdown</title>
+          <meta name="description" content="Leaderboard Micro Service 0.0.1 - SNAPSHOT API - net.kolotyluk.leaderboard.akka specific.GuardianActor.Shutdown" />
+          <meta name="keywords" content="Leaderboard Micro Service 0.0.1 SNAPSHOT API net.kolotyluk.leaderboard.akka specific.GuardianActor.Shutdown" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/index.css" media="screen" type="text/css" rel="stylesheet" />
@@ -177,12 +177,12 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
                         <a href="GuardianActor$$Message.html" title="">Message</a>
                       </li><li class="current-entities indented5">
                         <span class="separator"></span>
-                        <a class="class" href="GuardianActor$$Shutdown.html" title=""></a>
-                        <a href="GuardianActor$$Shutdown.html" title="">Shutdown</a>
+                        <a class="class" href="" title=""></a>
+                        <a href="" title="">Shutdown</a>
                       </li><li class="current-entities indented5">
                         <span class="separator"></span>
-                        <a class="class" href="" title=""></a>
-                        <a href="" title="">Spawn</a>
+                        <a class="class" href="GuardianActor$$Spawn.html" title=""></a>
+                        <a href="GuardianActor$$Spawn.html" title="">Spawn</a>
                       </li>
               </ul>
             </div>
@@ -192,8 +192,8 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
       <div id="definition">
         <div class="big-circle class">c</div>
         <p id="owner"><a href="../../../index.html" class="extype" name="net">net</a>.<a href="../../index.html" class="extype" name="net.kolotyluk">kolotyluk</a>.<a href="../index.html" class="extype" name="net.kolotyluk.leaderboard">leaderboard</a>.<a href="index.html" class="extype" name="net.kolotyluk.leaderboard.akka_specific">akka_specific</a>.<a href="GuardianActor$.html" class="extype" name="net.kolotyluk.leaderboard.akka_specific.GuardianActor">GuardianActor</a></p>
-        <h1>Spawn<span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Spawn.html" title="Permalink">
+        <h1>Shutdown<span class="permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Shutdown.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span></h1>
@@ -206,7 +206,7 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Spawn</span><span class="tparams">[<span name="M">M</span>]</span><span class="params">(<span name="behavior">behavior: <span class="extype" name="akka.actor.typed.Behavior">Behavior</span>[<span class="extype" name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Spawn.M">M</span>]</span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="GuardianActor$$Message.html" class="extype" name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Message">Message</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Shutdown</span><span class="params">(<span name="reason">reason: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="notifier">notifier: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result"> extends <a href="GuardianActor$$Message.html" class="extype" name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Message">Message</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -241,7 +241,7 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Spawn"><span>Spawn</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Message"><span>Message</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Shutdown"><span>Shutdown</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Message"><span>Message</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -261,10 +261,10 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Spawn#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(behavior:akka.actor.typed.Behavior[M],name:String):net.kolotyluk.leaderboard.akka_specific.GuardianActor.Spawn[M]"></a><a id="&lt;init&gt;:Spawn[M]"></a>
+              <ol><li name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Shutdown#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(reason:String,notifier:Object):net.kolotyluk.leaderboard.akka_specific.GuardianActor.Shutdown"></a><a id="&lt;init&gt;:Shutdown"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Spawn.html#&lt;init&gt;(behavior:akka.actor.typed.Behavior[M],name:String):net.kolotyluk.leaderboard.akka_specific.GuardianActor.Spawn[M]" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Shutdown.html#&lt;init&gt;(reason:String,notifier:Object):net.kolotyluk.leaderboard.akka_specific.GuardianActor.Shutdown" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -273,7 +273,7 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Spawn</span><span class="params">(<span name="behavior">behavior: <span class="extype" name="akka.actor.typed.Behavior">Behavior</span>[<span class="extype" name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Spawn.M">M</span>]</span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span>
+        <span class="name">Shutdown</span><span class="params">(<span name="reason">reason: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="notifier">notifier: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span>
       </span>
       
       
@@ -290,7 +290,7 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
                 <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Spawn.html#!=(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Shutdown.html#!=(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -306,7 +306,7 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
     </li><li name="scala.AnyRef###" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Spawn.html###():Int" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Shutdown.html###():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -322,7 +322,7 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
     </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Spawn.html#==(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Shutdown.html#==(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -338,7 +338,7 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Spawn.html#asInstanceOf[T0]:T0" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Shutdown.html#asInstanceOf[T0]:T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -351,26 +351,10 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Spawn#behavior" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="behavior:akka.actor.typed.Behavior[M]"></a><a id="behavior:Behavior[M]"></a>
-      <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Spawn.html#behavior:akka.actor.typed.Behavior[M]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">behavior</span><span class="result">: <span class="extype" name="akka.actor.typed.Behavior">Behavior</span>[<span class="extype" name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Spawn.M">M</span>]</span>
-      </span>
-      
-      
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Spawn.html#clone():Object" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Shutdown.html#clone():Object" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -396,7 +380,7 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Spawn.html#eq(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Shutdown.html#eq(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -412,7 +396,7 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
     </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Spawn.html#getClass():Class[_]" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Shutdown.html#getClass():Class[_]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -433,7 +417,7 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
     </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Spawn.html#isInstanceOf[T0]:Boolean" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Shutdown.html#isInstanceOf[T0]:Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -446,26 +430,10 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Spawn#name" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="name:String"></a>
-      <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Spawn.html#name:String" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">name</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      
-      
     </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Spawn.html#ne(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Shutdown.html#ne(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -478,10 +446,26 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Shutdown#notifier" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="notifier:Object"></a><a id="notifier:AnyRef"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Shutdown.html#notifier:Object" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notifier</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Spawn.html#notify():Unit" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Shutdown.html#notify():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -502,7 +486,7 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
     </li><li name="scala.AnyRef#notifyAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Spawn.html#notifyAll():Unit" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Shutdown.html#notifyAll():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -520,10 +504,26 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
                 <span class="name">@HotSpotIntrinsicCandidate</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Shutdown#reason" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="reason:String"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Shutdown.html#reason:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">reason</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Spawn.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Shutdown.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -539,7 +539,7 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Spawn.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Shutdown.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -561,7 +561,7 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long):Unit"></a><a id="wait(Long):Unit"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Spawn.html#wait(x$1:Long):Unit" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Shutdown.html#wait(x$1:Long):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -585,7 +585,7 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Spawn.html#wait():Unit" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Shutdown.html#wait():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -615,7 +615,7 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
               <ol><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <span class="permalink">
-      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Spawn.html#finalize():Unit" title="Permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$$Shutdown.html#finalize():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>

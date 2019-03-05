@@ -201,8 +201,8 @@ has access to. Typically started with something like:</p><pre><span class="kw">v
                         <a href="Configuration.html" title="Central point of all leaderboard configuration">Configuration</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
-                        <a class="object" href="Main$.html" title="Akka System Startup"></a>
-                        <a href="Main$.html" title="Akka System Startup">Main</a>
+                        <a class="object" href="Main$.html" title="Akka System Startup - set up our operating context with configuration, environment, and logging before starting the actor system."></a>
+                        <a href="Main$.html" title="Akka System Startup - set up our operating context with configuration, environment, and logging before starting the actor system.">Main</a>
                       </li><li name="net.kolotyluk.scala" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scala"></a><a id="scala:scala"></a>
       <span class="permalink">
@@ -362,10 +362,18 @@ that extends <a href="https://github.com/lightbend/config" target="_blank">Types
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="Akka System Startup" href="Main$.html"><span class="name">Main</span></a><span class="result"> extends <span class="extype" name="scala.App">App</span> with <a href="Configuration.html" class="extype" name="net.kolotyluk.leaderboard.Configuration">Configuration</a> with <a href="../scala/extras/Environment.html" class="extype" name="net.kolotyluk.scala.extras.Environment">Environment</a> with <a href="../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a></span>
+        <a title="Akka System Startup - set up our operating context with configuration, environment, and logging before starting the actor system." href="Main$.html"><span class="name">Main</span></a><span class="result"> extends <span class="extype" name="scala.App">App</span> with <a href="Configuration.html" class="extype" name="net.kolotyluk.leaderboard.Configuration">Configuration</a> with <a href="../scala/extras/Environment.html" class="extype" name="net.kolotyluk.scala.extras.Environment">Environment</a> with <a href="../scala/extras/Logging.html" class="extype" name="net.kolotyluk.scala.extras.Logging">Logging</a></span>
       </span>
       
-      <p class="shortcomment cmt">Akka System Startup</p><div class="fullcomment"><div class="comment cmt"><h3>Leaderboard Micro Service Main Entry Point</h3><p>Akka System Startup</p><p>Set up our operating context with configuration, environment, and logging before starting the actor system.</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="https://doc.akka.io/docs/akka/current/typed/index.html#akka-typed" target="_blank">Akka Typed</a></p></span><span class="cmt"><p><a href="https://doc.akka.io/docs/akka/current" target="_blank">Akka</a></p></span></dd></dl></div>
+      <p class="shortcomment cmt">Akka System Startup - set up our operating context with configuration, environment, and logging before
+starting the actor system.</p><div class="fullcomment"><div class="comment cmt"><h3>Leaderboard Micro Service - Main Entry Point</h3><h4>Startup</h4><p>Akka System Startup - set up our operating context with configuration, environment, and logging before
+starting the actor system.</p><h4>Shutdown</h4><p>While all systems should be designed to be robust when things spontaneously fail, with HTTP APIs, it's nice to
+make provisions for an orderly shutdown so that any outstanding HTTP Requests can complete normally.</p><p>Note: normal shutdown will not happen if you press the IntelliJ Stop Button. Instead, you need to use the <code>Exit</code>
+button in the Run panel. This will only work when Running, and not when Debugging.</p><h5>Shutdown Hook</h5><p>By registering a Shutdown Hook, an application can perform any necessary housekeeping process before the JVM
+shuts down. A Shutdown Hook is a Java Thread, and when all such threads complete, the JVM will finally complete
+the shutdown process.</p><p>By using the Shutdown Hook, this service can make best effort to shutdown gracefully, minimizing loss of data
+or operations. Note, because the hook runs at a rather low lever, we utilize fairly primitive mechanisms for
+the Akka System to notify the Shutdown Hook when it's done.</p><p>The easist way to shutdown the service is</p><pre>System.exit(<span class="num">0</span>)</pre></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="https://doc.akka.io/docs/akka/current" target="_blank">Akka</a></p></span><span class="cmt"><p><a href="https://doc.akka.io/docs/akka/current/typed/index.html#akka-typed" target="_blank">Akka Typed</a></p></span><span class="cmt"><p><a href="http://stackoverflow.com/questions/4727536/how-do-i-stop-a-processing-running-in-intellij-such-that-it-calls-the-shutdown-h" target="_blank">ItelliJ Exit Button</a></p></span><span class="cmt"><p><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/lang/hook-design.html" target="_blank">Design of the Shutdown Hooks API</a></p></span><span class="cmt"><p><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Runtime.html#addShutdownHook(java.lang.Thread)" target="_blank">addShutdownHook</a></p></span></dd></dl></div>
     </li>
               </ol>
             </div>

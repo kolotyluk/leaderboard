@@ -259,7 +259,10 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><h3>HTTP REST API</h3><p>Binds to one or more interfaces listening for HTTP Requests</p><h4>Akka HTTP</h4><p>Binds using <a href="https://doc.akka.io/docs/akka-http/current/server-side/index.html" target="_blank">Akka HTTP Server API</a>.
 This results in creating a <a href="https://doc.akka.io/docs/akka/2.5/stream" target="_blank">Stream</a> of incoming session requests,
-which produces a Stream for each session. These are materialized as child actors of this actor.</p></div><div class="toggleContainer block">
+which produces a Stream for each session. These are materialized as child actors of this actor.</p><h4>Graceful Termination</h4><p>The main advantage of Graceful Termination, via unbind, is that if there are pending 'in-flight' requests,
+they can be completed before the system shuts down.</p><h4>Coordinated Shutdown</h4><p>This is fairly complex, and not handled in Akka HTTP, and not clear how to handle it in Akka Typed.
+This is just a placeholder for now...
+</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="https://doc.akka.io/docs/akka-http/current/server-side/graceful-termination.html" target="_blank">Graceful Termination</a></p></span><span class="cmt"><p><a href="https://doc.akka.io/docs/akka/2.5.19/actors.html#coordinated-shutdown" target="_blank">Coordinated Shutdown</a></p></span></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -719,6 +722,22 @@ logger.debug(s<span class="lit">"@foo $bar"</span>)</pre><p>Where <code>s&quot;$
                 <span class="name">@HotSpotIntrinsicCandidate</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="net.kolotyluk.leaderboard.akka_specific.RestActor#serverBinding" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="serverBinding:Option[akka.http.scaladsl.Http.ServerBinding]"></a><a id="serverBinding:Option[ServerBinding]"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/RestActor.html#serverBinding:Option[akka.http.scaladsl.Http.ServerBinding]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">serverBinding</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="akka.http.scaladsl.Http.ServerBinding">ServerBinding</span>]</span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
