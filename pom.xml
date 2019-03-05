@@ -59,7 +59,7 @@
         </repository>
         <site>
             <id>github</id>
-            <url>http://kolotyluk.github.io/leaderboard</url>
+            <url>http://kolotyluk.github.io/projects/leaderboard</url>
         </site>
     </distributionManagement>
 
@@ -431,6 +431,18 @@
                             <goal>compile</goal>
                             <goal>testCompile</goal>
                         </goals>
+                    </execution>
+                    <execution>
+                        <id>scalaDoc</id>
+                        <goals>
+                            <goal>doc</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>src/main/scala/**</include>
+                                <include>src/test/scala/**</include>
+                            </includes>
+                        </configuration>
                     </execution>
 <!--
                     <execution>
