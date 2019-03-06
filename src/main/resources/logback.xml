@@ -2,7 +2,9 @@
 
     <!-- see also: https://doc.akka.io/docs/akka/2.5/logging.html -->
 
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <timestamp key="bySecond" datePattern="yyyyMMdd'T'HHmmss"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <!--
             encoders are by default assigned the type
             ch.qos.logback.classic.encoder.PatternLayoutEncoder
@@ -16,7 +18,17 @@
 <!--
             <pattern>%-5level %date{ISO8601} %logger{36} %X{sourceThread} - %msg%n</pattern>
 -->
+            <outputPatternAsHeader>true</outputPatternAsHeader>
         </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>target/log/leaderboard-log-${bySecond}.txt</file>
+        <append>true</append>
+        <encoder>
+            <pattern>[%-5level] [%date{ISO8601}] [%thread] [%logger{36}] %msg%n</pattern>
+        </encoder>
+        <outputPatternAsHeader>true</outputPatternAsHeader>
     </appender>
 
     <appender name="SYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">
@@ -25,14 +37,30 @@
         <syslogHost>localhost</syslogHost>
     </appender>
 
-    <!-- When using Akka, use AsyncAppender -->
+    <!--
+        When using Akka, use AsyncAppender
+    -->
+
     <appender name="ASYNC-CONSOLE" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="CONSOLE" />
+<!--
+        <queueSize>1024</queueSize>
+-->
+    </appender>
+
+    <appender name="ASYNC-FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE" />
+<!--
+        <queueSize>1024</queueSize>
+-->
     </appender>
 
     <!-- When using Akka, use AsyncAppender -->
     <appender name="ASYNC-SYSLOG" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="SYSLOG" />
+<!--
+        <queueSize>1024</queueSize>
+-->
     </appender>
 
     <!-- https://gatling.io/docs/3.0/general/configuration/ -->
@@ -44,6 +72,7 @@
     <!-- When using Akka, use AsyncAppender -->
     <root level="info">
         <appender-ref ref="ASYNC-CONSOLE" />
+        <appender-ref ref="ASYNC-FILE" />
         <appender-ref ref="ASYNC-SYSLOG" />
     </root>
 </configuration>

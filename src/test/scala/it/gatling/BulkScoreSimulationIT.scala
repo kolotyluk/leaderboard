@@ -64,7 +64,7 @@ class BulkScoreSimulationIT extends Simulation with Configuration {
         nothingFor(4 seconds),
         rampUsers(users) during (span))
       .protocols(httpUpdateProtocol)
-  )
+  ).assertions(forAll.failedRequests.percent.lte(5))
 
   // updateSetUp(100)
 

@@ -13,9 +13,9 @@
                 https://stackoverflow.com/questions/24696793/akka-logging-pattern-unchangeable
             -->
             <pattern>[%-5level] [%date{ISO8601}] [%thread] [%logger{36}] %msg%n</pattern>
-            <!--
-                        <pattern>%-5level %date{ISO8601} %logger{36} %X{sourceThread} - %msg%n</pattern>
-            -->
+<!--
+            <pattern>%-5level %date{ISO8601} %logger{36} %X{sourceThread} - %msg%n</pattern>
+-->
         </encoder>
     </appender>
 
@@ -35,11 +35,23 @@
         <appender-ref ref="SYSLOG" />
     </appender>
 
+<!--
+    <appender name="ASYNC-FILE" class="ch.qos.logback.core.FileAppender">
+        <appender-ref ref="STDOUT" />
+        <file> log-${byDay}.txt </file>
+        <append>true</append>
+    </appender>
+-->
+
+    <!-- https://gatling.io/docs/3.0/general/configuration/ -->
+    <!-- uncomment and set to DEBUG to log all failing HTTP requests -->
+    <!-- uncomment and set to TRACE to log all HTTP requests -->
+    <logger name="io.gatling.http.engine.response" level="DEBUG" />
+    <logger name="it.gatling.package$" level="DEBUG" />
+
     <!-- When using Akka, use AsyncAppender -->
     <root level="info">
         <appender-ref ref="ASYNC-CONSOLE" />
-<!--
         <appender-ref ref="ASYNC-SYSLOG" />
--->
     </root>
 </configuration>

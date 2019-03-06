@@ -2,11 +2,12 @@ package net.kolotyluk.leaderboard.akka_specific
 
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.scaladsl.adapter.TypedActorSystemOps
-import akka.actor.typed.{ActorRef, Behavior, Terminated}
+import akka.actor.typed.{ActorRef, Behavior, PostStop, Terminated}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import net.kolotyluk.leaderboard.Configuration
+import net.kolotyluk.leaderboard.akka_specific.GuardianActor.Unbound
 import net.kolotyluk.leaderboard.akka_specific.RestActor._
 import net.kolotyluk.scala.extras.Logging
 
@@ -19,7 +20,7 @@ object RestActor {
   case class Done(cause: String) extends Message
   case class Fail(cause: Throwable) extends Message
   case class Spawn[M](behavior: Behavior[M], name:String) extends Message
-  case class Unbind(deadline: FiniteDuration, replyTo: ActorRef[Http.HttpTerminated]) extends Message
+  case class Unbind(notifier: Object, deadline: FiniteDuration, replyTo: ActorRef[Unbound]) extends Message
 }
 
 /** =HTTP REST API=
@@ -85,7 +86,7 @@ class RestActor(routes: Route) extends Configuration with Logging {
     }
 
     Behaviors.receive[RestActor.Message] { (actorCell, message) ⇒
-      logger.info(s"received $message")
+      logger.debug(s"received $message")
       message match {
         case Done(cause) => // TODO do we need this?
           Behaviors.same
@@ -97,23 +98,35 @@ class RestActor(routes: Route) extends Configuration with Logging {
           actorCell.watch(actorRef)
           //actorRef ! Start()
           Behaviors.same
-        case Unbind(deadline: FiniteDuration, replyTo: ActorRef[Http.HttpTerminated]) ⇒
+        case Unbind(notifier, deadline, replyTo) ⇒
           logger.info(s"Received request to unbind. Starting Graceful Termination of HTTP API.")
           logger.warn(s"Unbinding from $address:$port with deadline = $deadline")
           serverBinding.foreach{ binding =>
-            binding.terminate(deadline).map{ unbound =>
-              replyTo ! unbound
-              serverBinding = None
+            binding.terminate(deadline) onComplete {
+              case Success(_) =>
+                replyTo ! Unbound(notifier, None)
+                serverBinding = None
+                logger.info("REST API unbound normally after completing all requests.")
+              case Failure(cause) =>
+                replyTo ! Unbound(notifier, Some(cause))
+                serverBinding = None
+                logger.error("REST API unbound, but may not have completed all requests", cause)
             }
           }
           Behaviors.same
       }
     } receiveSignal {
+      case (actorContext, postStop: PostStop) =>
+        logger.info(postStop)
+        Behaviors.same
       case (actorContext, Terminated(actorRef)) ⇒
         // There is no other information available with this signal.
         // While akka knows the reason for termination, we don't.
         logger.info(s"actorContext = $actorContext")
         logger.info(s"actorRef = $actorRef")
+        Behaviors.same
+      case signal@_ ⇒
+        logger.warn(s"unknown signal = $signal, continuing...")
         Behaviors.same
     }
   }

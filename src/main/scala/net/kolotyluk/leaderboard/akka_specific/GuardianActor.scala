@@ -1,18 +1,15 @@
 package net.kolotyluk.leaderboard.akka_specific
 
-import akka.actor.typed.scaladsl.AskPattern._
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.scaladsl.adapter.TypedActorSystemOps
 import akka.actor.typed.{ActorRef, Behavior, PostStop, SupervisorStrategy, Terminated}
-import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.RouteConcatenation
 import akka.util.Timeout
 import net.kolotyluk.leaderboard.Configuration
-import net.kolotyluk.leaderboard.akka_specific.GuardianActor.{Bind, Done, Shutdown, Spawn}
+import net.kolotyluk.leaderboard.akka_specific.GuardianActor._
 import net.kolotyluk.leaderboard.akka_specific.RestActor.Unbind
 import net.kolotyluk.scala.extras.Logging
 
-import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
 import scala.util.{Failure, Success}
@@ -35,6 +32,7 @@ object GuardianActor {
     */
   case class Shutdown(reason: String, notifier: Object) extends Message
   case class Spawn[M](behavior: Behavior[M], name:String) extends Message
+  case class Unbound(notifier: Object, failure: Option[Throwable]) extends Message
 }
 
 /** =Outermost Behavior of ActorSystem=
@@ -92,32 +90,6 @@ class GuardianActor(leaderboardManagerActor: LeaderboardManagerActor, restActor:
     implicit val executionContext = actorContext.system.executionContext
     implicit val scheduler = actorSystem.scheduler
 
-    def shutdown(unbound: Future[Http.HttpTerminated], notifier: Object): Behavior[GuardianActor.Message] = {
-      def terminate = {
-        def notifyDone = notifier.synchronized {
-          logger.info("Notifying Shutdown Hook")
-          notifier.notify
-        }
-        actorSystem.terminate onComplete {
-          case Success(terminated) =>
-            logger.info(s"terminated = $terminated")
-            notifyDone
-          case Failure(cause) =>
-            logger.error(cause)
-            notifyDone
-        }
-      }
-      unbound onComplete {
-        case Success(_) ⇒
-          logger.info("REST API successfully unbound after completing all requests.")
-          terminate
-        case Failure(cause) ⇒
-          logger.error("REST API unbound, but may not have completed all requests", cause)
-          terminate
-      }
-      shutdownBehavior
-    }
-
     leaderboardManagerActorRef = actorContext.spawn(leaderboardManagerActor.behavior, "leaderboard-manager")
     assert (leaderboardManagerActorRef != null)
     Behaviors.supervise(leaderboardManagerActor.behavior)
@@ -148,18 +120,18 @@ class GuardianActor(leaderboardManagerActor: LeaderboardManagerActor, restActor:
           }
         case Done(cause) ⇒
           logger.info(s"Done: $cause")
-          //val result = restActorRef ? (actorRef ⇒ RestActor.Unbind(10, actorRef))
-          //shutdown(restActorRef ? {actorRef: ActorRef[Http.HttpTerminated] ⇒ Unbind(unbindTimeout, actorRef)})
           Behaviors.same
         case Shutdown(reason, notifier) =>
           logger.warn(s"Shutting down because: $reason")
-          val unbound = restActorRef ? {actorRef: ActorRef[Http.HttpTerminated] ⇒ Unbind(unbindTimeout, actorRef)}
-          shutdown(unbound, notifier)
+          restActorRef ! Unbind(notifier, unbindTimeout, actorContext.self)
+          shutdownBehavior
         case Spawn(behavior, name) ⇒
           logger.info(s"spawning $name")
           val actorRef = actorCell.spawn(behavior, name)
           actorCell.watch(actorRef)
-          //actorRef ! Start()
+          Behaviors.same
+        case Unbound(notifier, failure) =>
+          logger.error(s"Unexpected message: $message in main behavior")
           Behaviors.same
       }
     } receiveSignal { // TODO rationalize what we really want to do here, if anything
@@ -209,6 +181,10 @@ class GuardianActor(leaderboardManagerActor: LeaderboardManagerActor, restActor:
   }
 
   val shutdownBehavior = Behaviors.receive[GuardianActor.Message] { (actorCell, message) ⇒
+
+    implicit val actorSystem = actorCell.system.toUntyped // compatibility with legacy Akka
+    implicit val executionContext = actorCell.system.executionContext
+
     message match {
       case Bind() ⇒
         Behaviors.same
@@ -218,23 +194,42 @@ class GuardianActor(leaderboardManagerActor: LeaderboardManagerActor, restActor:
         Behaviors.same
       case Spawn(behavior, name) ⇒
         Behaviors.same
+
+      case Unbound(notifier, failure) =>
+
+        def terminate = {
+          def notifyDone = notifier.synchronized {
+            logger.info("Notifying Shutdown Hook that Akka has terminated operation")
+            notifier.notify
+          }
+          actorSystem.terminate onComplete {
+            case Success(terminated) =>
+              logger.info(terminated)
+              notifyDone
+            case Failure(cause) =>
+              logger.error(cause)
+              notifyDone
+          }
+        }
+
+        failure match {
+          case None =>
+            //logger.info("REST API unbound normally after completing all requests.")
+            terminate
+          case Some(cause) =>
+            //logger.error("REST API unbound, but may not have completed all requests", cause)
+            terminate
+        }
+
+        Behaviors.same
     }
   } receiveSignal { // TODO rationalize what we really want to do here, if anything
-    case (actorContext, PostStop) =>
-      logger.warn("PostStop signal received")
+    case (actorContext, postStop: PostStop) =>
+      logger.info(postStop)
       Behaviors.same
-    case (actorContext, event) ⇒
-      logger.warn(s"received signal with event = $event with actorContext = $actorContext")
-      event match {
-        case terminated@Terminated(actorRef) ⇒
-          if (actorRef == restActorRef) {
-            Behavior.stopped
-          } else
-            Behaviors.same
-        case _ ⇒
-          logger.warn(s"unknown event = $event, continuing...")
-          Behaviors.same
-      }
+    case (actorContext, terminated: Terminated) =>
+      logger.info(terminated)
+      Behaviors.same
     case signal@_ ⇒
       logger.warn(s"unknown signal = $signal, continuing...")
       Behaviors.same

@@ -5,7 +5,86 @@ Some anecdotes of how this project went...
 I started calling this page a “diary,” but that seemed too restrictive.
 At any rate, it's more of a personal philosophical musing.
 
-## Benchmarks, Load & Performance Characterization
+1. [Akka](#akka)
+   1. [Akka Typed](#akka-type)
+   1. [Akka HTTP](#akka-http)
+   1. [System Shutdown](#system-shutdown)
+      1. [Java Shutdown Hook](#java-shutdown-hook)
+1. [Benchmarks, Load & Performance Characterization](#benchmarks)
+   1. [Unit Tests](#unit-tests)
+   1. [Integration Tests](#integration-tests)
+      1. [Gatling](#gatling)
+      1. [Conclusions](#conclusions)
+         - [Single Updates](#single-updates)
+         - [Bulk Updates](#bulk-updates)
+
+## Akka <a name="akka"></a>
+
+I have been using Akka since 2014, and it has been an interesting
+experience.
+
+### Akka Typed <a name="akka-typed"></a>
+
+The original Akka was problematic in that there was no use of the
+language Type System to enforce discipline on the actpr messages being
+exchanged. Akka Type enforces a decent discipline.
+
+### Akka HTTP <a name="akka-http"></a>
+
+Still evolving, Akka HTTP seems to be an effective way to build a
+service with an HTTP API. Compared to other frameworks such as
+
+Other systems such as [Eclipse Vert.x](https://vertx.io) seem to offer
+lower latency on HTTP operations, but do not seem as flexible in other
+ways.
+
+### System Shutdown <a name="system-shutdown"></a>
+
+Most places I have worked with Akka, they did not put much effort into
+handling an orderly shutdown. The emphasis has always been on making
+services robust enough to handle hard failure, so pulling the plug was
+deemed an acceptable way to shutdown a service.
+
+Being a little old-school, I have always strived to
+
+1. Handle errors, failures, and edge-cases as robustly as possible, and
+1. Handle an orderly shutdown of the application
+
+*In the case of a service with an HTTP REST API, when shutting down the
+service, at a minimum, it's nice to complete any outstanding HTTP
+requests before shutting the system down.*
+
+Akka HTTP has a nice way of doing this
+
+    binding.terminate(deadline)
+
+[Graceful Termination](https://doc.akka.io/docs/akka-http/current/server-side/graceful-termination.html)
+describes the actual process used, but basically: it rejects all new
+requests and sessions, and allows all current requests some deadline
+(amount of time) to complete.
+
+#### Java Shutdown Hook <a name="java-shutdown-hook"></a>
+
+There are various ways to shutdown a system. In the IntelliJ IDE,
+if you click the `Exit` button it will shutdown the JVM in a *nice* way,
+that is, the Shutdown Hook will be invoked. If you press the `Stop` button
+in the IDE, it just terminates the JVM immediately, and there is no way
+to perform a Graceful Termination of the Akka system, and consequently,
+Akka HTTP sessions.
+
+The other nice way to do and orderly shutdown of the JVM is to use the
+Posix `kill -15 pid` command. Sadly, there seems to be no way to do
+something similar in Windows.
+
+It took about a day of hacking to finally come up with a nice solution
+for shutdown. Basically, the easiest way to shutdown the Akka system,
+and HTTP sessions is
+
+    System.exit(0)
+
+anywhere in the JVM, and the service will shutdown safely.
+
+## Benchmarks, Load & Performance Characterization <a name="benchmarks"></a>
 
 > “If you can not measure it, you can not improve it.”
 
@@ -17,7 +96,7 @@ While I have worked around software testers, Quality Assurance
 organizations quite a bit, until now I have not personally delved too
 deep in to the design and implementation of such tests.
 
-### Unit Tests
+### Unit Tests <a name="unit-tests"></a>
 
 Pragmatically any test I can run with the
 [Maven Surefire Plugin](https://maven.apache.org/surefire/maven-surefire-plugin/)
@@ -51,7 +130,7 @@ which perform best, hopefully understand why.
 *After actually implementing these tests I was quite surprised at the
 results, as they were not what I intuitively expected.*
 
-### Integration Tests
+### Integration Tests <a name="integration-tests"></a>
 
 Pragmatically any test I should run with the
 [Maven Failesafe Plugin](https://maven.apache.org/surefire/maven-failsafe-plugin/)
@@ -61,7 +140,7 @@ For example, if my performance unit tests were to take more than 5 or 10
 minutes, I would be tempted to move them here so as to not slow down the
 [test phase of Maven](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html).
 
-#### Gatling
+#### Gatling <a name="gatling"></a>
 
 Because [Gatling 3.0](https://gatling.io/docs/3.0/) is Scala based,
 it's a good *impedance match* with my Scala base Akka project. To be
@@ -127,4 +206,16 @@ Some key lessons include:
       players hitting a leaderboard.
    1. Still, it's a starting point to predict the kinds of resources
       you need for a given game load.
+
+#### Conclusions <a name="conclusions"></a>
+
+##### Single Updates <a name="single-updates"></a>
+
+The main use case for this would be a scenario where a game client
+directly makes requests to the leaderboard service.
+
+##### Bulk Updates <a name="bulk-updates"></a>
+
+The main use case for this would be a scenario where the back-end
+game server is a proxy for player leaderboard updates.
 
