@@ -257,7 +257,7 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><h3>Actor Protocol</h3></div><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -357,7 +357,7 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
       </span>
       
       
-    </li><li name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Shutdown" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Shutdown" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ShutdownextendsGuardianActor.MessagewithProductwithSerializable"></a><a id="Shutdown:Shutdown"></a>
       <span class="permalink">
       <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$.html#ShutdownextendsGuardianActor.MessagewithProductwithSerializable" title="Permalink">
@@ -369,10 +369,13 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="GuardianActor$$Shutdown.html"><span class="name">Shutdown</span></a><span class="params">(<span name="reason">reason: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="notifier">notifier: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result"> extends <a href="GuardianActor$$Message.html" class="extype" name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Message">Message</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="Usually sent from the ShutdownHook to indicate the JVM is shutting down, and that the Akka system should attempt a graceful shutdown, then signal when it's done." href="GuardianActor$$Shutdown.html"><span class="name">Shutdown</span></a><span class="params">(<span name="reason">reason: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="notifier">notifier: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result"> extends <a href="GuardianActor$$Message.html" class="extype" name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Message">Message</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
-      
+      <p class="shortcomment cmt">Usually sent from the ShutdownHook to indicate the JVM is shutting down, and that the Akka system should
+attempt a graceful shutdown, then signal when it's done.</p><div class="fullcomment"><div class="comment cmt"><h3>System Shutdown Notification</h3><p>Usually sent from the ShutdownHook to indicate the JVM is shutting down, and that the Akka system should
+attempt a graceful shutdown, then signal when it's done.
+</p></div><dl class="paramcmts block"><dt class="param">reason</dt><dd class="cmt"><p>- why the system is shutting down</p></dd><dt class="param">notifier</dt><dd class="cmt"><p>- Java Object to call notifier.notify on</p></dd></dl></div>
     </li><li name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Spawn" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="Spawn[M]extendsGuardianActor.MessagewithProductwithSerializable"></a><a id="Spawn[M]:Spawn[M]"></a>
       <span class="permalink">
@@ -386,6 +389,22 @@ GET   /leaderboard/DQz92Qw_ShCB-TMXf-wiAQ/cuWnCrtETqWtSC8rEYIiUA {<span class="l
       </span>
       <span class="symbol">
         <a title="" href="GuardianActor$$Spawn.html"><span class="name">Spawn</span></a><span class="tparams">[<span name="M">M</span>]</span><span class="params">(<span name="behavior">behavior: <span class="extype" name="akka.actor.typed.Behavior">Behavior</span>[<span class="extype" name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Spawn.M">M</span>]</span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="GuardianActor$$Message.html" class="extype" name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Message">Message</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      
+    </li><li name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Unbound" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="UnboundextendsGuardianActor.MessagewithProductwithSerializable"></a><a id="Unbound:Unbound"></a>
+      <span class="permalink">
+      <a href="../../../../net/kolotyluk/leaderboard/akka_specific/GuardianActor$.html#UnboundextendsGuardianActor.MessagewithProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="GuardianActor$$Unbound.html"><span class="name">Unbound</span></a><span class="params">(<span name="notifier">notifier: <span class="extype" name="scala.AnyRef">AnyRef</span></span>, <span name="failure">failure: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Throwable">Throwable</span>]</span>)</span><span class="result"> extends <a href="GuardianActor$$Message.html" class="extype" name="net.kolotyluk.leaderboard.akka_specific.GuardianActor.Message">Message</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
