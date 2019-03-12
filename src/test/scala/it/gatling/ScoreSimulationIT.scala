@@ -52,7 +52,7 @@ import scala.concurrent.duration._
 class ScoreSimulationIT extends Simulation with Configuration {
 
   setUp(
-    createLeaderboardScenario.inject(
+    createLeaderboardScenario("LeaderboardSync").inject(
         atOnceUsers(1))
       .protocols(httpProtocol),
     updateLeaderboardScenario.inject(

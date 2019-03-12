@@ -50,14 +50,14 @@ import scala.language.postfixOps
   */
 class BulkScoreSimulationIT extends Simulation with Configuration {
 
-  val bulkSize = 2
+  val bulkSize = 16
   val scenario = bulkUpdateLeaderboardChain(bulkSize)
   val repeat = 150
   val users = 100000 / 2
   val span = 600 seconds
 
   setUp(
-    createLeaderboardScenario.inject(
+    createLeaderboardScenario("SynchronizedLeaderboard").inject(
         atOnceUsers(1))
       .protocols(httpProtocol),
     updateScenario(scenario, repeat).inject(

@@ -1,11 +1,13 @@
 package it
 
 import java.util.UUID
+import java.util.concurrent.atomic.AtomicBoolean
 
+import io.gatling.commons.stats.KO
 import io.gatling.core.Predef._
 import io.gatling.core.structure.ChainBuilder
 import io.gatling.http.Predef._
-import net.kolotyluk.leaderboard.akka_specific.endpoint.leaderboard.{JsonSupport, LeaderboardScores, MemberScore, UpdateScoresRequest}
+import net.kolotyluk.leaderboard.akka_specific.endpoint.leaderboard._
 import net.kolotyluk.scala.extras.{Configuration, Logging, base64UrlIdToUuid, uuidToBase64UrlId}
 import spray.json._
 
@@ -75,6 +77,8 @@ import scala.util.Random
   */
 package object gatling extends Simulation with Configuration with Logging with JsonSupport {
 
+  val continue = new AtomicBoolean(true)
+
   val userIdToUrlId = new TrieMap[Long,String]()
 
   def memberSeq(count: Int): IndexedSeq[String] = {
@@ -104,8 +108,11 @@ package object gatling extends Simulation with Configuration with Logging with J
     .acceptLanguageHeader("en-US,en;q=0.5")
     //.userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0")
 
-  val createLeaderboardChain = exec(http("Create leaderboard")
-    .post("/leaderboard")
+  def createLeaderboardChain(implementation: String) = exec(http("Create leaderboard")
+    .post("/leaderboard").body(StringBody(session => {
+      val body = LeaderboardPostRequest(None, implementation)
+      body.toJson.compactPrint
+    })).asJson
     .check(status.is(201),
       jsonPath("$..id").ofType[String].saveAs("leaderboardId")
     )
@@ -126,10 +133,10 @@ package object gatling extends Simulation with Configuration with Logging with J
           } yield MemberScore(member, Random.nextInt.toString, None)
         )))
       body.toJson.compactPrint
-    })).asJson)
+    })).asJson).exitHereIfFailed
 
-  val createLeaderboardScenario = scenario("Create scenario")
-    .exec(createLeaderboardChain)
+  def createLeaderboardScenario(implementation: String) = scenario("Create scenario")
+    .exec(createLeaderboardChain(implementation))
     .exec {session =>
       leaderboardId = session("leaderboardId").as[String]
       logger.info(s"leaderboardId = $leaderboardId")
@@ -159,6 +166,31 @@ package object gatling extends Simulation with Configuration with Logging with J
       exec(updateLeaderboardChain)
     }
 
+  def us(chainBuilder: ChainBuilder, repeat: Int) = scenario("Update scenario")
+    .exec(
+      doIf(session => continue.get) {
+        exec{ session =>
+          val userId = session.userId
+          val memberId = userIdToUrlId.getOrElseUpdate(userId, uuidToBase64UrlId(UUID.randomUUID()))
+          val uuid = base64UrlIdToUuid(memberId)
+          logger.debug(s"userId = $userId, leaderboardId = $leaderboardId, memberId = $memberId, uuid = $uuid")
+          session
+            .set("leaderboardId", leaderboardId)
+            .set("memberId", memberId)
+        }
+      }
+      .repeat(repeat) {
+        doIf(session => continue.get) {
+          exec((session: io.gatling.core.session.Session) => {
+            if (session.status == KO) {
+              continue.set(false)
+            } else exec (chainBuilder)
+            session
+          })
+        }
+      }
+    )
+
   def updateScenario(chainBuilder: ChainBuilder, repeat: Int) = scenario("Update scenario")
     .exec{ session =>
       val userId = session.userId
@@ -186,8 +218,8 @@ package object gatling extends Simulation with Configuration with Logging with J
     exec(http("ping request").get("/ping"))
   }
 
-  def updateSetUp(users: Int, size: Int) = setUp(
-    createLeaderboardScenario.inject(
+  def updateSetUp(users: Int, size: Int, implementation: String) = setUp(
+    createLeaderboardScenario(implementation).inject(
       atOnceUsers(1))
       .protocols(httpProtocol),
     updateScenario(bulkUpdateLeaderboardChain(size), 50).inject(
