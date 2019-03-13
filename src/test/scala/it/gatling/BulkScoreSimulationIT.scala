@@ -50,9 +50,9 @@ import scala.language.postfixOps
   */
 class BulkScoreSimulationIT extends Simulation with Configuration {
 
-  val bulkSize = 16
+  val bulkSize = 300
   val scenario = bulkUpdateLeaderboardChain(bulkSize)
-  val repeat = 150
+  val repeat = 12
   val users = 100000 / 2
   val span = 600 seconds
 
