@@ -3,9 +3,11 @@ package net.kolotyluk.leaderboard.akka_specific
 import akka.actor.typed.{ActorSystem, Terminated}
 import net.kolotyluk.leaderboard.Configuration
 import net.kolotyluk.leaderboard.akka_specific.GuardianActor.{Bind, Shutdown}
+import net.kolotyluk.leaderboard.protobuf.ProtocolBufferServer
 import net.kolotyluk.scala.extras.{Environment, Logging}
 
 import scala.util.{Failure, Success}
+
 
 /** =Leaderboard Micro Service - Main Entry Point=
   *
@@ -105,6 +107,10 @@ object Main
     logger.info(s"Akka Actor System Started")
 
     system ! Bind() // to our HTTP REST endpoint
+
+    // TODO name this better and add to shutdown hook
+    val server = new ProtocolBufferServer(system.executionContext)
+    server.start()
 
     system.whenTerminated.onComplete {
       case Success(Terminated(actorRef)) =>

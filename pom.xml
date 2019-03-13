@@ -133,6 +133,16 @@
             <version>${jackson.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.thesamet.scalapb</groupId>
+            <artifactId>scalapb-runtime_${scala.tools.version}</artifactId>
+            <version>0.9.0-RC1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.thesamet.scalapb</groupId>
+            <artifactId>scalapb-runtime-grpc_${scala.tools.version}</artifactId>
+            <version>0.9.0-RC1</version>
+        </dependency>
+        <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-actor_${scala.tools.version}</artifactId>
             <version>${akka.version}</version>
@@ -185,10 +195,15 @@
             <version>1.11</version>
         </dependency>
         <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-jaxrs</artifactId>
-            <version>1.5.18</version>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-netty</artifactId>
+            <version>1.19.0</version>
         </dependency>
+        <dependency>
+        <groupId>io.swagger</groupId>
+        <artifactId>swagger-jaxrs</artifactId>
+        <version>1.5.18</version>
+    </dependency>
         <!-- https://mvnrepository.com/artifact/io.swagger.core.v3/swagger-models -->
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
@@ -473,6 +488,24 @@
                 </dependencies>
 -->
             </plugin>
+            <plugin>
+                <!--https://github.com/jbkt/scalapb-maven-->
+                <groupId>net.catte</groupId>
+                <artifactId>scalapb-maven-plugin</artifactId>
+                <version>1.2</version>
+                <configuration>
+                    <grpc>true</grpc>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- NOTE: We don't need a groupId specification because the group is org.apache.maven.plugins ...which is assumed by default. -->
 <!--
             <plugin>

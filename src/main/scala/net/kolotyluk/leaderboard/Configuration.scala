@@ -80,5 +80,12 @@ trait Configuration extends net.kolotyluk.scala.extras.Configuration {
       * @return configured rest port
       */
     def getRestPort(default: Some[Int] = Some(8080)) : Int = config.getDefaultInt("rest.port", default, 0 to 65535)
+
+    /** =Protocol Buffer Port=
+      *
+      * @param default 8080 akka system name if not found in config files
+      * @return configured rest port
+      */
+    def getProtobufPort(default: Some[Int] = Some(8081)) : Int = config.getDefaultInt("protobuf.port", default, 0 to 65535)
   }
 }

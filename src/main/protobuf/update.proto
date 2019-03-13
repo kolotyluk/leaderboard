@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package net.kolotyluk.leaderboard.protobuf;
+
+service Updater {
+  rpc Update (UpdateRequest) returns (UpdateResponse) {}
+}
+
+message UpdateRequest {
+  string leaderboardId = 1;
+  string memberId = 2;
+  string score = 3;
+  string mode = 4;
+}
+
+message UpdateResponse {
+  string leaderboardId = 1;
+  string memberId = 2;
+  string score = 3;
+}
+

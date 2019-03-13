@@ -214,8 +214,40 @@ Some key lessons include:
 The main use case for this would be a scenario where a game client
 directly makes requests to the leaderboard service.
 
+This is an unlikely scenario because in the gaming industry there is the
+danger of pseudo clients connecting to the game services that attempt
+to cheat. For this scenario to be acceptable, the leaderboard service
+would have to have some robust and effective security in place to prevent
+such cheating.
+
+Also, as we see below, there is a high overhead in processing individual
+HTTP Requests, so a lighter weight mechanism such as web sockets with
+[protobuf](https://developers.google.com/protocol-buffers/) might be
+more attractive.
+
 ##### Bulk Updates <a name="bulk-updates"></a>
 
 The main use case for this would be a scenario where the back-end
 game server is a proxy for player leaderboard updates.
+
+The main advantage of bulk updates is to overcome the overhead of
+processing HTTP requests. Load testing bears this out in that while
+the best we can achieve in the SUT was 12,500 Requests Per Second, with
+a bulk update of 16 updates per request, we can hit 200,000 Updates Per
+Second. This had the SUT running at about 90% CPU utilization.
+
+In Unit Testing, we can hit over 500,000 updates per second on the core
+data structures, so we can see the impact of HTTP overheads.
+
+Cutting the RPS in half, and doubling the bulk update to 32 updates per
+request, reduced the CPU load from 90% to 80%. Cutting the RPS in half
+again, doubling bulk updates to 64 updates per requests, reduced the
+CPU load from 80% to less than 70%.
+
+Tweaking the load test to 1,000 RPS, and the bulk size to 300 updates,
+(300,000 updates per second), the CPU load was pushed to between
+80% - 90%. The main impact here is on latency, where some responses were
+on order of 400 ms. Still the mean latency was 7 ms, with a standard
+deviation of 3 ms. For a game, requiring leaderboard functionality,
+this is still very acceptable.
 
