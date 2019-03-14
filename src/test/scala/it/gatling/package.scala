@@ -3,11 +3,19 @@ package it
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicBoolean
 
+import com.github.phisgr.gatling.grpc.Predef._
+import com.github.phisgr.gatling.pb._
+
 import io.gatling.commons.stats.KO
 import io.gatling.core.Predef._
+import io.gatling.core.session.Expression
 import io.gatling.core.structure.ChainBuilder
 import io.gatling.http.Predef._
+
+import io.grpc.{ManagedChannelBuilder, Status}
+
 import net.kolotyluk.leaderboard.akka_specific.endpoint.leaderboard._
+import net.kolotyluk.leaderboard.protobuf.update.{UpdateRequest, UpdaterGrpc}
 import net.kolotyluk.scala.extras.{Configuration, Logging, base64UrlIdToUuid, uuidToBase64UrlId}
 import spray.json._
 
@@ -108,6 +116,8 @@ package object gatling extends Simulation with Configuration with Logging with J
     .acceptLanguageHeader("en-US,en;q=0.5")
     //.userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0")
 
+  val grpcProtocol = grpc(ManagedChannelBuilder.forAddress("localhost", 8081).usePlaintext())
+
   def createLeaderboardChain(implementation: String) = exec(http("Create leaderboard")
     .post("/leaderboard").body(StringBody(session => {
       val body = LeaderboardPostRequest(None, implementation)
@@ -122,6 +132,33 @@ package object gatling extends Simulation with Configuration with Logging with J
     .patch("/leaderboard/${leaderboardId}/${memberId}?score=10")
     .check(status.is(200))
   )
+
+  val updateRequest: Expression[UpdateRequest] = UpdateRequest(score = "10").updateExpr(
+    _.leaderboardId :~ $("leaderboardId"),
+    _.memberId  :~ $("memberId")
+  )
+
+
+  val grpcChain = exec(
+    grpc("grpc_request")
+      .rpc(UpdaterGrpc.METHOD_UPDATE)
+      .payload(updateRequest)
+      .check(
+        statusCode is Status.Code.OK
+      )
+    )
+
+//  val grpcChain = exec(
+//    grpc("grpc_request")
+//      .rpc(UpdaterGrpc.METHOD_UPDATE)
+//      .payload(
+//        UpdateRequest(
+//          leaderboardId = "${leaderboardId}",
+//          memberId = "${memberId}",
+//          score = "10"
+//        )
+//      )
+//  )
 
   def bulkUpdateLeaderboardChain(size: Int) = exec(http("Bulk Update leaderboard")
     .post("/leaderboard").body(StringBody(session => {
@@ -164,6 +201,19 @@ package object gatling extends Simulation with Configuration with Logging with J
     }
     .repeat(150) {
       exec(updateLeaderboardChain)
+    }
+
+  def grpcScenario = scenario("gprc")
+    .exec{ session =>
+      val userId = session.userId
+      val memberId = userIdToUrlId.getOrElseUpdate(userId, uuidToBase64UrlId(UUID.randomUUID()))
+      val uuid = base64UrlIdToUuid(memberId)
+      session
+        .set("leaderboardId", leaderboardId)
+        .set("memberId", memberId)
+    }
+    .repeat(1) {
+      exec(grpcChain).exitHereIfFailed
     }
 
   def us(chainBuilder: ChainBuilder, repeat: Int) = scenario("Update scenario")

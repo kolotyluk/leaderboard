@@ -11,6 +11,7 @@ class ProtocolBufferServer(executionContext: ExecutionContext) extends Configura
 
   private class UpdaterImpl extends UpdaterGrpc.Updater {
     override def update(request: UpdateRequest) = {
+      logger.info(s"protobuf: leaderboardId = ${request.leaderboardId}, memberId = ${request.memberId}, score = ${request.score}")
       val response = UpdateResponse(request.leaderboardId, request.memberId, request.score)
       Future.successful(response)
     }
@@ -22,7 +23,7 @@ class ProtocolBufferServer(executionContext: ExecutionContext) extends Configura
       .addService(UpdaterGrpc.bindService(new UpdaterImpl, executionContext))
       .build
       .start
-    logger.info("Protocol Buffer Server started...")
+    logger.info(s"Protocol Buffer Server started on port = ${config.getProtobufPort()}")
   }
 
 }

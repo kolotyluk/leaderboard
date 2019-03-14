@@ -257,6 +257,13 @@
         </dependency>
 
         <!-- Test -->
+
+        <dependency>
+            <groupId>com.github.phisgr</groupId>
+            <artifactId>gatling-grpc_${scala.tools.version}</artifactId>
+            <version>0.2.0</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-actor-testkit-typed_${scala.tools.version}</artifactId>
@@ -410,7 +417,8 @@
                     <includes>
                         <!--<include>it.gatling.PingFloodSimulationIT</include>-->
                         <!--<include>it.gatling.ScoreSimulationIT</include>-->
-                        <include>it.gatling.BulkScoreSimulationIT</include>
+                        <!--<include>it.gatling.BulkScoreSimulationIT</include>-->
+                        <include>it.gatling.ProtobufSimulationIT</include>
                     </includes>
                 </configuration>
                 <executions>
