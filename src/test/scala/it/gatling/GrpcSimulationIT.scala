@@ -48,15 +48,19 @@ import scala.language.postfixOps
   * @see [[https://en.wikipedia.org/wiki/Test_suite Test Suite]]
   * @see [[https://en.wikipedia.org/wiki/Test_case Test Case]]
   */
-class ProtobufSimulationIT extends Simulation with Configuration {
+class GrpcSimulationIT extends Simulation with Configuration {
+
+  val duration = 60 seconds
+  val repeat = 10
+  val users = 10
 
   setUp(
     createLeaderboardScenario("SynchronizedLeaderboard").inject(
         atOnceUsers(1))
       .protocols(httpProtocol),
-    grpcScenario.inject(
+    grpcScenario(grpcChain, repeat).inject(
         nothingFor(4 seconds),
-        rampUsers(1) during (60 seconds))
+        rampUsers(users) during duration)
       .protocols(grpcProtocol)
   )
 

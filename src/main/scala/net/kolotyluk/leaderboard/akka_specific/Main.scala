@@ -3,7 +3,7 @@ package net.kolotyluk.leaderboard.akka_specific
 import akka.actor.typed.{ActorSystem, Terminated}
 import net.kolotyluk.leaderboard.Configuration
 import net.kolotyluk.leaderboard.akka_specific.GuardianActor.{Bind, Shutdown}
-import net.kolotyluk.leaderboard.protobuf.ProtocolBufferServer
+import net.kolotyluk.leaderboard.gprc.GprcServer
 import net.kolotyluk.scala.extras.{Environment, Logging}
 
 import scala.util.{Failure, Success}
@@ -109,7 +109,7 @@ object Main
     system ! Bind() // to our HTTP REST endpoint
 
     // TODO name this better and add to shutdown hook
-    val server = new ProtocolBufferServer(system.executionContext)
+    val server = new GprcServer()(system.executionContext)
     server.start()
 
     system.whenTerminated.onComplete {

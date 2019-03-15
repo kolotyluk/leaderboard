@@ -49,6 +49,6 @@ package net.kolotyluk.leaderboard
   * @see [[https://github.com/jbkt/scalapb-maven scalapb-maven]]
   *
   */
-package object protobuf {
+package object gprc {
 
 }

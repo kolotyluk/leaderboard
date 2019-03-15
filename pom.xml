@@ -261,7 +261,7 @@
         <dependency>
             <groupId>com.github.phisgr</groupId>
             <artifactId>gatling-grpc_${scala.tools.version}</artifactId>
-            <version>0.2.0</version>
+            <version>0.3.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -418,7 +418,7 @@
                         <!--<include>it.gatling.PingFloodSimulationIT</include>-->
                         <!--<include>it.gatling.ScoreSimulationIT</include>-->
                         <!--<include>it.gatling.BulkScoreSimulationIT</include>-->
-                        <include>it.gatling.ProtobufSimulationIT</include>
+                        <include>it.gatling.GrpcSimulationIT</include>
                     </includes>
                 </configuration>
                 <executions>

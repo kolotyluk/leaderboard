@@ -1,21 +1,20 @@
 package it
 
+import java.nio.ByteBuffer
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicBoolean
 
 import com.github.phisgr.gatling.grpc.Predef._
 import com.github.phisgr.gatling.pb._
-
+import com.google.protobuf.ByteString
 import io.gatling.commons.stats.KO
 import io.gatling.core.Predef._
 import io.gatling.core.session.Expression
 import io.gatling.core.structure.ChainBuilder
 import io.gatling.http.Predef._
-
 import io.grpc.{ManagedChannelBuilder, Status}
-
 import net.kolotyluk.leaderboard.akka_specific.endpoint.leaderboard._
-import net.kolotyluk.leaderboard.protobuf.update.{UpdateRequest, UpdaterGrpc}
+import net.kolotyluk.leaderboard.grpc.update.{UpdateRequest, UpdaterGrpc}
 import net.kolotyluk.scala.extras.{Configuration, Logging, base64UrlIdToUuid, uuidToBase64UrlId}
 import spray.json._
 
@@ -118,6 +117,7 @@ package object gatling extends Simulation with Configuration with Logging with J
 
   val grpcProtocol = grpc(ManagedChannelBuilder.forAddress("localhost", 8081).usePlaintext())
 
+
   def createLeaderboardChain(implementation: String) = exec(http("Create leaderboard")
     .post("/leaderboard").body(StringBody(session => {
       val body = LeaderboardPostRequest(None, implementation)
@@ -193,8 +193,8 @@ package object gatling extends Simulation with Configuration with Logging with J
     .exec{ session =>
       val userId = session.userId
       val memberId = userIdToUrlId.getOrElseUpdate(userId, uuidToBase64UrlId(UUID.randomUUID()))
-      val uuid = base64UrlIdToUuid(memberId)
-      logger.debug(s"userId = $userId, leaderboardId = $leaderboardId, memberId = $memberId, uuid = $uuid")
+      val memberUuid = base64UrlIdToUuid(memberId)
+      logger.debug(s"userId = $userId, leaderboardId = $leaderboardId, memberId = $memberId, memberUuid = $memberUuid")
       session
         .set("leaderboardId", leaderboardId)
         .set("memberId", memberId)
@@ -203,16 +203,25 @@ package object gatling extends Simulation with Configuration with Logging with J
       exec(updateLeaderboardChain)
     }
 
-  def grpcScenario = scenario("gprc")
+  def grpcScenario(grpcChain: ChainBuilder, repeat: Int) = scenario("gprc")
     .exec{ session =>
       val userId = session.userId
       val memberId = userIdToUrlId.getOrElseUpdate(userId, uuidToBase64UrlId(UUID.randomUUID()))
-      val uuid = base64UrlIdToUuid(memberId)
+      val memberUuid = base64UrlIdToUuid(memberId)
+      val memberIdBytes = ByteString.copyFrom(ByteBuffer.allocate(16)
+          .putLong(memberUuid.getMostSignificantBits())
+          .putLong(memberUuid.getLeastSignificantBits()).rewind)
+      val leaderboardUuid = base64UrlIdToUuid(leaderboardId)
+      val leaderboardIdBytes = ByteString.copyFrom(ByteBuffer.allocate(16)
+          .putLong(leaderboardUuid.getMostSignificantBits())
+          .putLong(leaderboardUuid.getLeastSignificantBits()).rewind)
+      logger.debug(s"leaderboardIdBytes.size() = ${leaderboardIdBytes.size()}, memberIdBytes.size() = ${memberIdBytes.size()}")
+      logger.debug(s"userId = $userId, leaderboardId = $leaderboardId, memberId = $memberId, memberUuid = $memberUuid")
       session
-        .set("leaderboardId", leaderboardId)
-        .set("memberId", memberId)
+        .set("leaderboardId", leaderboardIdBytes)
+        .set("memberId", memberIdBytes)
     }
-    .repeat(1) {
+    .repeat(repeat) {
       exec(grpcChain).exitHereIfFailed
     }
 

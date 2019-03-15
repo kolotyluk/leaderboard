@@ -1,21 +1,21 @@
 syntax = "proto3";
 
-package net.kolotyluk.leaderboard.protobuf;
+package net.kolotyluk.leaderboard.grpc;
 
 service Updater {
   rpc Update (UpdateRequest) returns (UpdateResponse) {}
 }
 
 message UpdateRequest {
-  string leaderboardId = 1;
-  string memberId = 2;
+  bytes leaderboardId = 1;
+  bytes memberId = 2;
   string score = 3;
   string mode = 4;
 }
 
 message UpdateResponse {
-  string leaderboardId = 1;
-  string memberId = 2;
+  bytes leaderboardId = 1;
+  bytes memberId = 2;
   string score = 3;
 }
 
