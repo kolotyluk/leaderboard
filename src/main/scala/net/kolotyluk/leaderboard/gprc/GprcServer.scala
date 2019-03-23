@@ -44,11 +44,11 @@ class GprcServer(implicit executionContext: ExecutionContext) extends Configurat
 
   def start() = {
     val server = ServerBuilder
-      .forPort(config.getProtobufPort())
+      .forPort(config.getGrpcPort())
       .addService(UpdaterGrpc.bindService(new UpdaterImpl, executionContext))
       .build
       .start
-    logger.info(s"Protocol Buffer Server started on port = ${config.getProtobufPort()}")
+    logger.info(s"Protocol Buffer Server started on port = ${config.getGrpcPort()}")
   }
 
 }

@@ -15,7 +15,7 @@ import io.gatling.http.Predef._
 import io.grpc.{ManagedChannelBuilder, Status}
 import net.kolotyluk.leaderboard.akka_specific.endpoint.leaderboard._
 import net.kolotyluk.leaderboard.grpc.update.{UpdateRequest, UpdaterGrpc}
-import net.kolotyluk.scala.extras.{Configuration, Logging, base64UrlIdToUuid, uuidToBase64UrlId}
+import net.kolotyluk.scala.extras.{Logging, base64UrlIdToUuid, uuidToBase64UrlId}
 import spray.json._
 
 import scala.annotation.tailrec
@@ -23,6 +23,8 @@ import scala.collection.concurrent.TrieMap
 import scala.concurrent.duration._
 import scala.language.postfixOps
 import scala.util.Random
+
+import  net.kolotyluk.leaderboard.Configuration
 
 /** =Gatling Simulation Behaviors=
   * Collection of resources (execution chains, scenarios, etc.) for defining simulation setups
@@ -84,6 +86,9 @@ import scala.util.Random
   */
 package object gatling extends Simulation with Configuration with Logging with JsonSupport {
 
+  val restPort = config.getRestPort()
+  val grpcPort = config.getGrpcPort()
+
   val continue = new AtomicBoolean(true)
 
   val userIdToUrlId = new TrieMap[Long,String]()
@@ -101,21 +106,21 @@ package object gatling extends Simulation with Configuration with Logging with J
   val testHost = config.getString("gatling.test.host")
 
   val httpProtocol = http
-    //.baseUrl("http://localhost:8080") // Here is the root for all relative URLs
-    .baseUrl(s"http://$testHost") // Here is the root for all relative URLs
+    .baseUrl(s"http://localhost:$restPort") // Here is the root for all relative URLs
+    //.baseUrl(s"http://$testHost") // Here is the root for all relative URLs
     .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8") // Here are the common headers
     .acceptEncodingHeader("gzip, deflate")
     .acceptLanguageHeader("en-US,en;q=0.5")
     .userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0")
 
   val httpUpdateProtocol = http
-    //.baseUrl("http://localhost:8080") // Here is the root for all relative URLs
-    .baseUrl(s"http://$testHost") // Here is the root for all relative URLs
+    .baseUrl(s"http://localhost:$restPort") // Here is the root for all relative URLs
+    //.baseUrl(s"http://$testHost") // Here is the root for all relative URLs
     .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8") // Here are the common headers
     .acceptLanguageHeader("en-US,en;q=0.5")
     //.userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0")
 
-  val grpcProtocol = grpc(ManagedChannelBuilder.forAddress("localhost", 8081).usePlaintext())
+  val grpcProtocol = grpc(ManagedChannelBuilder.forAddress("localhost", grpcPort).usePlaintext())
 
 
   def createLeaderboardChain(implementation: String) = exec(http("Create leaderboard")

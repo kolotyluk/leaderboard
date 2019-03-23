@@ -86,6 +86,6 @@ trait Configuration extends net.kolotyluk.scala.extras.Configuration {
       * @param default 8080 akka system name if not found in config files
       * @return configured rest port
       */
-    def getProtobufPort(default: Some[Int] = Some(8081)) : Int = config.getDefaultInt("protobuf.port", default, 0 to 65535)
+    def getGrpcPort(default: Some[Int] = Some(8081)) : Int = config.getDefaultInt("protobuf.port", default, 0 to 65535)
   }
 }
