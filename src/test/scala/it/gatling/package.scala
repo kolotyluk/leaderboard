@@ -89,6 +89,8 @@ package object gatling extends Simulation with Configuration with Logging with J
   val restPort = config.getRestPort()
   val grpcPort = config.getGrpcPort()
 
+  val testHost = config.getString("gatling.test.host")
+
   val continue = new AtomicBoolean(true)
 
   val userIdToUrlId = new TrieMap[Long,String]()
@@ -103,10 +105,9 @@ package object gatling extends Simulation with Configuration with Logging with J
 
   var leaderboardId = ""
 
-  val testHost = config.getString("gatling.test.host")
 
   val httpProtocol = http
-    .baseUrl(s"http://localhost:$restPort") // Here is the root for all relative URLs
+    .baseUrl(s"http://$testHost:$restPort") // Here is the root for all relative URLs
     //.baseUrl(s"http://$testHost") // Here is the root for all relative URLs
     .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8") // Here are the common headers
     .acceptEncodingHeader("gzip, deflate")
@@ -114,13 +115,13 @@ package object gatling extends Simulation with Configuration with Logging with J
     .userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0")
 
   val httpUpdateProtocol = http
-    .baseUrl(s"http://localhost:$restPort") // Here is the root for all relative URLs
+    .baseUrl(s"http://$testHost:$restPort") // Here is the root for all relative URLs
     //.baseUrl(s"http://$testHost") // Here is the root for all relative URLs
     .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8") // Here are the common headers
     .acceptLanguageHeader("en-US,en;q=0.5")
     //.userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0")
 
-  val grpcProtocol = grpc(ManagedChannelBuilder.forAddress("localhost", grpcPort).usePlaintext())
+  val grpcProtocol = grpc(ManagedChannelBuilder.forAddress(testHost, grpcPort).usePlaintext())
 
 
   def createLeaderboardChain(implementation: String) = exec(http("Create leaderboard")

@@ -409,7 +409,7 @@
                     -->
                     <disableCompiler>true</disableCompiler>
                     <jvmArgs>
-                        <jvmArg>-Dgatling.test.host=aquarius:8080</jvmArg>
+                        <jvmArg>-Dgatling.test.host=aquarius</jvmArg>
                         <!--<jvmArg>-Dakka.loglevel=DEBUG</jvmArg>-->
                         <jvmArg>-Dakka.http.client.connecting-timeout=60s</jvmArg>
                     </jvmArgs>
